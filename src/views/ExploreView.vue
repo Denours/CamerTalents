@@ -237,7 +237,9 @@
 
           <!-- État : aucun résultat -->
           <div v-else-if="filterStore.filteredTalents.length === 0" class="py-24 text-center">
-            <div class="text-6xl mb-4">🔍</div>
+            <div class="text-6xl mb-4">
+              <Search class="d-block mx-auto text-secondary size-16" />
+            </div>
             <h3 class="font-title text-xl font-bold mb-2">Aucun talent trouvé</h3>
             <p class="text-white/40 mb-6">Essaie d'ajuster tes filtres ou ta recherche.</p>
             <button
@@ -421,6 +423,7 @@ import { useFilterStore } from '../stores/filterStore';
 import { useTalents } from '../composables/useTalents';
 import TalentCard from '../components/talent/TalentCard.vue';
 import FilterBlock from '../components/explore/FilterBlock.vue';
+import { Search } from 'lucide-vue-next';
 import { CATEGORIES, VILLES } from '../data/mockData';
 
 // ── Stores & composables ─────────────────────────────────────

@@ -1,6 +1,6 @@
 <template>
   <div class="filter-block">
-    <!-- En-tête cliquable (accordéon) -->
+    <!-- En-tête cliquable -->
     <button
       @click="isOpen = !isOpen"
       class="w-full flex items-center justify-between py-2 text-left group"
@@ -24,7 +24,7 @@
       </svg>
     </button>
 
-    <!-- Contenu (accordéon) -->
+    <!-- Contenu déroulant -->
     <Transition name="accordion">
       <div v-if="isOpen" class="mt-2 space-y-1">
         <slot />

@@ -682,7 +682,7 @@ export const mockTalents = [
     metier: 'Maquilleuse Professionnelle',
     categorie: 'Services & Lifestyle',
     competences: [
-      { nom: 'Maquillage mariée', niveau: 96 },
+      { nom: 'Maquillage mariage', niveau: 96 },
       { nom: 'Maquillage artistique', niveau: 90 },
       { nom: 'Soins peau noire', niveau: 94 },
       { nom: 'Airbrush', niveau: 82 },
