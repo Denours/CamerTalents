@@ -535,7 +535,6 @@ import TalentCard from '../components/talent/TalentCard.vue';
 
 // ── Route & navigation ───────────────────────────────────────
 const route = useRoute();
-// const router = useRouter();
 
 // ── Données ──────────────────────────────────────────────────
 const { talents, isLoading, getTalentById } = useTalents();
@@ -585,7 +584,6 @@ const activeTab = ref('about');
 // ── Animation des skill bars ─────────────────────────────────
 const skillsContainer = ref(null);
 const skillsVisible = ref(false);
-// let skillsObserver = null;
 
 // Lance l'animation quand on passe sur l'onglet compétences
 watch(activeTab, async (tab) => {

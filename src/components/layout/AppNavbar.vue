@@ -236,6 +236,7 @@ const isScrolled = ref(false);
 
 // ── Liens de navigation ──────────────────────────────────────
 const navLinks = [
+  { to: '/', label: 'Accueil' },
   { to: '/explore', label: 'Explorer' },
   { to: '/dashboard', label: 'Dashboard' },
   { to: '/map', label: 'Carte' },
