@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import AppNavbar from './components/layout/AppNavbar.vue';
+import AppFooter from './components/layout/AppFooter.vue';
 
 const isDark = ref(false);
 const toggleTheme = () => (isDark.value = !isDark.value);
@@ -11,13 +12,15 @@ const toggleTheme = () => (isDark.value = !isDark.value);
     :class="isDark ? 'dark' : ''"
     class="min-h-screen bg-[#F8F7FF] dark:bg-dark text-gray-900 dark:text-gray-100 transition-colors duration-300"
   >
-    <AppNavbar @toggle-theme="toggleTheme" :is-dark="isDark"/>
+    <AppNavbar @toggle-theme="toggleTheme" />
 
     <RouterView v-slot="{ Component }">
       <Transition name="page" mode="out-in">
         <component :is="Component" />
       </Transition>
     </RouterView>
+
+    <AppFooter />
   </div>
 </template>
 

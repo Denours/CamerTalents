@@ -301,7 +301,7 @@
               <div v-if="activeTab === 'portfolio'" key="portfolio">
                 <h2 class="section-title">Portfolio</h2>
 
-                <div v-if="talent.portfolio.length === 0" class="text-center py-16 text-white/30">
+                <div v-if="talent?.portfolio?.length === 0" class="text-center py-16 text-white/30">
                   <div class="text-4xl mb-3">🖼️</div>
                   <p>Aucune réalisation ajoutée pour l'instant.</p>
                 </div>

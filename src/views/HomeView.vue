@@ -91,19 +91,6 @@
             </RouterLink>
             <RouterLink to="/onboarding" class="btn-ghost"> Créer mon profil </RouterLink>
           </div>
-
-          <!-- Mini-stats sous les CTAs -->
-          <div
-            v-motion
-            :initial="{ opacity: 0 }"
-            :enter="{ opacity: 1, transition: { duration: 600, delay: 500 } }"
-            class="flex items-center gap-6 mt-10 pt-8 border-t border-white/10"
-          >
-            <div v-for="stat in miniStats" :key="stat.label" class="text-center">
-              <p class="font-mono text-2xl font-bold text-white">{{ stat.value }}</p>
-              <p class="text-xs text-white/40 mt-0.5">{{ stat.label }}</p>
-            </div>
-          </div>
         </div>
 
         <!-- Colonne droite : floating talent cards -->
@@ -324,7 +311,7 @@
             <span
               class="text-3xl mb-3 block transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
             >
-              <component :is="cat.emoji" class="text-secondary" />
+              <component :is="cat.emoji" class="text-primary" />
             </span>
             <p class="font-semibold text-sm text-white">{{ cat.label }}</p>
             <p class="text-[11px] text-white/40 mt-1">{{ cat.count }} talents</p>
@@ -539,12 +526,6 @@ const topTalents = computed(() => [...talents.value].sort((a, b) => b.note - a.n
 // ── Stats animées ────────────────────────────────────────────
 const statsSection = ref(null);
 const statsVisible = ref(false);
-
-const miniStats = [
-  { value: '1 240+', label: 'Talents' },
-  { value: '18', label: 'Villes' },
-  { value: '4.8★', label: 'Note moy.' },
-];
 
 const bigStats = computed(() => [
   {

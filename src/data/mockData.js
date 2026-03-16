@@ -190,7 +190,8 @@ export const mockTalents = [
   {
     id: '6f7g8h9i',
     nom: 'Tchoumba Rodrigue',
-    avatar: 'https://media.istockphoto.com/id/1644238002/fr/photo/affaires-confiance-et-portrait-homme-noir-avec-le-sourire-au-bureau-pdg-de-startup-ou.jpg?s=612x612&w=0&k=20&c=qgi02tuPrrtsAxoR0uQZe5VvBCYf233KknwbwMzwUZM=',
+    avatar:
+      'https://media.istockphoto.com/id/1644238002/fr/photo/affaires-confiance-et-portrait-homme-noir-avec-le-sourire-au-bureau-pdg-de-startup-ou.jpg?s=612x612&w=0&k=20&c=qgi02tuPrrtsAxoR0uQZe5VvBCYf233KknwbwMzwUZM=',
     metier: 'Vidéaste & Monteur',
     categorie: 'Créatif & Art',
     competences: [
@@ -252,7 +253,8 @@ export const mockTalents = [
   {
     id: '8h9i0j1k',
     nom: 'Ngono Parfait',
-    avatar: 'https://static.vecteezy.com/ti/photos-gratuite/t2/47003604-homme-portant-noir-t-shirt-avec-bras-franchi-permanent-contre-gris-contexte-photo.jpeg',
+    avatar:
+      'https://static.vecteezy.com/ti/photos-gratuite/t2/47003604-homme-portant-noir-t-shirt-avec-bras-franchi-permanent-contre-gris-contexte-photo.jpeg',
     metier: 'Menuisier Ébéniste',
     categorie: 'Artisanat & BTP',
     competences: [
@@ -282,7 +284,8 @@ export const mockTalents = [
   {
     id: '9i0j1k2l',
     nom: 'Djomo Clément',
-    avatar: 'https://images.unsplash.com/photo-1525665363629-cdf85a703b50?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8amV1bmUlMjBob21tZSUyMG5vaXJ8ZW58MHx8MHx8fDA%3D',
+    avatar:
+      'https://images.unsplash.com/photo-1525665363629-cdf85a703b50?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8amV1bmUlMjBob21tZSUyMG5vaXJ8ZW58MHx8MHx8fDA%3D',
     metier: 'Électricien Bâtiment',
     categorie: 'Artisanat & BTP',
     competences: [
@@ -309,7 +312,8 @@ export const mockTalents = [
   {
     id: '0j1k2l3m',
     nom: 'Assanga Bruno',
-    avatar: 'https://media.istockphoto.com/id/2087154875/fr/photo/jeune-homme-joyeux-avec-des-lunettes-souriant-dans-un-pull-orange.jpg?s=612x612&w=0&k=20&c=K3fF_63Xtj0nFYBdZHcdvnWnf2JmQwT1fVHRhk1KxLY=',
+    avatar:
+      'https://media.istockphoto.com/id/2087154875/fr/photo/jeune-homme-joyeux-avec-des-lunettes-souriant-dans-un-pull-orange.jpg?s=612x612&w=0&k=20&c=K3fF_63Xtj0nFYBdZHcdvnWnf2JmQwT1fVHRhk1KxLY=',
     metier: 'Maçon & Carreleur',
     categorie: 'Artisanat & BTP',
     competences: [
@@ -367,7 +371,8 @@ export const mockTalents = [
   {
     id: '2l3m4n5o',
     nom: 'Kouam Pascal',
-    avatar: 'https://img.freepik.com/photos-gratuite/homme-americain-africain-porter-pull-rouge_273609-22477.jpg?semt=ais_rp_progressive&w=740&q=80',
+    avatar:
+      'https://img.freepik.com/photos-gratuite/homme-americain-africain-porter-pull-rouge_273609-22477.jpg?semt=ais_rp_progressive&w=740&q=80',
     metier: 'Formateur Bureautique & Informatique',
     categorie: 'Éducation & Formation',
     competences: [
@@ -394,7 +399,8 @@ export const mockTalents = [
   {
     id: '3m4n5o6p',
     nom: 'Eyenga Clarisse',
-    avatar: 'https://media.istockphoto.com/id/1455211526/fr/photo/jeune-femme-regardant-ailleurs-contemplant-ses-r%C3%A9solutions-du-nouvel-an.jpg?s=612x612&w=0&k=20&c=7yRU2-FDVZ8d5PiS2XDb2PRl8qlXlcXZH3uT8tPMjAc=',
+    avatar:
+      'https://media.istockphoto.com/id/1455211526/fr/photo/jeune-femme-regardant-ailleurs-contemplant-ses-r%C3%A9solutions-du-nouvel-an.jpg?s=612x612&w=0&k=20&c=7yRU2-FDVZ8d5PiS2XDb2PRl8qlXlcXZH3uT8tPMjAc=',
     metier: 'Traiteur & Chef Cuisinier',
     categorie: 'Services & Lifestyle',
     competences: [
@@ -424,7 +430,8 @@ export const mockTalents = [
   {
     id: '4n5o6p7q',
     nom: 'Mbianda Rachel',
-    avatar: 'https://www.shutterstock.com/image-photo/skincare-health-black-woman-studio-600nw-2603756559.jpg',
+    avatar:
+      'https://www.shutterstock.com/image-photo/skincare-health-black-woman-studio-600nw-2603756559.jpg',
     metier: 'Coiffeuse & Styliste Capillaire',
     categorie: 'Services & Lifestyle',
     competences: [
@@ -483,7 +490,8 @@ export const mockTalents = [
   {
     id: '6p7q8r9s',
     nom: 'Owono Marcel',
-    avatar: 'https://img.freepik.com/photos-gratuite/portrait-homme-afro-americain_23-2149072179.jpg',
+    avatar:
+      'https://img.freepik.com/photos-gratuite/portrait-homme-afro-americain_23-2149072179.jpg',
     metier: 'Chauffeur Professionnel',
     categorie: 'Transport & Logistique',
     competences: [
@@ -510,7 +518,8 @@ export const mockTalents = [
   {
     id: '7q8r9s0t',
     nom: 'Djoumessi Wilfried',
-    avatar: 'https://static.vecteezy.com/ti/photos-gratuite/t2/39633047-ai-genere-portrait-de-barbu-noir-homme-sur-plan-contexte-photo.jpg',
+    avatar:
+      'https://static.vecteezy.com/ti/photos-gratuite/t2/39633047-ai-genere-portrait-de-barbu-noir-homme-sur-plan-contexte-photo.jpg',
     metier: 'Développeur Backend (Node.js)',
     categorie: 'Tech & Digital',
     competences: [
@@ -537,7 +546,8 @@ export const mockTalents = [
   {
     id: '8r9s0t1u',
     nom: 'Nkoa Samuel',
-    avatar: 'https://img.freepik.com/photos-gratuite/portrait-homme-afro-americain_23-2148012827.jpg?semt=ais_hybrid&w=740&q=80',
+    avatar:
+      'https://img.freepik.com/photos-gratuite/portrait-homme-afro-americain_23-2148012827.jpg?semt=ais_hybrid&w=740&q=80',
     metier: 'Plombier Sanitaire',
     categorie: 'Artisanat & BTP',
     competences: [
@@ -591,7 +601,8 @@ export const mockTalents = [
   {
     id: '0t1u2v3w',
     nom: 'Happi Romaric',
-    avatar: 'https://media.istockphoto.com/id/1522377399/fr/photo/portrait-homme-afro-am%C3%A9ricain-%C3%A0-succ%C3%A8s-directeur-dentreprise-et-conseiller-financier.jpg?s=612x612&w=0&k=20&c=PDh1lJzTWGHl9ZOv0gKtuQC8ZUTwyYT2c2xLDBl_Y8s=',
+    avatar:
+      'https://media.istockphoto.com/id/1522377399/fr/photo/portrait-homme-afro-am%C3%A9ricain-%C3%A0-succ%C3%A8s-directeur-dentreprise-et-conseiller-financier.jpg?s=612x612&w=0&k=20&c=PDh1lJzTWGHl9ZOv0gKtuQC8ZUTwyYT2c2xLDBl_Y8s=',
     metier: 'Data Analyst',
     categorie: 'Tech & Digital',
     competences: [
@@ -621,7 +632,8 @@ export const mockTalents = [
   {
     id: '1u2v3w4x',
     nom: 'Mouchili Diane',
-    avatar: 'https://img.freepik.com/psd-gratuit/portrait-femme-isolee_23-2151229727.jpg?semt=ais_hybrid&w=740&q=80',
+    avatar:
+      'https://img.freepik.com/psd-gratuit/portrait-femme-isolee_23-2151229727.jpg?semt=ais_hybrid&w=740&q=80',
     metier: 'Coach en Développement Personnel',
     categorie: 'Éducation & Formation',
     competences: [
@@ -648,7 +660,8 @@ export const mockTalents = [
   {
     id: '2v3w4x5y',
     nom: 'Zang Pierre',
-    avatar: 'https://img.freepik.com/photos-gratuite/serieux-jeune-homme-africain-debout-isole_171337-9633.jpg?semt=ais_hybrid&w=740&q=80',
+    avatar:
+      'https://img.freepik.com/photos-gratuite/serieux-jeune-homme-africain-debout-isole_171337-9633.jpg?semt=ais_hybrid&w=740&q=80',
     metier: 'Ferrailleur & Soudeur',
     categorie: 'Artisanat & BTP',
     competences: [
@@ -678,7 +691,8 @@ export const mockTalents = [
   {
     id: '3w4x5y6z',
     nom: 'Abena Rosine',
-    avatar: 'https://img.freepik.com/photos-premium/femme-noire-portrait-femme-noire-studio-photo_432566-3215.jpg',
+    avatar:
+      'https://img.freepik.com/photos-premium/femme-noire-portrait-femme-noire-studio-photo_432566-3215.jpg',
     metier: 'Maquilleuse Professionnelle',
     categorie: 'Services & Lifestyle',
     competences: [
@@ -708,7 +722,8 @@ export const mockTalents = [
   {
     id: '4x5y6z7a',
     nom: 'Bello Hamidou',
-    avatar: 'https://img.freepik.com/photos-gratuite/prise-vue-superficielle-jeune-homme-noir-mur-gris_181624-52039.jpg?semt=ais_hybrid&w=740&q=80',
+    avatar:
+      'https://img.freepik.com/photos-gratuite/prise-vue-superficielle-jeune-homme-noir-mur-gris_181624-52039.jpg?semt=ais_hybrid&w=740&q=80',
     metier: 'Livreur Express & Coursier',
     categorie: 'Transport & Logistique',
     competences: [
@@ -735,7 +750,8 @@ export const mockTalents = [
   {
     id: '5y6z7a8b',
     nom: 'Nganou Cédric',
-    avatar: 'https://img.freepik.com/photos-gratuite/confiant-jeune-homme-aux-bras-croises-posant-rue_74855-5003.jpg?semt=ais_rp_progressive&w=740&q=80',
+    avatar:
+      'https://img.freepik.com/photos-gratuite/confiant-jeune-homme-aux-bras-croises-posant-rue_74855-5003.jpg?semt=ais_rp_progressive&w=740&q=80',
     metier: 'Technicien Réseau & Cybersécurité',
     categorie: 'Tech & Digital',
     competences: [
@@ -762,7 +778,8 @@ export const mockTalents = [
   {
     id: '6z7a8b9c',
     nom: 'Tsanga Hervé',
-    avatar: 'https://img.freepik.com/photos-premium/photographie-beaux-hommes-noirs-americains-style-vie-heureux_1288657-149547.jpg?semt=ais_rp_progressive&w=740&q=80',
+    avatar:
+      'https://img.freepik.com/photos-premium/photographie-beaux-hommes-noirs-americains-style-vie-heureux_1288657-149547.jpg?semt=ais_rp_progressive&w=740&q=80',
     metier: 'Musicien & Arrangeur',
     categorie: 'Créatif & Art',
     competences: [
@@ -789,7 +806,8 @@ export const mockTalents = [
   {
     id: '7a8b9c0d',
     nom: 'Mpeck Fabrice',
-    avatar: 'https://img.freepik.com/photos-gratuite/homme-portant-capuche-noire-est-concept-important_23-2148749543.jpg?semt=ais_hybrid&w=740&q=80',
+    avatar:
+      'https://img.freepik.com/photos-gratuite/homme-portant-capuche-noire-est-concept-important_23-2148749543.jpg?semt=ais_hybrid&w=740&q=80',
     metier: 'Professeur de Langues (Anglais & Français)',
     categorie: 'Éducation & Formation',
     competences: [
@@ -848,7 +866,8 @@ export const mockTalents = [
   {
     id: '9c0d1e2f',
     nom: 'Simo Patrick',
-    avatar: 'https://img.freepik.com/photos-gratuite/capture-verticale-homme-afro-americain-seduisant-souriant-camera_181624-36894.jpg',
+    avatar:
+      'https://img.freepik.com/photos-gratuite/capture-verticale-homme-afro-americain-seduisant-souriant-camera_181624-36894.jpg',
     metier: 'Développeur WordPress & SEO',
     categorie: 'Tech & Digital',
     competences: [
@@ -878,7 +897,8 @@ export const mockTalents = [
   {
     id: '0d1e2f3g',
     nom: 'Onana Gilles',
-    avatar: 'https://media.istockphoto.com/id/1822009439/fr/photo/homme-noir-daffaires-heureux-et-marchant-lors-dun-voyage-en-ville-dun-trajet-en-ville-et.jpg?s=612x612&w=0&k=20&c=KxI4sBKjYbdcIIR-kq7msGrB2XikgndYmlii263U1_g=',
+    avatar:
+      'https://media.istockphoto.com/id/1822009439/fr/photo/homme-noir-daffaires-heureux-et-marchant-lors-dun-voyage-en-ville-dun-trajet-en-ville-et.jpg?s=612x612&w=0&k=20&c=KxI4sBKjYbdcIIR-kq7msGrB2XikgndYmlii263U1_g=',
     metier: 'Peintre en Bâtiment',
     categorie: 'Artisanat & BTP',
     competences: [
