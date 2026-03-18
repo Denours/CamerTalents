@@ -293,6 +293,180 @@
                     </div>
                   </div>
                 </div>
+                <!-- ── Section CV ──────────────────────────── -->
+                <div class="mt-10 pt-8 border-t border-white/[0.06]">
+                  <h3 class="font-title text-lg font-bold mb-4">Curriculum Vitae</h3>
+
+                  <!-- Cas 1 : Le talent a un CV → aperçu + téléchargement -->
+                  <div v-if="talent.cvBase64" class="space-y-3">
+                    <!-- Barre d'action : infos + boutons -->
+                    <div
+                      class="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.04] border border-white/[0.08]"
+                    >
+                      <div
+                        class="w-10 h-10 rounded-xl bg-primary/15 border border-primary/20 flex items-center justify-center flex-shrink-0"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#A78BF6"
+                          stroke-width="1.8"
+                        >
+                          <path
+                            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12
+                 a2 2 0 0 0 2-2V8z"
+                          />
+                          <polyline points="14 2 14 8 20 8" />
+                          <line x1="16" y1="13" x2="8" y2="13" />
+                          <line x1="16" y1="17" x2="8" y2="17" />
+                          <polyline points="10 9 9 9 8 9" />
+                        </svg>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-white truncate">
+                          {{ talent.cvNom || 'Curriculum Vitae' }}
+                        </p>
+                        <p class="text-xs text-white/40 mt-0.5">
+                          Cliquez sur "Visualiser" pour ouvrir sans télécharger
+                        </p>
+                      </div>
+                      <div class="flex items-center gap-2 flex-shrink-0">
+                        <!-- Bouton Visualiser -->
+                        <button
+                          @click="cvViewerOpen = true"
+                          class="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.08] border border-white/[0.12] text-white/70 text-sm font-medium hover:bg-white/[0.14] hover:text-white active:scale-95 transition-all duration-200"
+                        >
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                          </svg>
+                          Visualiser
+                        </button>
+                        <!-- Bouton Télécharger -->
+                        <a
+                          :href="talent.cvBase64"
+                          :download="talent.cvNom || 'CV.pdf'"
+                          class="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-600 active:scale-95 transition-all duration-200"
+                        >
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                          </svg>
+                          Télécharger
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- Aperçu inline (miniature cliquable) -->
+                    <button
+                      @click="cvViewerOpen = true"
+                      class="w-full rounded-2xl overflow-hidden border border-white/[0.08] hover:border-primary/30 transition-all duration-300 group relative bg-[#1A1230]"
+                      style="height: 220px"
+                    >
+                      <!-- Rendu iframe en miniature (pointer-events none pour éviter
+         les interactions accidentelles sur la miniature) -->
+                      <iframe
+                        :src="talent.cvBase64"
+                        title="curriculum"
+                        class="w-full h-full pointer-events-none"
+                        style="
+                          transform: scale(0.5);
+                          transform-origin: top left;
+                          width: 200%;
+                          height: 200%;
+                        "
+                      />
+                      <!-- Overlay hover -->
+                      <div
+                        class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-opacity duration-300"
+                      >
+                        <div
+                          class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold shadow-lg shadow-primary/30"
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                          </svg>
+                          Ouvrir le CV en plein écran
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <!-- Cas 2 : Pas de CV → input pour en ajouter un -->
+                  <div v-else>
+                    <p class="text-sm text-white/40 mb-4">
+                      Aucun CV ajouté pour l'instant. Tu peux en importer un ci-dessous pour
+                      renforcer ton profil.
+                    </p>
+                    <label
+                      class="flex flex-col items-center justify-center gap-3 w-full py-8 rounded-xl border-2 border-dashed border-white/10 cursor-pointer hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 group"
+                    >
+                      <div
+                        class="w-10 h-10 rounded-xl bg-white/[0.06] flex items-center justify-center group-hover:bg-primary/10 transition-all duration-200"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="rgba(255,255,255,0.3)"
+                          stroke-width="1.5"
+                        >
+                          <path
+                            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12
+                   a2 2 0 0 0 2-2V8z"
+                          />
+                          <polyline points="14 2 14 8 20 8" />
+                          <line x1="12" y1="18" x2="12" y2="12" />
+                          <line x1="9" y1="15" x2="15" y2="15" />
+                        </svg>
+                      </div>
+                      <div class="text-center">
+                        <p
+                          class="text-sm text-white/40 group-hover:text-white/60 transition-colors duration-200"
+                        >
+                          Importer mon CV
+                        </p>
+                        <p class="text-xs text-white/20 mt-1">PDF, DOC ou DOCX — max 5 Mo</p>
+                      </div>
+                      <input
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        class="hidden"
+                        @change="handleCvUploadOnProfile"
+                      />
+                    </label>
+                    <p v-if="cvUploadError" class="text-xs text-red-400 mt-2">
+                      {{ cvUploadError }}
+                    </p>
+                  </div>
+                </div>
+                <!-- ── Fin section CV ───────────────────────── -->
               </div>
             </Transition>
 
@@ -524,6 +698,93 @@
         </div>
       </Transition>
     </Teleport>
+    <!-- ════════════════════════════════════════════
+     MODALE VIEWER CV
+════════════════════════════════════════════ -->
+    <Teleport to="body">
+      <Transition name="lightbox">
+        <div
+          v-if="cvViewerOpen"
+          class="fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-sm"
+          @click.self="cvViewerOpen = false"
+        >
+          <!-- Barre d'outils -->
+          <div
+            class="flex items-center justify-between px-6 py-4 border-b border-white/[0.08] bg-[#0F0A1E]/90 flex-shrink-0"
+          >
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#A78BF6"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12
+                       a2 2 0 0 0 2-2V8z"
+                  />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-white">
+                  {{ talent?.cvNom || 'Curriculum Vitae' }}
+                </p>
+                <p class="text-xs text-white/30">
+                  {{ talent?.nom }}
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <!-- Télécharger depuis la modale -->
+              <a
+                :href="talent?.cvBase64"
+                :download="talent?.cvNom || 'CV.pdf'"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.08] text-white/70 text-sm hover:bg-white/[0.14] hover:text-white transition-all duration-200"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Télécharger
+              </a>
+              <!-- Fermer -->
+              <button
+                @click="cvViewerOpen = false"
+                class="w-9 h-9 rounded-xl bg-white/[0.08] flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.14] transition-all duration-200"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- iframe plein écran -->
+          <iframe :src="talent?.cvBase64" title="cv-fullscreen" class="flex-1 w-full" />
+        </div>
+      </Transition>
+    </Teleport>
   </main>
 </template>
 
@@ -531,6 +792,7 @@
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import { useTalents } from '../composables/useTalents';
+import { useTalentStore } from '../stores/talentStore';
 import TalentCard from '../components/talent/TalentCard.vue';
 
 // ── Route & navigation ───────────────────────────────────────
@@ -538,10 +800,13 @@ const route = useRoute();
 
 // ── Données ──────────────────────────────────────────────────
 const { talents, isLoading, getTalentById } = useTalents();
+const talentStore = useTalentStore();
 
 // Talent courant (récupéré par l'id de la route)
 const talent = computed(() => getTalentById(route.params.id));
 
+const cvUploadError = ref('');
+const cvViewerOpen = ref(false);
 // ── Couleur par catégorie ────────────────────────────────────
 const categoryColors = {
   'Tech & Digital': '#6C3CE1',
@@ -616,6 +881,7 @@ function closeLightbox() {
 function handleKeydown(e) {
   if (!lightboxOpen.value) return;
   if (e.key === 'Escape') closeLightbox();
+  if (cvViewerOpen.value) cvViewerOpen.value = false;
   if (e.key === 'ArrowLeft' && lightboxIndex.value > 0) lightboxIndex.value--;
   if (
     e.key === 'ArrowRight' &&
@@ -625,6 +891,39 @@ function handleKeydown(e) {
     lightboxIndex.value++;
 }
 
+// Upload CV directement depuis le profil (pour les talents sans CV)
+function handleCvUploadOnProfile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const allowed = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ];
+  if (!allowed.includes(file.type)) {
+    cvUploadError.value = 'Format non supporté. Acceptés : PDF, DOC, DOCX';
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    cvUploadError.value = 'Fichier trop lourd. Maximum 5 Mo.';
+    return;
+  }
+
+  cvUploadError.value = '';
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    // Met à jour le talent dans le store ET dans localStorage
+    const idx = talentStore.addedTalents.findIndex((t) => t.id === talent.value?.id);
+    if (idx !== -1) {
+      talentStore.addedTalents[idx].cvBase64 = e.target.result;
+      talentStore.addedTalents[idx].cvNom = file.name;
+      // Persiste la mise à jour
+      localStorage.setItem('camertalents_added_talents', JSON.stringify(talentStore.addedTalents));
+    }
+  };
+  reader.readAsDataURL(file);
+}
 onMounted(() => {
   globalThis.addEventListener('keydown', handleKeydown);
 });

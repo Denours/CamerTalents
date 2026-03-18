@@ -227,15 +227,15 @@
           <div
             class="absolute top-36 right-0 bg-secondary/20 backdrop-blur-sm border border-secondary/30 rounded-xl px-3 py-2 text-center"
           >
-            <p class="font-mono text-lg font-bold text-secondary">+156</p>
-            <p class="text-[10px] text-white/50">vues ce mois</p>
+            <p class="font-mono text-lg font-bold text-secondary">{{ featuredTalents[4].vues }}+</p>
+            <p class="text-[10px] text-white/50">vues ces derniers mois</p>
           </div>
 
           <!-- Badge "note" décoratif -->
           <div
             class="absolute bottom-36 left-0 bg-yellow-500/10 backdrop-blur-sm border border-yellow-500/20 rounded-xl px-3 py-2 text-center"
           >
-            <p class="font-mono text-lg font-bold text-yellow-400">⭐ 4.8</p>
+            <p class="font-mono text-lg font-bold text-yellow-400">⭐{{ averageRating }}</p>
             <p class="text-[10px] text-white/50">note moyenne</p>
           </div>
         </div>
@@ -257,7 +257,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════
-         SECTION 2 — STATS ANIMÉES
+      SECTION 2 — STATS ANIMÉES
     ══════════════════════════════════════════════════ -->
     <section ref="statsSection" class="py-16 border-y border-white/[0.06] bg-white/[0.02]">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -280,7 +280,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════
-         SECTION 3 — CATÉGORIES
+      SECTION 3 — CATÉGORIES
     ══════════════════════════════════════════════════ -->
     <section class="py-24">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -299,11 +299,11 @@
 
         <!-- Grille des catégories -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <RouterLink
+          <div
             v-for="(cat, i) in categories"
             :key="cat.label"
-            :to="`/explore?category=${encodeURIComponent(cat.label)}`"
-            class="category-card group"
+            @click="goToCategory(cat.label)"
+            class="category-card group cursor-pointer"
             v-motion
             :initial="{ opacity: 0, scale: 0.9 }"
             :visible="{ opacity: 1, scale: 1, transition: { duration: 400, delay: i * 60 } }"
@@ -315,7 +315,7 @@
             </span>
             <p class="font-semibold text-sm text-white">{{ cat.label }}</p>
             <p class="text-[11px] text-white/40 mt-1">{{ cat.count }} talents</p>
-          </RouterLink>
+          </div>
         </div>
       </div>
     </section>
@@ -500,8 +500,11 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useTalents } from '../composables/useTalents';
+import { useStats } from '../composables/useStats';
 import TalentCard from '../components/talent/TalentCard.vue';
-import { CATEGORIES } from '../data/mockData';
+import { CATEGORIES, VILLES } from '../data/mockData';
+import { useFilterStore } from '../stores/filterStore';
+import { useRouter } from 'vue-router';
 import {
   Laptop,
   Hammer,
@@ -514,11 +517,17 @@ import {
   Handshake,
 } from 'lucide-vue-next';
 
+const router = useRouter();
+const filterStore = useFilterStore();
+
 // ── Données des talents ──────────────────────────────────────
 const { talents, isLoading } = useTalents();
+const { availabilityRate, averageRating } = useStats();
 
 // 5 premiers talents pour les floating cards du hero
-const featuredTalents = computed(() => talents.value.slice(0, 5));
+const featuredTalents = computed(() =>
+  [...talents.value].sort((a, b) => b.vues - a.vues).slice(0, 5),
+);
 
 // 6 meilleurs talents (triés par note) pour la section "Talents du moment"
 const topTalents = computed(() => [...talents.value].sort((a, b) => b.note - a.note).slice(0, 6));
@@ -529,19 +538,19 @@ const statsVisible = ref(false);
 
 const bigStats = computed(() => [
   {
-    display: statsVisible.value ? '1 240+' : '0',
+    display: statsVisible.value ? talents.value.length : '0',
     label: 'Talents inscrits',
   },
   {
-    display: statsVisible.value ? '18' : '0',
+    display: statsVisible.value ? VILLES.length : '0',
     label: 'Villes couvertes',
   },
   {
-    display: statsVisible.value ? '87%' : '0%',
+    display: statsVisible.value ? availabilityRate.value + '%' : '0%',
     label: 'Taux de dispo.',
   },
   {
-    display: statsVisible.value ? '4.8★' : '0★',
+    display: statsVisible.value ? averageRating.value + '★' : '0★',
     label: 'Note moyenne',
   },
 ]);
@@ -549,6 +558,14 @@ const bigStats = computed(() => [
 // IntersectionObserver pour déclencher l'animation des stats
 let observer = null;
 
+function goToCategory(categoryLabel) {
+  // 1. Réinitialise tous les filtres proprement
+  filterStore.resetFilters();
+  // 2. Applique la catégorie cliquée
+  filterStore.selectedCategory = categoryLabel;
+  // 3. Navigue vers l'annuaire (les filtres sont déjà en place)
+  router.push('/explore');
+}
 onMounted(() => {
   observer = new IntersectionObserver(
     ([entry]) => {
@@ -595,7 +612,7 @@ const howItWorks = [
     emoji: Search,
     bgClass: 'bg-primary/15 border border-primary/20',
     title: 'Cherche un talent',
-    desc: 'Filtre par métier, ville ou compétence. Trouve le bon profil en quelques secondes.',
+    desc: 'Filtre par catégorie, ville, disponibilité ou note. Trouve le bon profil en quelques secondes.',
   },
   {
     emoji: User,

@@ -46,13 +46,17 @@
               <p class="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">
                 Légende
               </p>
-              <div v-for="item in legend" :key="item.label" class="flex items-center gap-2">
-                <span
-                  class="w-3 h-3 rounded-full flex-shrink-0"
-                  :style="`background: ${item.color}`"
-                />
-                <span class="text-xs text-white/60">{{ item.label }}</span>
-              </div>
+              <template v-for="item in legend" :key="item.label">
+                <div v-if="item.label" class="flex items-center gap-2">
+                  <span
+                    class="w-3 h-3 rounded-full flex-shrink-0"
+                    :style="`background: ${item.color}`"
+                  />
+                  <span class="text-xs text-white/60"
+                    >{{ item.label }} talent{{ item.label > 1 ? 's' : '' }}</span
+                  >
+                </div>
+              </template>
             </div>
           </div>
 
@@ -157,10 +161,10 @@
           </div>
 
           <!-- Lien vers l'annuaire filtré -->
-          <RouterLink
+          <div
             v-if="selectedCity"
-            :to="`/explore?city=${encodeURIComponent(selectedCity.ville)}`"
-            class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary/15 border border-primary/30 text-primary-100 text-sm font-medium hover:bg-primary/25 transition-colors duration-200"
+            @click="goToCity(selectedCity.ville)"
+            class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary/15 border border-primary/30 text-primary-100 text-sm font-medium hover:bg-primary/25 transition-colors duration-200 cursor-pointer"
           >
             Voir les talents de {{ selectedCity.ville }}
             <svg
@@ -174,7 +178,7 @@
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
             </svg>
-          </RouterLink>
+          </div>
         </div>
       </div>
     </div>
@@ -185,11 +189,15 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useTalents } from '../composables/useTalents';
 import { useStats } from '../composables/useStats';
+import { useFilterStore } from '../stores/filterStore';
+import { useRouter } from 'vue-router';
 import { villesCoords } from '../data/mockData';
 
 // ── Données ──────────────────────────────────────────────────
 const { talents } = useTalents();
 const { talentsByCity } = useStats();
+const router = useRouter();
+const filterStore = useFilterStore();
 
 // ── Refs ─────────────────────────────────────────────────────
 const mapEl = ref(null); // div hôte de Leaflet
@@ -198,17 +206,13 @@ const selectedCity = ref(null); // ville sélectionnée au clic
 let mapInstance = null; // instance Leaflet (en dehors de la réactivité)
 let markersLayer = null; // couche des marqueurs
 
-// ── Couleurs par catégorie ────────────────────────────────────
-const legend = [
-  { label: '1–3 talents', color: '#6C3CE1' },
-  { label: '4–6 talents', color: '#F97316' },
-  { label: '7+ talents', color: '#22C55E' },
-];
-
-function getMarkerColor(count) {
-  if (count >= 7) return '#22C55E';
-  if (count >= 4) return '#F97316';
-  return '#6C3CE1';
+function goToCity(cityLabel) {
+  // 1. Réinitialise tous les filtres proprement
+  filterStore.resetFilters();
+  // 2. Applique la catégorie cliquée
+  filterStore.selectedCity = cityLabel;
+  // 3. Navigue vers l'annuaire (les filtres sont déjà en place)
+  router.push('/explore');
 }
 
 function getCityBarColor(index) {
@@ -221,6 +225,8 @@ function getCityBarColor(index) {
     '#EC4899',
     '#8B5CF6',
     '#14B8A6',
+    '#F41B3A',
+    '#EAC777',
   ];
   return colors[index % colors.length];
 }
@@ -235,6 +241,33 @@ const sortedCities = computed(() =>
 const maxCityCount = computed(() => sortedCities.value[0]?.count || 1);
 const totalTalents = computed(() => talents.value.length);
 
+// ── Couleurs par catégorie ────────────────────────────────────
+const legend = [
+  { label: maxCityCount.value, color: '#EAB308' },
+  { label: sortedCities.value[1].count, color: '#6C3CE1' },
+  { label: sortedCities.value[2].count, color: '#F97316' },
+  { label: sortedCities.value[3]?.count, color: '#22C55E' },
+  { label: sortedCities.value[4]?.count, color: '#06B6D4' },
+  { label: sortedCities.value[5]?.count, color: '#EC4899' },
+  { label: sortedCities.value[6]?.count, color: '#8B5CF6' },
+  { label: sortedCities.value[7]?.count, color: '#14B8A6' },
+  { label: sortedCities.value[8]?.count, color: '#F41B3A' },
+  { label: sortedCities.value[9]?.count, color: '#EAC777' },
+];
+
+function getMarkerColor(count) {
+  if (count === legend[0].label) return '#EAB308';
+  else if (count === legend[1].label) return '#6C3CE1';
+  else if (count === legend[2].label) return '#F97316';
+  else if (count === legend[3].label) return '#22C55E';
+  else if (count === legend[4].label) return '#06B6D4';
+  else if (count === legend[5].label) return '#EC4899';
+  else if (count === legend[6].label) return '#8B5CF6';
+  else if (count === legend[7].label) return '#14B8A6';
+  else if (count === legend[8].label) return '#F41B3A';
+  else if (count === legend[9].label) return '#EAC777';
+  else return null;
+}
 // ── Initialisation Leaflet ───────────────────────────────────
 async function initMap() {
   // Import dynamique de Leaflet (évite les erreurs SSR)

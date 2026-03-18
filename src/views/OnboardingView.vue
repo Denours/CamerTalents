@@ -26,7 +26,7 @@
           </svg>
           Retour à l'accueil
         </RouterLink>
-        <h1 class="font-title text-4xl font-bold mb-3">Rejoins TalentCam</h1>
+        <h1 class="font-title text-4xl font-bold mb-3">Rejoins CamerTalents</h1>
         <p class="text-white/50">Crée ton profil en 3 étapes et commence à être visible</p>
       </div>
 
@@ -531,8 +531,115 @@
                 </div>
               </div>
               <!-- ─────────────────────────────────────────
-                   FIN PORTFOLIO
+                  FIN PORTFOLIO
               ───────────────────────────────────────── -->
+
+              <!-- ─────────────────────────────────────────
+                CV — Import facultatif
+              ───────────────────────────────────────── -->
+              <div class="form-group pt-2">
+                <label for class="form-label">
+                  Curriculum Vitae
+                  <span class="text-white/30 text-xs font-normal ml-1">
+                    facultatif · PDF, DOC, DOCX · max 5 Mo
+                  </span>
+                </label>
+
+                <!-- Si aucun CV importé : zone de dépôt -->
+                <div v-if="!form.cvBase64">
+                  <label
+                    class="flex flex-col items-center justify-center gap-3 w-full py-8 rounded-xl border-2 border-dashed border-white/15 cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-all duration-200 group"
+                  >
+                    <div
+                      class="w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center group-hover:bg-primary/10 group-hover:border-primary/20 transition-all duration-200"
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="rgba(255,255,255,0.4)"
+                        stroke-width="1.5"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12
+                   a2 2 0 0 0 2-2V8z"
+                        />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="12" y1="18" x2="12" y2="12" />
+                        <line x1="9" y1="15" x2="15" y2="15" />
+                      </svg>
+                    </div>
+                    <div class="text-center">
+                      <p
+                        class="text-sm text-white/50 group-hover:text-white/70 transition-colors duration-200"
+                      >
+                        Clique pour importer ton CV
+                      </p>
+                      <p class="text-xs text-white/25 mt-1">PDF, DOC ou DOCX — max 5 Mo</p>
+                    </div>
+                    <input
+                      type="file"
+                      accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      class="hidden"
+                      @change="handleCvUpload"
+                    />
+                  </label>
+                  <p v-if="cvError" class="form-error mt-2">{{ cvError }}</p>
+                </div>
+
+                <!-- Si CV importé : aperçu avec option de suppression -->
+                <div
+                  v-else
+                  class="flex items-center gap-4 p-4 rounded-xl bg-green-500/10 border border-green-500/20"
+                >
+                  <div
+                    class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center flex-shrink-0"
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#22C55E"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12
+                 a2 2 0 0 0 2-2V8z"
+                      />
+                      <polyline points="14 2 14 8 20 8" />
+                      <polyline points="9 12 11 14 15 10" />
+                    </svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">
+                      {{ form.cvNom }}
+                    </p>
+                    <p class="text-xs text-green-400 mt-0.5">CV importé avec succès ✓</p>
+                  </div>
+                  <button
+                    type="button"
+                    @click="removeCv"
+                    class="text-white/30 hover:text-red-400 transition-colors duration-200 flex-shrink-0"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <!-- ─────────────────────────────────────────
+     FIN CV
+───────────────────────────────────────── -->
               <!-- Récapitulatif -->
               <div
                 class="mt-8 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-3"
@@ -554,6 +661,7 @@
                   label="Portfolio"
                   :value="portfolioFilled > 0 ? `${portfolioFilled} image(s)` : 'Aucune image'"
                 />
+                <RecapRow label="CV" :value="form.cvNom || 'Non importé (facultatif)'" />
                 <RecapRow label="Disponibilité" :value="form.disponibilite || '—'" />
               </div>
             </div>
@@ -722,6 +830,8 @@ const form = ref({
   email: '',
   tarifJour: null,
   portfolio: [],
+  cvBase64: '', // contenu du CV encodé en base64
+  cvNom: '', // nom du fichier (ex: "CV_Kamga.pdf")
 });
 
 // ── Erreurs de validation ────────────────────────────────────
@@ -755,6 +865,46 @@ const disponibiliteOptions = [
 const avatarPreview = ref('');
 let avatarTimer = null;
 
+// ── Gestion du CV ─────────────────────────────────────────────
+const cvError = ref('');
+
+function handleCvUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Vérifie le type (PDF, Word uniquement)
+  const allowed = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ];
+  if (!allowed.includes(file.type)) {
+    cvError.value = 'Format non supporté. Acceptés : PDF, DOC, DOCX';
+    return;
+  }
+
+  // Vérifie la taille (max 5 Mo)
+  if (file.size > 5 * 1024 * 1024) {
+    cvError.value = 'Fichier trop lourd. Maximum 5 Mo.';
+    return;
+  }
+
+  cvError.value = '';
+  form.value.cvNom = file.name;
+
+  // Convertit en base64 pour le stockage localStorage
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    form.value.cvBase64 = e.target.result; // "data:application/pdf;base64,..."
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeCv() {
+  form.value.cvBase64 = '';
+  form.value.cvNom = '';
+  cvError.value = '';
+}
 function debouncedAvatarPreview() {
   clearTimeout(avatarTimer);
   avatarTimer = setTimeout(() => {
