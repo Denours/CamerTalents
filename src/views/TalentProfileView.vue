@@ -381,7 +381,7 @@
                       style="height: 220px"
                     >
                       <!-- Rendu iframe en miniature (pointer-events none pour éviter
-         les interactions accidentelles sur la miniature) -->
+                      les interactions accidentelles sur la miniature) -->
                       <iframe
                         :src="talent.cvBase64"
                         title="curriculum"

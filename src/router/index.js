@@ -1,6 +1,6 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
-// import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '../stores/authStore';
 
 const routes = [
   {
@@ -45,6 +45,30 @@ const routes = [
     name: 'admin',
     component: () => import('../views/AdminView.vue'),
     meta: { title: 'Administration', requiresAdmin: true },
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('../views/RegisterView.vue'),
+    meta: { title: 'Créer un compte — CamerTalents' },
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/LoginView.vue'),
+    meta: { title: 'Connexion — CamerTalents' },
+  },
+  {
+    path: '/talent/dashboard',
+    name: 'talent-dashboard',
+    component: () => import('../views/TalentDashboardView.vue'),
+    meta: { title: 'Mon espace — CamerTalents', requiresAuth: true, role: 'talent' },
+  },
+  {
+    path: '/talent/edit',
+    name: 'talent-edit',
+    component: () => import('../views/TalentEditView.vue'),
+    meta: { title: 'Modifier mon profil', requiresAuth: true, role: 'talent' },
   },
   {
     // Redirection page inconnue

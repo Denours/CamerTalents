@@ -81,7 +81,7 @@
 
           <!-- CTA Rejoindre -->
           <RouterLink
-            to="/onboarding"
+            to="/register"
             class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white font-medium text-md hover:bg-primary-600 active:scale-95 transition-all duration-200"
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -199,7 +199,7 @@
           </div>
 
           <RouterLink
-            to="/onboarding"
+            to="/register"
             class="mt-1 px-4 py-3 rounded-lg bg-primary text-white font-medium text-sm text-center hover:bg-primary-600 transition-colors duration-200"
             @click="closeMobileMenu"
           >

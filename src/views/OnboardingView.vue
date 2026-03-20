@@ -404,6 +404,67 @@
                 />
                 <p v-if="errors.email" class="form-error">{{ errors.email }}</p>
               </div>
+              <!-- Mot de passe -->
+              <div class="form-group">
+                <label class="form-label">Mot de passe *</label>
+                <div class="relative">
+                  <input
+                    v-model="form.password"
+                    :type="showPassword ? 'text' : 'password'"
+                    placeholder="Minimum 6 caractères"
+                    class="form-input pr-12"
+                    :class="errors.password ? 'form-input--error' : ''"
+                    @blur="validateField('password')"
+                  />
+                  <button
+                    type="button"
+                    @click="showPassword = !showPassword"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors duration-200"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <template v-if="showPassword">
+                        <path
+                          d="M17.94 17.94A10.07 10.07 0 0 1 12 20
+                   c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                        />
+                        <path
+                          d="M9.9 4.24A9.12 9.12 0 0 1 12 4
+                   c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
+                        />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                      </template>
+                      <template v-else>
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </template>
+                    </svg>
+                  </button>
+                </div>
+                <p v-if="errors.password" class="form-error">{{ errors.password }}</p>
+              </div>
+
+              <!-- Confirmation mot de passe -->
+              <div class="form-group">
+                <label class="form-label">Confirmer le mot de passe *</label>
+                <input
+                  v-model="form.confirmPassword"
+                  :type="showPassword ? 'text' : 'password'"
+                  placeholder="Répète ton mot de passe"
+                  class="form-input"
+                  :class="errors.confirmPassword ? 'form-input--error' : ''"
+                  @blur="validateField('confirmPassword')"
+                />
+                <p v-if="errors.confirmPassword" class="form-error">
+                  {{ errors.confirmPassword }}
+                </p>
+              </div>
 
               <!-- Tarif journalier -->
               <div class="form-group">
@@ -638,8 +699,8 @@
                 </div>
               </div>
               <!-- ─────────────────────────────────────────
-     FIN CV
-───────────────────────────────────────── -->
+                FIN CV
+              ───────────────────────────────────────── -->
               <!-- Récapitulatif -->
               <div
                 class="mt-8 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-3"
@@ -662,6 +723,7 @@
                   :value="portfolioFilled > 0 ? `${portfolioFilled} image(s)` : 'Aucune image'"
                 />
                 <RecapRow label="CV" :value="form.cvNom || 'Non importé (facultatif)'" />
+                <RecapRow label="Mot de passe" value="••••••" />
                 <RecapRow label="Disponibilité" :value="form.disponibilite || '—'" />
               </div>
             </div>
@@ -774,11 +836,18 @@
 
             <div class="flex flex-col gap-3">
               <RouterLink
+                to="/talent/dashboard"
+                @click="showSuccess = false"
+                class="w-full py-3.5 rounded-xl bg-primary ..."
+              >
+                Accéder à mon espace →
+              </RouterLink>
+              <RouterLink
                 :to="`/talent/${newTalentId}`"
                 @click="showSuccess = false"
-                class="w-full py-3.5 rounded-xl bg-primary text-white font-semibold hover:bg-primary-600 transition-colors duration-200"
+                class="w-full py-3.5 rounded-xl border border-white/20 text-white/60 font-medium text-sm text-center hover:border-white/40 hover:text-white transition-all duration-200"
               >
-                Voir mon profil →
+                Voir mon profil public
               </RouterLink>
               <RouterLink
                 to="/explore"
@@ -800,9 +869,11 @@ import { computed, ref } from 'vue';
 import { useTalentStore } from '../stores/talentStore';
 import { CATEGORIES, VILLES } from '../data/mockData';
 import RecapRow from '../components/onboarding/RecapRow.vue';
+import { useAuthStore } from '../stores/authStore';
 
 // ── Store ────────────────────────────────────────────────────
 const talentStore = useTalentStore();
+const authStore = useAuthStore();
 
 // ── Étapes du stepper ────────────────────────────────────────
 const steps = [
@@ -814,6 +885,7 @@ const currentStep = ref(0);
 const isSubmitting = ref(false);
 const showSuccess = ref(false);
 const newTalentId = ref('');
+const showPassword = ref(false);
 
 // ── Formulaire ───────────────────────────────────────────────
 const form = ref({
@@ -832,6 +904,8 @@ const form = ref({
   portfolio: [],
   cvBase64: '', // contenu du CV encodé en base64
   cvNom: '', // nom du fichier (ex: "CV_Kamga.pdf")
+  password: '',
+  confirmPassword: '',
 });
 
 // ── Erreurs de validation ────────────────────────────────────
@@ -842,6 +916,8 @@ const errors = ref({
   ville: '',
   telephone: '',
   email: '',
+  password: '',
+  confirmPassword: '',
 });
 
 // ── Emojis des catégories ────────────────────────────────────
@@ -984,6 +1060,13 @@ const validators = {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return 'Email invalide';
     return '';
   },
+  password: (v) => (!v ? 'Le mot de passe est requis' : v.length < 6 ? 'Minimum 6 caractères' : ''),
+  confirmPassword: (v) =>
+    !v
+      ? 'Confirme ton mot de passe'
+      : v !== form.value.password
+        ? 'Les mots de passe ne correspondent pas'
+        : '',
 };
 
 function validateField(field) {
@@ -1005,7 +1088,7 @@ function validateStep(stepIndex) {
   }
 
   if (stepIndex === 2) {
-    const fields = ['telephone', 'email'];
+    const fields = ['telephone', 'email', 'password', 'confirmPassword'];
     fields.forEach((f) => {
       validateField(f);
       if (errors.value[f]) valid = false;
@@ -1058,6 +1141,10 @@ async function submitForm() {
     portfolio: cleanPortfolio,
     avatar: form.value.avatar || `https://i.pravatar.cc/150?u=${Date.now()}`,
   });
+
+  // ── Ouvre la session du talent après création ─────────────
+  // Le talent est maintenant connecté immédiatement
+  await authStore.registerTalent({ ...form.value, avatar: newTalent.avatar }, newTalent.id);
 
   newTalentId.value = newTalent.id;
   isSubmitting.value = false;

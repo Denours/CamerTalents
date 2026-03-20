@@ -1,7 +1,7 @@
 <template>
   <main class="min-h-screen bg-[#0F0A1E] text-white pb-24">
     <!-- ════════════════════════════════════════════
-         HEADER
+      HEADER
     ════════════════════════════════════════════ -->
     <section class="relative py-16 border-b border-white/[0.06] overflow-hidden">
       <div class="absolute top-0 left-0 w-96 h-96 bg-primary/10 blur-[100px] pointer-events-none" />
