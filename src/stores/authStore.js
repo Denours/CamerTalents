@@ -16,6 +16,7 @@ import { ref, computed } from 'vue';
 // ── Clés localStorage ────────────────────────────────────────
 const LS_USER_KEY = 'camertalents_user';
 const LS_SESSION_KEY = 'camertalents_session';
+const LS_ACCOUNTS_KEY = 'camertalents_accounts'; // ← liste de tous les comptes
 
 // ── Helpers localStorage ─────────────────────────────────────
 function loadUser() {
@@ -39,6 +40,32 @@ function saveUser(user) {
 function clearUser() {
   localStorage.removeItem(LS_USER_KEY);
   localStorage.removeItem(LS_SESSION_KEY);
+}
+
+// Charge tous les comptes inscrits
+function loadAccounts() {
+  try {
+    const raw = localStorage.getItem(LS_ACCOUNTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+// Ajoute ou met à jour un compte dans la liste
+function saveAccount(user) {
+  try {
+    const accounts = loadAccounts();
+    const idx = accounts.findIndex((a) => a.email === user.email && a.password === user.password);
+    if (idx === -1) {
+      accounts.push(user); // nouveau compte
+    } else {
+      accounts[idx] = user; // mise à jour
+    }
+    localStorage.setItem(LS_ACCOUNTS_KEY, JSON.stringify(accounts));
+  } catch {
+    console.warn('CamerTalents: impossible de sauvegarder le compte');
+  }
 }
 
 // ── Store ────────────────────────────────────────────────────
@@ -117,6 +144,7 @@ export const useAuthStore = defineStore('auth', () => {
         id: crypto.randomUUID(),
         nom: talentData.nom,
         email: talentData.email,
+        password: talentData.password,
         role: 'talent',
         avatar: talentData.avatar || '',
         // ── Infos métier (pour affichage dans l'espace talent) ──
@@ -138,9 +166,11 @@ export const useAuthStore = defineStore('auth', () => {
 
       user.value = newUser;
       saveUser(newUser);
+      saveAccount(newUser);
       return { success: true, user: newUser };
     } catch (err) {
-      authError.value = "Erreur lors de l'inscription. Réessaie.";
+      console.error(err); // important pour debug
+      authError.value = err?.message || "Erreur lors de l'inscription. Réessaie.";
       return { success: false, error: authError.value };
     } finally {
       isLoading.value = false;
@@ -171,6 +201,7 @@ export const useAuthStore = defineStore('auth', () => {
         id: crypto.randomUUID(),
         nom: formData.nom,
         email: formData.email,
+        password: formData.password,
         role: 'recruteur',
         avatar: '',
         talentId: null,
@@ -182,9 +213,11 @@ export const useAuthStore = defineStore('auth', () => {
 
       user.value = newUser;
       saveUser(newUser);
+      saveAccount(newUser);
       return { success: true, user: newUser };
     } catch (err) {
-      authError.value = "Erreur lors de l'inscription. Réessaie.";
+      console.error(err); // important pour debug
+      authError.value = err?.message || "Erreur lors de l'inscription. Réessaie.";
       return { success: false, error: authError.value };
     } finally {
       isLoading.value = false;
@@ -260,22 +293,29 @@ export const useAuthStore = defineStore('auth', () => {
         return { success: true, user: demoUser };
       }
 
-      // Vérifie ensuite le compte sauvegardé (utilisateur réel inscrit)
-      const savedUser = loadUser();
-      if (savedUser && savedUser.email === email) {
-        // En prod : vérification du hash du mot de passe côté serveur
-        // Pour la démo, on accepte tout mot de passe non vide
+      // Cherche dans la liste de tous les comptes inscrits
+      const accounts = loadAccounts();
+      const foundAccount = accounts.find((a) => a.email.toLowerCase() === email.toLowerCase());
+
+      if (foundAccount) {
+        // En prod : vérification du hash côté serveur
+        // Pour la démo, on accepte tout mot de passe >= 6 caractères
         if (password.length >= 6) {
-          user.value = savedUser;
-          return { success: true, user: savedUser };
+          user.value = foundAccount;
+          saveUser(foundAccount); // remet à jour la session courante
+          return { success: true, user: foundAccount };
+        } else {
+          authError.value = 'Mot de passe incorrect (minimum 6 caractères).';
+          return { success: false, error: authError.value };
         }
       }
 
       // Aucun compte trouvé
-      authError.value = 'Email ou mot de passe incorrect.';
+      authError.value = 'Aucun compte trouvé avec cet email.';
       return { success: false, error: authError.value };
     } catch (err) {
-      authError.value = 'Erreur de connexion. Réessaie.';
+      console.error(err); // important pour debug
+      authError.value = err?.message || 'Erreur de connexion. Réessaie.';
       return { success: false, error: authError.value };
     } finally {
       isLoading.value = false;
@@ -333,7 +373,8 @@ export const useAuthStore = defineStore('auth', () => {
       saveUser(user.value);
       return { success: true };
     } catch (err) {
-      authError.value = 'Erreur lors de la mise à jour.';
+      console.error(err); // important pour debug
+      authError.value = err?.message || 'Erreur lors de la mise à jour. Réessaie.';
       return { success: false, error: authError.value };
     } finally {
       isLoading.value = false;

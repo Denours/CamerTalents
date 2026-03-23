@@ -55,6 +55,7 @@
           <input
             v-model="filterStore.searchQuery"
             type="text"
+            name="search"
             placeholder="Chercher un métier, une compétence, un nom..."
             class="search-input"
           />
@@ -141,7 +142,7 @@
 
             <!-- Filtre : Disponibilité -->
             <FilterBlock title="Disponibilité">
-              <label for class="flex items-center justify-between py-2 cursor-pointer group">
+              <div class="flex items-center justify-between py-2 cursor-pointer group">
                 <span class="text-sm text-white/60 group-hover:text-white transition-colors">
                   Disponibles uniquement
                 </span>
@@ -156,7 +157,7 @@
                     :class="filterStore.onlyAvailable ? 'translate-x-5' : 'translate-x-0.5'"
                   />
                 </div>
-              </label>
+              </div>
             </FilterBlock>
 
             <!-- Filtre : Note minimum -->
@@ -378,7 +379,7 @@
                   <p class="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
                     Disponibilité
                   </p>
-                  <label for class="flex items-center justify-between cursor-pointer">
+                  <label for="availOnly" class="flex items-center justify-between cursor-pointer">
                     <span class="text-sm text-white/60"> Disponibles uniquement </span>
                     <div
                       class="relative w-10 h-5 rounded-full transition-colors duration-300"

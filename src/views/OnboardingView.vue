@@ -104,10 +104,12 @@
             <div class="space-y-5 mt-8">
               <!-- Nom complet -->
               <div class="form-group">
-                <label for class="form-label">Nom complet *</label>
+                <div class="form-label">Nom complet *</div>
                 <input
                   v-model="form.nom"
+                  name="name"
                   type="text"
+                  autocomplete="name"
                   placeholder="Ex : Tamo Dominique"
                   class="form-input"
                   :class="errors.nom ? 'form-input--error' : ''"
@@ -118,9 +120,10 @@
 
               <!-- Métier -->
               <div class="form-group">
-                <label for class="form-label">Titre / Métier *</label>
+                <div class="form-label">Titre / Métier *</div>
                 <input
                   v-model="form.metier"
+                  name="metier"
                   type="text"
                   placeholder="Ex : Développeur Web Frontend"
                   class="form-input"
@@ -132,7 +135,7 @@
 
               <!-- Catégorie -->
               <div class="form-group">
-                <label for class="form-label">Catégorie *</label>
+                <div class="form-label">Catégorie *</div>
                 <div class="grid grid-cols-2 gap-2">
                   <button
                     v-for="cat in CATEGORIES"
@@ -156,9 +159,10 @@
               <!-- Ville + Quartier -->
               <div class="grid grid-cols-2 gap-4">
                 <div class="form-group">
-                  <label for class="form-label">Ville *</label>
+                  <div class="form-label">Ville *</div>
                   <select
                     v-model="form.ville"
+                    name="city"
                     class="form-input form-select"
                     :class="errors.ville ? 'form-input--error' : ''"
                     @change="validateField('ville')"
@@ -171,9 +175,10 @@
                   <p v-if="errors.ville" class="form-error">{{ errors.ville }}</p>
                 </div>
                 <div class="form-group">
-                  <label for class="form-label">Quartier</label>
+                  <div class="form-label">Quartier</div>
                   <input
                     v-model="form.quartier"
+                    name="quartier"
                     type="text"
                     placeholder="Ex : Akwa"
                     class="form-input"
@@ -182,14 +187,15 @@
               </div>
               <!-- Bio -->
               <div class="form-group">
-                <label for class="form-label">
+                <div class="form-label">
                   Bio
                   <span class="text-white/30 text-xs font-normal ml-1">
                     ({{ form.bio.length }}/400)
                   </span>
-                </label>
+                </div>
                 <textarea
                   v-model="form.bio"
+                  name="bio"
                   rows="4"
                   maxlength="400"
                   placeholder="Décris ton expérience, ton style, ce qui te différencie..."
@@ -298,7 +304,7 @@
 
               <!-- Disponibilité -->
               <div class="form-group mt-6 pt-6 border-t border-white/[0.06]">
-                <label for class="form-label">Disponibilité actuelle</label>
+                <label for="currentAvail" class="form-label">Disponibilité actuelle</label>
                 <div class="flex flex-wrap gap-3 mt-2">
                   <button
                     v-for="opt in disponibiliteOptions"
@@ -333,7 +339,7 @@
             <div class="space-y-5 mt-8">
               <!-- Avatar URL -->
               <div class="form-group">
-                <label for class="form-label">Photo de profil</label>
+                <label for="avatar" class="form-label">Photo de profil</label>
                 <div class="flex items-center gap-4">
                   <!-- Preview -->
                   <div
@@ -365,6 +371,7 @@
                   <div class="flex-1">
                     <input
                       v-model="form.avatar"
+                      name="avatar"
                       type="url"
                       placeholder="https://... (URL de ta photo)"
                       class="form-input"
@@ -377,9 +384,10 @@
 
               <!-- Téléphone -->
               <div class="form-group">
-                <label for class="form-label">Téléphone *</label>
+                <label for="tel" class="form-label">Téléphone *</label>
                 <input
                   v-model="form.telephone"
+                  name="tel"
                   type="tel"
                   placeholder="+237 6XX XXX XXX"
                   class="form-input"
@@ -393,9 +401,10 @@
 
               <!-- Email -->
               <div class="form-group">
-                <label for class="form-label">Email *</label>
+                <label for="email" class="form-label">Email *</label>
                 <input
                   v-model="form.email"
+                  name="email"
                   type="email"
                   placeholder="ton@email.com"
                   class="form-input"
@@ -406,10 +415,11 @@
               </div>
               <!-- Mot de passe -->
               <div class="form-group">
-                <label class="form-label">Mot de passe *</label>
+                <label for="password" class="form-label">Mot de passe *</label>
                 <div class="relative">
                   <input
                     v-model="form.password"
+                    name="password"
                     :type="showPassword ? 'text' : 'password'"
                     placeholder="Minimum 6 caractères"
                     class="form-input pr-12"
@@ -452,10 +462,11 @@
 
               <!-- Confirmation mot de passe -->
               <div class="form-group">
-                <label class="form-label">Confirmer le mot de passe *</label>
+                <label for="confirmPassword" class="form-label">Confirmer le mot de passe *</label>
                 <input
                   v-model="form.confirmPassword"
                   :type="showPassword ? 'text' : 'password'"
+                  name="confirmPassword"
                   placeholder="Répète ton mot de passe"
                   class="form-input"
                   :class="errors.confirmPassword ? 'form-input--error' : ''"
@@ -468,7 +479,7 @@
 
               <!-- Tarif journalier -->
               <div class="form-group">
-                <label for class="form-label">
+                <label for="tarif" class="form-label">
                   Tarif journalier (FCFA)
                   <span class="text-white/30 text-xs font-normal ml-1"> optionnel </span>
                 </label>
@@ -476,6 +487,7 @@
                   <input
                     v-model.number="form.tarifJour"
                     type="number"
+                    name="tarif"
                     min="0"
                     step="1000"
                     placeholder="Ex : 25000"
@@ -490,7 +502,7 @@
                 PORTFOLIO — Liens vers réalisations
               ───────────────────────────────────────── -->
               <div class="form-group pt-2">
-                <label for class="form-label">
+                <label for="url" class="form-label">
                   Portfolio
                   <span class="text-white/30 text-xs font-normal ml-1">
                     images de tes réalisations (max 5)
@@ -536,6 +548,7 @@
                     <input
                       v-model="form.portfolio[i]"
                       type="url"
+                      name="url"
                       :placeholder="`https://i.imgur.com/... (image ${i + 1})`"
                       class="form-input flex-1 min-w-0"
                       @input="debouncedPortfolioPreview(i)"
@@ -599,7 +612,7 @@
                 CV — Import facultatif
               ───────────────────────────────────────── -->
               <div class="form-group pt-2">
-                <label for class="form-label">
+                <label for="cv" class="form-label">
                   Curriculum Vitae
                   <span class="text-white/30 text-xs font-normal ml-1">
                     facultatif · PDF, DOC, DOCX · max 5 Mo
@@ -641,6 +654,7 @@
                     </div>
                     <input
                       type="file"
+                      name="cv"
                       accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                       class="hidden"
                       @change="handleCvUpload"
@@ -1060,13 +1074,16 @@ const validators = {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return 'Email invalide';
     return '';
   },
-  password: (v) => (!v ? 'Le mot de passe est requis' : v.length < 6 ? 'Minimum 6 caractères' : ''),
-  confirmPassword: (v) =>
-    !v
-      ? 'Confirme ton mot de passe'
-      : v !== form.value.password
-        ? 'Les mots de passe ne correspondent pas'
-        : '',
+  password: (v) => {
+    if (!v) return 'Le mot de passe est requis';
+    else if (v.length < 6) return 'Minimum 6 caractères';
+    else return '';
+  },
+  confirmPassword: (v) => {
+    if (!v) return 'Confirme ton mot de passe';
+    else if (v === form.value.password) return '';
+    else return 'Les mots de passe ne correspondent pas';
+  },
 };
 
 function validateField(field) {

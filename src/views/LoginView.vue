@@ -92,11 +92,12 @@
               />
               <polyline points="22,6 12,13 2,6" />
             </svg>
-            <label class="form-label ml-5">Email</label>
+            <div class="form-label ml-5">Email</div>
 
             <div class="relative">
               <input
                 v-model="form.email"
+                name="email"
                 type="email"
                 placeholder="votre@email.com"
                 autocomplete="email"
@@ -123,7 +124,7 @@
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
-              <label class="form-label ml-5">Mot de passe</label>
+              <div class="form-label ml-5">Mot de passe</div>
               <button
                 type="button"
                 @click="showForgotPassword = true"
@@ -136,8 +137,8 @@
               <input
                 v-model="form.password"
                 :type="showPassword ? 'text' : 'password'"
+                name="password"
                 placeholder="Ton mot de passe"
-                autocomplete="current-password"
                 class="form-input pl-11 pr-12 placeholder:text-red-500"
                 :class="errors.password ? 'form-input--error' : ''"
                 @blur="validateField('password')"
@@ -183,7 +184,7 @@
           </div>
 
           <!-- Se souvenir de moi -->
-          <label class="flex items-center gap-3 cursor-pointer group">
+          <div class="flex items-center gap-3 cursor-pointer group">
             <div
               @click="rememberMe = !rememberMe"
               class="w-5 h-5 rounded-md border flex items-center justify-center flex-shrink-0 transition-all duration-200"
@@ -210,7 +211,7 @@
             >
               Se souvenir de moi
             </span>
-          </label>
+          </div>
 
           <!-- Erreur globale -->
           <Transition name="error-slide">
@@ -383,23 +384,26 @@ const demoAccounts = [
     emoji: '🎨',
   },
 ];
-
+const demoPassword = ref('demo1234');
 // Remplit le formulaire avec les credentials du compte démo
 function fillDemo(demo) {
   form.value.email = demo.email;
-  form.value.password = 'demo1234';
+  form.value.password = demoPassword;
   authStore.clearError();
 }
 
 // ── Validation ───────────────────────────────────────────────
 const validators = {
-  email: (v) =>
-    !v.trim()
-      ? "L'email est requis"
-      : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
-        ? 'Email invalide'
-        : '',
-  password: (v) => (!v ? 'Le mot de passe est requis' : v.length < 6 ? 'Minimum 6 caractères' : ''),
+  email: (v) => {
+    if (!v.trim()) return "L'email est requis";
+    else if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return '';
+    else return 'Email invalide';
+  },
+  password: (v) => {
+    if (!v) return 'Le mot de passe est requis';
+    else if (v.length < 6) return 'Minimum 6 caractères';
+    else return '';
+  },
 };
 
 function validateField(field) {

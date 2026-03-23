@@ -79,10 +79,10 @@
             </svg>
           </button>
 
-          <!-- CTA Rejoindre -->
+          <!-- CTA S'inscrire -->
           <RouterLink
             to="/register"
-            class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white font-medium text-md hover:bg-primary-600 active:scale-95 transition-all duration-200"
+            class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white font-bold text-md hover:bg-primary-600 active:scale-95 transition-all duration-200"
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
               <line
@@ -104,7 +104,14 @@
                 stroke-linecap="round"
               />
             </svg>
-            Rejoindre
+            S'inscrire
+          </RouterLink>
+          <!-- CTA Se connecter -->
+          <RouterLink
+            to="/login"
+            class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary-900 text-white font-bold text-md hover:bg-orange-600 active:scale-95 transition-all duration-200"
+          >
+            Se connecter
           </RouterLink>
         </div>
 
@@ -200,10 +207,17 @@
 
           <RouterLink
             to="/register"
-            class="mt-1 px-4 py-3 rounded-lg bg-primary text-white font-medium text-sm text-center hover:bg-primary-600 transition-colors duration-200"
+            class="mt-1 px-4 py-3 rounded-lg bg-primary text-white font-bold text-sm text-center hover:bg-primary-600 transition-colors duration-200"
             @click="closeMobileMenu"
           >
-            + Rejoindre CamerTalents
+            + S'inscrire
+          </RouterLink>
+          <RouterLink
+            to="/login"
+            class="mt-1 px-4 py-3 rounded-lg bg-primary-900 text-white font-bold text-sm text-center hover:bg-orange-600 transition-colors duration-200"
+            @click="closeMobileMenu"
+          >
+            Se connecter
           </RouterLink>
         </div>
       </div>

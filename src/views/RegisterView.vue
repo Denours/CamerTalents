@@ -60,16 +60,6 @@
                   :key="item"
                   class="flex items-center gap-2 text-xs text-white/40"
                 >
-                  <!-- <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#22C55E"
-                    stroke-width="2.5"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg> -->
                   <Check size="14" class="text-green-600" />
                   {{ item }}
                 </li>
@@ -175,10 +165,11 @@
             <div class="space-y-5">
               <!-- Nom complet -->
               <div class="form-group">
-                <label class="form-label">Nom complet *</label>
+                <div class="form-label">Nom complet *</div>
                 <input
                   v-model="recruteurForm.nom"
                   type="text"
+                  name="namerec"
                   placeholder="Ex : Marie Tchinda"
                   class="form-input"
                   :class="recruteurErrors.nom ? 'form-input--error' : ''"
@@ -191,10 +182,12 @@
 
               <!-- Email -->
               <div class="form-group">
-                <label class="form-label">Email *</label>
+                <div class="form-label">Email *</div>
                 <input
                   v-model="recruteurForm.email"
                   type="email"
+                  name="email"
+                  autocomplete="email"
                   placeholder="votre@email.com"
                   class="form-input"
                   :class="recruteurErrors.email ? 'form-input--error' : ''"
@@ -207,11 +200,12 @@
 
               <!-- Mot de passe -->
               <div class="form-group">
-                <label class="form-label">Mot de passe *</label>
+                <div class="form-label">Mot de passe *</div>
                 <div class="relative">
                   <input
                     v-model="recruteurForm.password"
                     :type="showPassword ? 'text' : 'password'"
+                    name="password"
                     placeholder="Minimum 6 caractères"
                     class="form-input pr-12"
                     :class="recruteurErrors.password ? 'form-input--error' : ''"
@@ -274,13 +268,14 @@
 
               <!-- Entreprise -->
               <div class="form-group">
-                <label class="form-label">
+                <div class="form-label">
                   Entreprise / Organisation
                   <span class="text-white/30 text-xs font-normal ml-1"> optionnel </span>
-                </label>
+                </div>
                 <input
                   v-model="recruteurForm.entreprise"
                   type="text"
+                  name="entreprise"
                   placeholder="Ex : TechCorp Cameroun"
                   class="form-input"
                 />
@@ -288,13 +283,14 @@
 
               <!-- Poste -->
               <div class="form-group">
-                <label class="form-label">
+                <div class="form-label">
                   Votre poste
                   <span class="text-white/30 text-xs font-normal ml-1"> optionnel </span>
-                </label>
+                </div>
                 <input
                   v-model="recruteurForm.poste"
                   type="text"
+                  name="poste"
                   placeholder="Ex : DRH, Manager, Particulier..."
                   class="form-input"
                 />
@@ -433,14 +429,21 @@ const showPassword = ref(false);
 
 // ── Validation recruteur ─────────────────────────────────────
 const recruteurValidators = {
-  nom: (v) => (!v.trim() ? 'Le nom est requis' : v.trim().length < 2 ? 'Minimum 2 caractères' : ''),
-  email: (v) =>
-    !v.trim()
-      ? "L'email est requis"
-      : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
-        ? 'Email invalide'
-        : '',
-  password: (v) => (!v ? 'Le mot de passe est requis' : v.length < 6 ? 'Minimum 6 caractères' : ''),
+  nom: (v) => {
+    if (!v.trim()) return 'Le nom est requis';
+    if (v.trim().length < 2) return 'Minimum 2 caractères';
+    return '';
+  },
+  email: (v) => {
+    if (!v.trim()) return "L'email est requis";
+    else if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return '';
+    else return 'Email invalide';
+  },
+  password: (v) => {
+    if (!v) return 'Le mot de passe est requis';
+    else if (v.length < 6) return 'Minimum 6 caractères';
+    else return '';
+  },
 };
 
 function validateRecruteur(field) {
@@ -465,7 +468,7 @@ const passwordStrength = computed(() => {
   let score = 0;
   if (p.length >= 6) score++;
   if (p.length >= 10) score++;
-  if (/[A-Z]/.test(p) && /[0-9]/.test(p)) score++;
+  if (/[A-Z]/.test(p) && /\d/.test(p)) score++;
   if (/[^A-Za-z0-9]/.test(p)) score++;
   return score;
 });

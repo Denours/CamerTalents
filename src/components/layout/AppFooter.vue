@@ -16,6 +16,8 @@
             <input
               v-model="newsletterEmail"
               type="email"
+              name="email"
+              autocomplete="email"
               placeholder="votre@email.com"
               class="flex-1 md:w-64 px-4 py-2.5 rounded-xl bg-white/[0.06] border border-white/[0.10] text-white placeholder-white/30 text-sm focus:outline-none focus:border-primary/50 transition-all duration-200"
             />

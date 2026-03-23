@@ -97,7 +97,7 @@
         <div class="grid sm:grid-cols-2 gap-5 mt-6">
           <!-- Photo de profil -->
           <div class="sm:col-span-2 form-group">
-            <label class="form-label">Photo de profil</label>
+            <div class="form-label">Photo de profil</div>
             <div class="flex items-center gap-4">
               <div
                 class="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0 bg-white/[0.06] border border-white/[0.10] flex items-center justify-center"
@@ -105,6 +105,7 @@
                 <img
                   v-if="avatarPreview || editForm.avatar"
                   :src="avatarPreview || editForm.avatar"
+                  alt="avatar"
                   class="w-full h-full object-cover"
                   @error="avatarPreview = ''"
                 />
@@ -125,6 +126,7 @@
                 <input
                   v-model="editForm.avatar"
                   type="url"
+                  name="url"
                   placeholder="https://... (URL de ta photo)"
                   class="form-input"
                   @input="debouncedAvatar"
@@ -138,10 +140,12 @@
 
           <!-- Nom -->
           <div class="form-group">
-            <label class="form-label">Nom complet *</label>
+            <div class="form-label">Nom complet *</div>
             <input
               v-model="editForm.nom"
               type="text"
+              name="name"
+              autocomplete="name"
               placeholder="Ton nom complet"
               class="form-input"
               :class="errors.nom ? 'form-input--error' : ''"
@@ -152,10 +156,11 @@
 
           <!-- Métier -->
           <div class="form-group">
-            <label class="form-label">Titre / Métier *</label>
+            <div class="form-label">Titre / Métier *</div>
             <input
               v-model="editForm.metier"
               type="text"
+              name="metier"
               placeholder="Ex : Développeur Web Frontend"
               class="form-input"
               :class="errors.metier ? 'form-input--error' : ''"
@@ -166,7 +171,7 @@
 
           <!-- Catégorie -->
           <div class="sm:col-span-2 form-group">
-            <label class="form-label">Catégorie *</label>
+            <div class="form-label">Catégorie *</div>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
               <button
                 v-for="cat in CATEGORIES"
@@ -183,8 +188,8 @@
 
           <!-- Ville -->
           <div class="form-group">
-            <label class="form-label">Ville</label>
-            <select v-model="editForm.ville" class="form-input form-select">
+            <div class="form-label">Ville</div>
+            <select name="edit-ville" v-model="editForm.ville" class="form-input form-select">
               <option value="">Choisir une ville...</option>
               <option v-for="v in VILLES" :key="v" :value="v">{{ v }}</option>
             </select>
@@ -192,10 +197,11 @@
 
           <!-- Quartier -->
           <div class="form-group">
-            <label class="form-label">Quartier</label>
+            <div class="form-label">Quartier</div>
             <input
               v-model="editForm.quartier"
               type="text"
+              name="quartier"
               placeholder="Ex : Akwa"
               class="form-input"
             />
@@ -203,14 +209,15 @@
 
           <!-- Bio -->
           <div class="sm:col-span-2 form-group">
-            <label class="form-label">
+            <div class="form-label">
               Bio
               <span class="text-white/30 text-xs font-normal ml-1">
                 ({{ editForm.bio?.length || 0 }}/400)
               </span>
-            </label>
+            </div>
             <textarea
               v-model="editForm.bio"
+              name="edit-bio"
               rows="4"
               maxlength="400"
               placeholder="Décris ton expérience, ce qui te différencie..."
@@ -238,10 +245,12 @@
         <div class="grid sm:grid-cols-2 gap-5 mt-6">
           <!-- Téléphone -->
           <div class="form-group">
-            <label class="form-label">Téléphone</label>
+            <div class="form-label">Téléphone</div>
             <input
               v-model="editForm.telephone"
               type="tel"
+              name="tel"
+              autocomplete="tel"
               placeholder="+237 6XX XXX XXX"
               class="form-input"
             />
@@ -249,10 +258,12 @@
 
           <!-- Email -->
           <div class="form-group">
-            <label class="form-label">Email de contact</label>
+            <div class="form-label">Email de contact</div>
             <input
               v-model="editForm.email"
               type="email"
+              name="email"
+              autocomplete="email"
               placeholder="ton@email.com"
               class="form-input"
               :class="errors.email ? 'form-input--error' : ''"
@@ -263,14 +274,15 @@
 
           <!-- Tarif journalier -->
           <div class="form-group">
-            <label class="form-label">
+            <div class="form-label">
               Tarif journalier
               <span class="text-white/30 text-xs font-normal ml-1"> optionnel </span>
-            </label>
+            </div>
             <div class="relative">
               <input
                 v-model.number="editForm.tarifJour"
                 type="number"
+                name="tarif"
                 min="0"
                 step="1000"
                 placeholder="Ex : 25000"
@@ -284,7 +296,7 @@
 
           <!-- Disponibilité -->
           <div class="form-group">
-            <label class="form-label">Disponibilité</label>
+            <div class="form-label">Disponibilité</div>
             <div class="flex flex-col gap-2">
               <button
                 v-for="opt in disponibiliteOptions"
@@ -327,6 +339,7 @@
               <input
                 v-model="skill.nom"
                 type="text"
+                name="skill"
                 placeholder="Ex : Vue.js"
                 class="form-input flex-1 min-w-0"
               />
@@ -344,6 +357,7 @@
                 <input
                   v-model.number="skill.niveau"
                   type="range"
+                  name="skill-level"
                   min="10"
                   max="100"
                   step="5"
@@ -424,6 +438,7 @@
                 <img
                   v-if="portfolioPreviews[i]"
                   :src="portfolioPreviews[i]"
+                  alt="portfolioprev"
                   class="w-full h-full object-cover"
                   @error="portfolioPreviews[i] = ''"
                 />
@@ -444,6 +459,7 @@
               <input
                 v-model="editForm.portfolio[i]"
                 type="url"
+                name="edit-portfolio"
                 :placeholder="`https://i.imgur.com/... (image ${i + 1})`"
                 class="form-input flex-1 min-w-0"
                 @input="debouncedPortfolioPreview(i)"
@@ -557,7 +573,7 @@
           </div>
 
           <!-- Zone d'upload -->
-          <label
+          <div
             class="flex flex-col items-center justify-center gap-3 w-full py-8 rounded-xl border-2 border-dashed border-white/15 cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-all duration-200 group"
           >
             <div
@@ -588,8 +604,14 @@
               </p>
               <p class="text-xs text-white/25 mt-1">PDF, DOC ou DOCX — max 5 Mo</p>
             </div>
-            <input type="file" accept=".pdf,.doc,.docx" class="hidden" @change="handleCvUpload" />
-          </label>
+            <input
+              type="file"
+              name="cv"
+              accept=".pdf,.doc,.docx"
+              class="hidden"
+              @change="handleCvUpload"
+            />
+          </div>
           <p v-if="cvError" class="text-xs text-red-400 mt-2">{{ cvError }}</p>
         </div>
       </div>
@@ -737,8 +759,8 @@ const hasChanges = computed(() => JSON.stringify(editForm.value) !== originalFor
 const errors = ref({ nom: '', metier: '', email: '' });
 
 const validators = {
-  nom: (v) => (!v.trim() ? 'Le nom est requis' : ''),
-  metier: (v) => (!v.trim() ? 'Le métier est requis' : ''),
+  nom: (v) => (v.trim() ? '' : 'Le nom est requis'),
+  metier: (v) => (v.trim() ? '' : 'Le métier est requis'),
   email: (v) => (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? 'Email invalide' : ''),
 };
 
