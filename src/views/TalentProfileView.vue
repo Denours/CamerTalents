@@ -37,6 +37,7 @@
                  ${categoryColor}22 0%,
                  #0F0A1E 60%)`"
           />
+
           <!-- Motif décoratif -->
           <svg class="absolute inset-0 w-full h-full opacity-[0.05]">
             <defs>
@@ -61,7 +62,11 @@
               <div class="flex items-end gap-5">
                 <div class="relative flex-shrink-0">
                   <img
-                    :src="talent.avatar"
+                    :src="
+                      talent.avatar
+                        ? talent.avatar
+                        : 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'
+                    "
                     :alt="talent.nom"
                     class="w-28 h-28 sm:w-36 sm:h-36 rounded-3xl object-cover ring-4 ring-[#0F0A1E] shadow-2xl"
                     v-motion
@@ -198,6 +203,32 @@
                   </svg>
                   Email
                 </a>
+                <!-- Bouton favori — visible uniquement pour les recruteurs -->
+                <button
+                  v-if="authStore.isRecruteur"
+                  @click="authStore.toggleFavori(talent.id)"
+                  class="btn-contact btn-contact--ghost"
+                  :class="
+                    authStore.isFavori(talent.id)
+                      ? 'border-secondary/40 text-secondary bg-secondary/10'
+                      : ''
+                  "
+                >
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    :fill="authStore.isFavori(talent.id) ? 'currentColor' : 'none'"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06
+             a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23
+             l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                    />
+                  </svg>
+                </button>
                 <button @click="shareProfile" class="btn-contact btn-contact--ghost">
                   <svg
                     width="15"
@@ -219,6 +250,25 @@
             </div>
           </div>
         </div>
+        <!-- Bouton retour dashboard — visible seulement si on vient du dashboard -->
+
+        <RouterLink
+          v-if="vientDuDashboard"
+          to="/talent/dashboard"
+          class="inline-flex items-center gap-2 px-4 py-2 mx-40 mb-4 rounded-xl bg-white/[0.06] border border-white/[0.08] text-white/50 text-sm font-medium hover:bg-white/[0.10] hover:text-white transition-all duration-200"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          Retour
+        </RouterLink>
       </section>
 
       <!-- ════════════════════════════════════════════
@@ -793,14 +843,19 @@ import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import { useTalents } from '../composables/useTalents';
 import { useTalentStore } from '../stores/talentStore';
+import { useAuthStore } from '../stores/authStore';
 import TalentCard from '../components/talent/TalentCard.vue';
 
 // ── Route & navigation ───────────────────────────────────────
 const route = useRoute();
 
+// Vrai uniquement si on vient du dashboard talent
+const vientDuDashboard = computed(() => route.query.from === 'dashboard');
+
 // ── Données ──────────────────────────────────────────────────
 const { talents, isLoading, getTalentById } = useTalents();
 const talentStore = useTalentStore();
+const authStore = useAuthStore();
 
 // Talent courant (récupéré par l'id de la route)
 const talent = computed(() => getTalentById(route.params.id));

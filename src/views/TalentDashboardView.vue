@@ -43,7 +43,7 @@
           <div class="flex flex-wrap gap-3">
             <RouterLink
               v-if="monProfil"
-              :to="`/talent/${monProfil.id}`"
+              :to="`/talent/${monProfil.id}?from=dashboard`"
               class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/20 text-white/60 text-sm font-medium hover:border-white/40 hover:text-white transition-all duration-200"
             >
               <svg
@@ -622,16 +622,14 @@ function updateDisponibilite(value) {
 
 // ── Liens rapides ────────────────────────────────────────────
 const quickLinks = computed(() => [
-  { emoji: '🔍', label: 'Explorer les talents', to: '/explore' },
   { emoji: '📊', label: 'Tableau de bord public', to: '/dashboard' },
-  { emoji: '🗺️', label: 'Carte des talents', to: '/map' },
   { emoji: '⚙️', label: 'Modifier mon profil', to: '/talent/edit' },
 ]);
 
 // ── Déconnexion ──────────────────────────────────────────────
 function handleLogout() {
   authStore.logout();
-  router.push('/');
+  router.push('/login');
 }
 </script>
 

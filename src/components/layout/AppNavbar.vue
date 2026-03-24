@@ -252,7 +252,7 @@ const isScrolled = ref(false);
 const navLinks = [
   { to: '/', label: 'Accueil' },
   { to: '/explore', label: 'Explorer' },
-  { to: '/dashboard', label: 'Dashboard' },
+  { to: '/dashboard', label: 'Statistiques' },
   { to: '/map', label: 'Carte' },
 ];
 

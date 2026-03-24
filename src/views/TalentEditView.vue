@@ -190,8 +190,8 @@
           <div class="form-group">
             <div class="form-label">Ville</div>
             <select name="edit-ville" v-model="editForm.ville" class="form-input form-select">
-              <option value="">Choisir une ville...</option>
-              <option v-for="v in VILLES" :key="v" :value="v">{{ v }}</option>
+              <option value="" class="text-black">Choisir une ville...</option>
+              <option v-for="v in VILLES" :key="v" :value="v" class="text-black">{{ v }}</option>
             </select>
           </div>
 
@@ -673,9 +673,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/authStore';
-import { useTalentStore } from '@/stores/talentStore';
-import { CATEGORIES, VILLES } from '@/data/mockData';
+import { useAuthStore } from '../stores/authStore';
+import { useTalentStore } from '../stores/talentStore';
+import { CATEGORIES, VILLES } from '../data/mockData';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -912,7 +912,7 @@ async function saveProfile() {
       competences: cleanCompetences,
       portfolio: cleanPortfolio,
     };
-    localStorage.setItem('talentcam_added_talents', JSON.stringify(talentStore.addedTalents));
+    localStorage.setItem('camertalents_added_talents', JSON.stringify(talentStore.addedTalents));
   }
   // Note : les talents du mockData sont en lecture seule
   // (ils n'existent pas dans addedTalents)

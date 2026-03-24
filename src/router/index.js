@@ -43,7 +43,7 @@ const routes = [
     path: '/admin',
     name: 'admin',
     component: () => import('../views/AdminView.vue'),
-    meta: { title: 'Administration', requiresAdmin: true },
+    meta: { title: 'Administration — CamerTalents', requiresAuth: true, role: 'admin' },
   },
   {
     path: '/register',
@@ -68,6 +68,18 @@ const routes = [
     name: 'talent-edit',
     component: () => import('../views/TalentEditView.vue'),
     meta: { title: 'Modifier mon profil', requiresAuth: true, role: 'talent' },
+  },
+  {
+    path: '/recruteur/dashboard',
+    name: 'recruteur-dashboard',
+    component: () => import('../views/RecruiterDashboardView.vue'),
+    meta: { title: 'Espace Recruteur — CamerTalents', requiresAuth: true, role: 'recruteur' },
+  },
+  {
+    path: '/recruteur/favoris',
+    name: 'recruteur-favoris',
+    component: () => import('@/views/RecruiterFavoritesView.vue'),
+    meta: { title: 'Mes favoris — CamerTalents', requiresAuth: true, role: 'recruteur' },
   },
   {
     // Redirection page inconnue

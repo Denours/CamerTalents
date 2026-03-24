@@ -15,7 +15,7 @@
           Pas encore de compte ?
           <RouterLink
             to="/register"
-            class="text-primary-100 hover:text-white font-medium transition-colors duration-200"
+            class="text-secondary hover:text-white font-medium transition-colors duration-200"
           >
             S'inscrire gratuitement
           </RouterLink>

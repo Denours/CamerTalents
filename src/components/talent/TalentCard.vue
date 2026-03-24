@@ -4,7 +4,11 @@
     <div class="flex items-start justify-between mb-4">
       <div class="relative">
         <img
-          :src="talent.avatar"
+          :src="
+            talent.avatar
+              ? talent.avatar
+              : 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'
+          "
           :alt="talent.nom"
           class="w-14 h-14 rounded-2xl object-cover ring-2 ring-white/10 group-hover:ring-primary/40 transition-all duration-300"
         />

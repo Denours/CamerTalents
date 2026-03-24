@@ -80,6 +80,7 @@ export const useAuthStore = defineStore('auth', () => {
   //   id:          string (uuid)
   //   nom:         string
   //   email:       string
+  //   password:       string
   //   role:        'talent' | 'recruteur' | 'admin'
   //   avatar:      string (url)
   //   talentId:    string | null  (si rôle = talent, id dans talentStore)
@@ -110,9 +111,11 @@ export const useAuthStore = defineStore('auth', () => {
   // Nom affiché (avec fallback)
   const displayName = computed(() => user.value?.nom || user.value?.email || 'Utilisateur');
 
-  // Avatar (avec fallback généré)
+  // Avatar
   const displayAvatar = computed(
-    () => user.value?.avatar || `https://i.pravatar.cc/150?u=${user.value?.id}`,
+    () =>
+      user.value?.avatar ||
+      'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg',
   );
 
   // IDs des talents mis en favoris par le recruteur
@@ -295,23 +298,17 @@ export const useAuthStore = defineStore('auth', () => {
 
       // Cherche dans la liste de tous les comptes inscrits
       const accounts = loadAccounts();
-      const foundAccount = accounts.find((a) => a.email.toLowerCase() === email.toLowerCase());
-
+      const foundAccount = accounts.find(
+        (a) => a.email.toLowerCase() === email.toLowerCase() && a.password === password,
+      );
       if (foundAccount) {
-        // En prod : vérification du hash côté serveur
-        // Pour la démo, on accepte tout mot de passe >= 6 caractères
-        if (password.length >= 6) {
-          user.value = foundAccount;
-          saveUser(foundAccount); // remet à jour la session courante
-          return { success: true, user: foundAccount };
-        } else {
-          authError.value = 'Mot de passe incorrect (minimum 6 caractères).';
-          return { success: false, error: authError.value };
-        }
+        // En prod : vérification du hash côté serveurs
+        user.value = foundAccount;
+        saveUser(foundAccount); // remet à jour la session courante
+        return { success: true, user: foundAccount };
       }
-
       // Aucun compte trouvé
-      authError.value = 'Aucun compte trouvé avec cet email.';
+      authError.value = 'Aucun compte trouvé avec cet email et ce mot de passe.';
       return { success: false, error: authError.value };
     } catch (err) {
       console.error(err); // important pour debug

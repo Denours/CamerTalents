@@ -265,6 +265,43 @@
                   {{ recruteurErrors.password }}
                 </p>
               </div>
+              <!-- Confirmation mot de passe -->
+              <div class="form-group">
+                <div class="form-label">Confirmer le mot de passe *</div>
+                <div class="relative">
+                  <input
+                    v-model="recruteurForm.confirmPassword"
+                    :type="showPassword ? 'text' : 'password'"
+                    name="confirm-password"
+                    placeholder="Répète ton mot de passe"
+                    class="form-input"
+                    :class="recruteurErrors.confirmPassword ? 'form-input--error' : ''"
+                    @blur="validateRecruteur('confirmPassword')"
+                  />
+                  <!-- Icône check si les mots de passe correspondent -->
+                  <div
+                    v-if="
+                      recruteurForm.confirmPassword &&
+                      recruteurForm.confirmPassword === recruteurForm.password
+                    "
+                    class="absolute right-4 top-1/2 -translate-y-1/2"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#22C55E"
+                      stroke-width="2.5"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                </div>
+                <p v-if="recruteurErrors.confirmPassword" class="form-error">
+                  {{ recruteurErrors.confirmPassword }}
+                </p>
+              </div>
 
               <!-- Entreprise -->
               <div class="form-group">
@@ -415,6 +452,7 @@ const recruteurForm = ref({
   nom: '',
   email: '',
   password: '',
+  confirmPassword: '',
   entreprise: '',
   poste: '',
 });
@@ -423,6 +461,7 @@ const recruteurErrors = ref({
   nom: '',
   email: '',
   password: '',
+  confirmPassword: '',
 });
 
 const showPassword = ref(false);
@@ -443,6 +482,11 @@ const recruteurValidators = {
     if (!v) return 'Le mot de passe est requis';
     else if (v.length < 6) return 'Minimum 6 caractères';
     else return '';
+  },
+  confirmPassword: (v) => {
+    if (!v) return 'Confirme ton mot de passe';
+    else if (v === recruteurForm.value.password) return '';
+    else return 'Les mots de passe ne correspondent pas';
   },
 };
 

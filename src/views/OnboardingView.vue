@@ -1156,7 +1156,7 @@ async function submitForm() {
     ...form.value,
     competences: cleanCompetences,
     portfolio: cleanPortfolio,
-    avatar: form.value.avatar || `https://i.pravatar.cc/150?u=${Date.now()}`,
+    avatar: form.value.avatar,
   });
 
   // ── Ouvre la session du talent après création ─────────────
