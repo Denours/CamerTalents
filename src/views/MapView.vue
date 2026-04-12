@@ -191,7 +191,7 @@ import { useTalents } from '../composables/useTalents';
 import { useStats } from '../composables/useStats';
 import { useFilterStore } from '../stores/filterStore';
 import { useRouter } from 'vue-router';
-import { villesCoords } from '../data/mockData';
+import { VILLES_COORDS } from '../data/constants';
 
 // ── Données ──────────────────────────────────────────────────
 const { talents } = useTalents();
@@ -301,7 +301,7 @@ function renderMarkers(L) {
   if (!markersLayer) return;
   markersLayer.clearLayers();
 
-  villesCoords.forEach(({ ville, lat, lng }) => {
+  VILLES_COORDS.forEach(({ ville, lat, lng }) => {
     const count = talentsByCity.value[ville] || 0;
     if (count === 0) return;
 
@@ -366,7 +366,7 @@ function renderMarkers(L) {
 // ── Voler vers une ville (animation de zoom) ─────────────────
 function flyToCity(city) {
   selectedCity.value = city;
-  const coords = villesCoords.find((v) => v.ville === city.ville);
+  const coords = VILLES_COORDS.find((v) => v.ville === city.ville);
   if (!coords || !mapInstance) return;
   mapInstance.flyTo([coords.lat, coords.lng], 10, {
     duration: 1.2,

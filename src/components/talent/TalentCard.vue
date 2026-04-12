@@ -1,5 +1,5 @@
 <template>
-  <RouterLink :to="`/talent/${talent.id}`" class="talent-card group block">
+  <RouterLink :to="`/talent/${talent._id}`" class="talent-card group block">
     <!-- En-tête : avatar + disponibilité -->
     <div class="flex items-start justify-between mb-4">
       <div class="relative">

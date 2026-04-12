@@ -196,7 +196,7 @@
                   </span>
                   <!-- Bouton retirer des favoris -->
                   <button
-                    @click.prevent="authStore.toggleFavori(talent.id)"
+                    @click.prevent="toggleFavoriEtRecharger(talent._id)"
                     class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary/60 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200"
                     title="Retirer des favoris"
                   >
@@ -285,7 +285,7 @@
                 </div>
                 <!-- Bouton favori rapide -->
                 <button
-                  @click.prevent="authStore.toggleFavori(talent.id)"
+                  @click.prevent="toggleFavoriEtRecharger(talent._id)"
                   class="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center transition-all duration-200"
                   :class="
                     authStore.isFavori(talent.id)
@@ -469,20 +469,41 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/authStore';
-import { useTalentStore } from '../stores/talentStore';
 import { useStats } from '../composables/useStats';
-import { CATEGORIES } from '../data/mockData';
+import { CATEGORIES } from '../data/constants';
 import { useTalents } from '../composables/useTalents';
+import { recruteurAPI, talentsAPI } from '../services/api';
 
 const router = useRouter();
 const authStore = useAuthStore();
-const talentStore = useTalentStore();
 const { talentsByCategory } = useStats();
 const { talents } = useTalents();
 
+const talentsFavoris = ref([]);
+const talentsRecommandesData = ref([]);
+
+onMounted(async () => {
+  const [favorisRes, talentsRes] = await Promise.all([
+    recruteurAPI.getFavoris(),
+    talentsAPI.getAll({ sortBy: 'note', limit: 6 }),
+  ]);
+  if (favorisRes.success) talentsFavoris.value = favorisRes.favoris;
+  if (talentsRes.success) talentsRecommandesData.value = talentsRes.talents;
+});
+
+// Talents recommandés = top notés, pas encore en favoris
+const talentsRecommandes = computed(() =>
+  talentsRecommandesData.value.filter((t) => !authStore.isFavori(t._id)).slice(0, 4),
+);
+
+async function toggleFavoriEtRecharger(talentId) {
+  await authStore.toggleFavori(talentId);
+  const data = await recruteurAPI.getFavoris();
+  if (data.success) talentsFavoris.value = data.favoris;
+}
 // ── Initiales du recruteur (pour l'avatar) ───────────────────
 const initiales = computed(() => {
   const nom = authStore.user?.nom || '';
@@ -503,19 +524,6 @@ const memberSince = computed(() => {
     year: 'numeric',
   });
 });
-
-// ── Talents favoris (objets complets) ───────────────────────
-const talentsFavoris = computed(() =>
-  authStore.favoris.map((id) => talentStore.getTalentById(id)).filter(Boolean),
-);
-
-// ── Talents recommandés (top notés, pas encore en favoris) ──
-const talentsRecommandes = computed(() =>
-  [...talents.value]
-    .filter((t) => !authStore.isFavori(t.id))
-    .sort((a, b) => b.note - a.note)
-    .slice(0, 4),
-);
 
 // ── KPI Cards ────────────────────────────────────────────────
 const kpis = computed(() => [

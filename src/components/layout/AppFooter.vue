@@ -131,7 +131,7 @@
             contact@camertalents.cm
           </a>
           <a
-            href="tel:+237699000000"
+            href="tel:+237693792808"
             class="flex items-center gap-2 text-sm text-white/40 hover:text-white transition-colors duration-200"
           >
             <svg
@@ -150,7 +150,7 @@
               ></path>
             </svg>
 
-            +237 699 000 000
+            +237 693 792 808
           </a>
           <p class="flex items-center gap-2 text-sm text-white/40">
             <svg

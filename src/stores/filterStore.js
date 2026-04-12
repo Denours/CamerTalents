@@ -1,10 +1,16 @@
-// src/stores/filterStore.js
+// ============================================================
+//  src/stores/filterStore.js  — VERSION BACKEND
+//  Le filtrage reste côté frontend sur les données
+//  déjà chargées depuis l'API dans talentStore.
+//  Seul changement : on utilise t._id au lieu de t.id
+// ============================================================
+
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { useTalentStore } from './talentStore';
 
 export const useFilterStore = defineStore('filters', () => {
-  // ── State ──────────────────────────────────────
+  // ── State ──────────────────────────────────────────────────
   const searchQuery = ref('');
   const selectedCategory = ref('Tous');
   const selectedCity = ref('Toutes');
@@ -12,19 +18,19 @@ export const useFilterStore = defineStore('filters', () => {
   const minRating = ref(0);
   const sortBy = ref('pertinence');
 
-  // ── Getters ────────────────────────────────────
+  // ── Getters ────────────────────────────────────────────────
   const filteredTalents = computed(() => {
     const store = useTalentStore();
     let results = [...store.talents];
 
-    // Filtre recherche textuelle
+    // Recherche textuelle
     if (searchQuery.value.trim()) {
       const q = searchQuery.value.toLowerCase();
       results = results.filter(
         (t) =>
           t.nom.toLowerCase().includes(q) ||
           t.metier.toLowerCase().includes(q) ||
-          t.competences.some((c) => c.nom.toLowerCase().includes(q)),
+          (t.competences || []).some((c) => c.nom.toLowerCase().includes(q)),
       );
     }
 
@@ -49,12 +55,19 @@ export const useFilterStore = defineStore('filters', () => {
     }
 
     // Tri
-    if (sortBy.value === 'note') {
-      results.sort((a, b) => b.note - a.note);
-    } else if (sortBy.value === 'recent') {
-      results.sort((a, b) => new Date(b.dateInscription) - new Date(a.dateInscription));
-    } else if (sortBy.value === 'vues') {
-      results.sort((a, b) => b.vues - a.vues);
+    switch (sortBy.value) {
+      case 'note':
+        results.sort((a, b) => b.note - a.note);
+        break;
+      case 'recent':
+        results.sort(
+          (a, b) =>
+            new Date(b.createdAt || b.dateInscription) - new Date(a.createdAt || a.dateInscription),
+        );
+        break;
+      case 'vues':
+        results.sort((a, b) => b.vues - a.vues);
+        break;
     }
 
     return results;
@@ -70,7 +83,7 @@ export const useFilterStore = defineStore('filters', () => {
     return count;
   });
 
-  // ── Actions ────────────────────────────────────
+  // ── Actions ────────────────────────────────────────────────
   function resetFilters() {
     searchQuery.value = '';
     selectedCategory.value = 'Tous';

@@ -258,7 +258,11 @@
             tag="div"
             class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
           >
-            <TalentCard v-for="talent in visibleTalents" :key="talent.id" :talent="talent" />
+            <TalentCard
+              v-for="talent in visibleTalents"
+              :key="talent._id || talent.id"
+              :talent="talent"
+            />
           </TransitionGroup>
 
           <!-- Bouton "Charger plus" -->
@@ -425,7 +429,7 @@ import { useTalents } from '../composables/useTalents';
 import TalentCard from '../components/talent/TalentCard.vue';
 import FilterBlock from '../components/explore/FilterBlock.vue';
 import { Search } from 'lucide-vue-next';
-import { CATEGORIES, VILLES } from '../data/mockData';
+import { CATEGORIES, VILLES } from '../data/constants';
 
 // ── Stores & composables ─────────────────────────────────────
 const filterStore = useFilterStore();

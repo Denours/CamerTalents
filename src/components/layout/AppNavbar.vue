@@ -486,11 +486,7 @@ const userMenuItems = computed(() => {
     ];
   }
   if (authStore.isAdmin) {
-    return [
-      { emoji: '🛡️', label: 'Administration', to: '/admin' },
-      { emoji: '🔍', label: 'Explorer', to: '/explore' },
-      { emoji: '📊', label: 'Statistiques', to: '/dashboard' },
-    ];
+    return [{ emoji: '🛡️', label: 'Tableau de bord Admin', to: '/admin' }];
   }
   return [];
 });

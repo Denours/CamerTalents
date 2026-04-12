@@ -42,10 +42,10 @@
           <!-- Compteur + lien explorer -->
           <div class="flex items-center gap-3">
             <span
-              v-if="talentsFavoris.length > 0"
+              v-if="talentsFavoris2.length > 0"
               class="px-4 py-2 rounded-xl bg-secondary/15 border border-secondary/25 text-secondary font-mono font-bold text-sm"
             >
-              {{ talentsFavoris.length }} talent{{ talentsFavoris.length > 1 ? 's' : '' }}
+              {{ talentsFavoris2.length }} talent{{ talentsFavoris2.length > 1 ? 's' : '' }}
             </span>
             <RouterLink
               to="/explore"
@@ -69,7 +69,7 @@
 
         <!-- Barre de recherche dans les favoris -->
         <div
-          v-if="talentsFavoris.length > 0"
+          v-if="talentsFavoris2.length > 0"
           class="relative mt-8 max-w-xl"
           v-motion
           :initial="{ opacity: 0, y: 10 }"
@@ -120,7 +120,7 @@
            ÉTAT VIDE
       ════════════════════════════════════════════ -->
       <div
-        v-if="talentsFavoris.length === 0"
+        v-if="talentsFavoris2.length === 0"
         class="flex flex-col items-center justify-center py-24 text-center"
         v-motion
         :initial="{ opacity: 0, scale: 0.95 }"
@@ -154,7 +154,7 @@
       <!-- ════════════════════════════════════════════
            FILTRES RAPIDES (si favoris > 0)
       ════════════════════════════════════════════ -->
-      <div v-if="talentsFavoris.length > 0">
+      <div v-if="talentsFavoris2.length > 0">
         <!-- Filtres par disponibilité -->
         <div
           class="flex flex-wrap items-center gap-2 mb-8"
@@ -385,7 +385,7 @@
           {{ favorisAffiches.length }} talent{{ favorisAffiches.length > 1 ? 's' : '' }} affiché{{
             favorisAffiches.length > 1 ? 's' : ''
           }}
-          sur {{ talentsFavoris.length }} sauvegardé{{ talentsFavoris.length > 1 ? 's' : '' }}
+          sur {{ talentsFavoris2.length }} sauvegardé{{ talentsFavoris2.length > 1 ? 's' : '' }}
         </p>
       </div>
     </div>
@@ -434,12 +434,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useAuthStore } from '@/stores/authStore';
-import { useTalentStore } from '@/stores/talentStore';
+import { ref, computed, onMounted } from 'vue';
+import { useAuthStore } from '../stores/authStore';
+import { recruteurAPI } from '../services/api';
 
 const authStore = useAuthStore();
-const talentStore = useTalentStore();
 
 // ── Recherche & filtres ──────────────────────────────────────
 const searchQuery = ref('');
@@ -473,14 +472,16 @@ const filtres = [
   },
 ];
 
-// ── Tous les talents favoris (objets complets) ───────────────
-const talentsFavoris = computed(() =>
-  authStore.favoris.map((id) => talentStore.getTalentById(id)).filter(Boolean),
-);
+const talentsFavoris2 = ref([]);
+
+onMounted(async () => {
+  const data = await recruteurAPI.getFavoris();
+  if (data.success) talentsFavoris2.value = data.favoris;
+});
 
 // ── Favoris filtrés + triés + recherchés ─────────────────────
 const favorisAffiches = computed(() => {
-  let results = [...talentsFavoris.value];
+  let results = [...talentsFavoris2.value];
 
   // Filtre par disponibilité
   if (filtreActif.value !== 'tous') {
@@ -521,8 +522,8 @@ const favorisAffiches = computed(() => {
 
 // ── Compte par filtre ────────────────────────────────────────
 function getFilterCount(value) {
-  if (value === 'tous') return talentsFavoris.value.length;
-  return talentsFavoris.value.filter((t) => t.disponibilite === value).length;
+  if (value === 'tous') return talentsFavoris2.value.length;
+  return talentsFavoris2.value.filter((t) => t.disponibilite === value).length;
 }
 
 // ── Reset filtres ────────────────────────────────────────────
@@ -537,9 +538,11 @@ function confirmerSuppression(talent) {
   talentASupprimer.value = talent;
 }
 
-function supprimerFavori() {
+async function supprimerFavori() {
   if (!talentASupprimer.value) return;
-  authStore.toggleFavori(talentASupprimer.value.id);
+  await authStore.toggleFavori(talentASupprimer.value._id);
+  const data = await recruteurAPI.getFavoris();
+  if (data.success) talentsFavoris2.value = data.favoris;
   talentASupprimer.value = null;
 }
 </script>

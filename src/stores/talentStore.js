@@ -1,135 +1,95 @@
 // ============================================================
-//  CamerTalents — src/stores/talentStore.js
-//  Store Pinia avec persistance localStorage
-//  Les talents ajoutés via l'onboarding survivent au refresh
+//  src/stores/talentStore.js  — VERSION BACKEND
+//  Toutes les données viennent maintenant de l'API.
+//  Plus de mockData, plus de localStorage pour les talents.
 // ============================================================
+
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import { mockTalents } from '../data/mockData';
-
-// Clé utilisée dans localStorage
-const LS_KEY = 'camertalents_added_talents';
-
-// ── Helpers localStorage ─────────────────────────────────────
-
-// Lit les talents ajoutés par les utilisateurs depuis localStorage
-function loadFromStorage() {
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw);
-  } catch {
-    // Si le JSON est corrompu, on repart de zéro
-    localStorage.removeItem(LS_KEY);
-    return [];
-  }
-}
-
-// Sauvegarde uniquement les talents ajoutés par l'utilisateur
-// (pas les mockTalents — ils sont déjà dans le code)
-function saveToStorage(addedTalents) {
-  try {
-    localStorage.setItem(LS_KEY, JSON.stringify(addedTalents));
-  } catch {
-    // localStorage peut être indisponible (navigation privée, quota dépassé)
-    console.warn('CamerTalents: impossible de sauvegarder dans localStorage');
-  }
-}
+import { talentsAPI } from '../services/api';
 
 export const useTalentStore = defineStore('talents', () => {
-  // ── State ──────────────────────────────────────
-  // Talents ajoutés par les utilisateurs (persistés)
-  // On les charge depuis localStorage au démarrage
-  const addedTalents = ref(loadFromStorage());
+  // ══════════════════════════════════════════════════════════
+  //  STATE
+  // ══════════════════════════════════════════════════════════
 
-  // Tous les talents = mockTalents (base) + talents ajoutés
-  // Les talents ajoutés apparaissent EN PREMIER (plus récents)
-  const talents = computed(() => [...addedTalents.value, ...mockTalents]);
-
+  const talents = ref([]);
   const isLoading = ref(false);
-  const selectedTalent = ref(null);
+  const total = ref(0);
+  const page = ref(1);
+  const totalPages = ref(1);
 
-  // ── Getters ────────────────────────────────────
-  const totalTalents = computed(() => talents.value.length);
+  // ══════════════════════════════════════════════════════════
+  //  GETTERS
+  // ══════════════════════════════════════════════════════════
 
-  const availableTalents = computed(() =>
-    talents.value.filter((t) => t.disponibilite === 'disponible'),
+  const totalTalents = computed(() => total.value);
+
+  const talentsByCategory = computed(() =>
+    talents.value.reduce((acc, t) => {
+      acc[t.categorie] = (acc[t.categorie] || 0) + 1;
+      return acc;
+    }, {}),
   );
 
-  const talentsByCategory = computed(() => {
-    return talents.value.reduce((acc, talent) => {
-      acc[talent.categorie] = (acc[talent.categorie] || 0) + 1;
+  const talentsByCity = computed(() =>
+    talents.value.reduce((acc, t) => {
+      acc[t.ville] = (acc[t.ville] || 0) + 1;
       return acc;
-    }, {});
-  });
+    }, {}),
+  );
 
-  const talentsByCity = computed(() => {
-    return talents.value.reduce((acc, talent) => {
-      acc[talent.ville] = (acc[talent.ville] || 0) + 1;
-      return acc;
-    }, {});
-  });
+  // ══════════════════════════════════════════════════════════
+  //  ACTIONS
+  // ══════════════════════════════════════════════════════════
 
-  // ── Actions ────────────────────────────────────
-  // Simule un fetch API (délai réaliste)
-  // Les données sont déjà dispo via computed, donc juste un délai visuel
-  async function fetchTalents() {
+  async function fetchTalents(params = {}) {
     isLoading.value = true;
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    isLoading.value = false;
+    try {
+      const data = await talentsAPI.getAll({ ...params, limit: 100 });
+      if (data.success) {
+        talents.value = data.talents;
+        total.value = data.total;
+        page.value = data.page;
+        totalPages.value = data.totalPages;
+      }
+    } catch (error) {
+      console.error('Erreur fetchTalents:', error.message);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  // Trouve un talent par son id (cherche dans les deux sources)
-  function getTalentById(id) {
-    return talents.value.find((t) => t.id === id) || null;
+  // Cherche un talent par son _id MongoDB
+  // D'abord dans le cache local, puis appel API si nécessaire
+  async function getTalentById(id) {
+    if (!id) return null;
+    const local = talents.value.find((t) => t._id === id || t.id === id);
+    if (local) return local;
+    try {
+      const data = await talentsAPI.getById(id);
+      return data.success ? data.talent : null;
+    } catch {
+      return null;
+    }
   }
 
-  // Ajoute un nouveau talent ET le persiste dans localStorage
-  function addTalent(talentData) {
-    const newTalent = {
-      ...talentData,
-      id: crypto.randomUUID(),
-      dateInscription: new Date().toISOString(),
-      vues: 0,
-      note: 0,
-      avis: 0,
-    };
-    // Ajoute en tête de liste
-    addedTalents.value.unshift(newTalent);
-
-    // Sauvegarde dans localStorage — survivra au refresh
-    saveToStorage(addedTalents.value);
-    return newTalent;
-  }
-
-  // Supprime un talent ajouté (uniquement les talents user, pas les mock)
-  function removeTalent(id) {
-    addedTalents.value = addedTalents.value.filter((t) => t.id !== id);
-    saveToStorage(addedTalents.value);
-  }
-
-  // Remet à zéro uniquement les talents ajoutés par l'utilisateur
-  function clearAddedTalents() {
-    addedTalents.value = [];
-    localStorage.removeItem(LS_KEY);
+  function clearTalents() {
+    talents.value = [];
+    total.value = 0;
   }
 
   return {
-    // State
     talents,
-    addedTalents,
     isLoading,
-    selectedTalent,
-    // Getters
+    total,
+    page,
+    totalPages,
     totalTalents,
-    availableTalents,
     talentsByCategory,
     talentsByCity,
-    // Actions
     fetchTalents,
     getTalentById,
-    addTalent,
-    removeTalent,
-    clearAddedTalents,
+    clearTalents,
   };
 });

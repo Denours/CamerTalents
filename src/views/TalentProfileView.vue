@@ -206,10 +206,10 @@
                 <!-- Bouton favori — visible uniquement pour les recruteurs -->
                 <button
                   v-if="authStore.isRecruteur"
-                  @click="authStore.toggleFavori(talent.id)"
+                  @click="authStore.toggleFavori(talent._id)"
                   class="btn-contact btn-contact--ghost"
                   :class="
-                    authStore.isFavori(talent.id)
+                    authStore.isFavori(talent._id)
                       ? 'border-secondary/40 text-secondary bg-secondary/10'
                       : ''
                   "
@@ -218,7 +218,7 @@
                     width="15"
                     height="15"
                     viewBox="0 0 24 24"
-                    :fill="authStore.isFavori(talent.id) ? 'currentColor' : 'none'"
+                    :fill="authStore.isFavori(talent._id) ? 'currentColor' : 'none'"
                     stroke="currentColor"
                     stroke-width="2"
                   >
@@ -841,8 +841,7 @@
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
-import { useTalents } from '../composables/useTalents';
-import { useTalentStore } from '../stores/talentStore';
+import { talentsAPI } from '../services/api';
 import { useAuthStore } from '../stores/authStore';
 import TalentCard from '../components/talent/TalentCard.vue';
 
@@ -853,12 +852,27 @@ const route = useRoute();
 const vientDuDashboard = computed(() => route.query.from === 'dashboard');
 
 // ── Données ──────────────────────────────────────────────────
-const { talents, isLoading, getTalentById } = useTalents();
-const talentStore = useTalentStore();
 const authStore = useAuthStore();
+const talent = ref(null);
+const isLoading = ref(true);
 
-// Talent courant (récupéré par l'id de la route)
-const talent = computed(() => getTalentById(route.params.id));
+// Charge le profil talent depuis l'API
+async function chargerTalent(id) {
+  if (!id) return;
+  isLoading.value = true;
+  try {
+    const data = await talentsAPI.getById(id);
+    if (data.success) {
+      talent.value = data.talent;
+      // Incrémente le compteur de vues (feu et oublie)
+      talentsAPI.incrementerVues(id).catch(() => {});
+    }
+  } catch {
+    talent.value = null;
+  } finally {
+    isLoading.value = false;
+  }
+}
 
 const cvUploadError = ref('');
 const cvViewerOpen = ref(false);
@@ -947,7 +961,7 @@ function handleKeydown(e) {
 }
 
 // Upload CV directement depuis le profil (pour les talents sans CV)
-function handleCvUploadOnProfile(event) {
+async function handleCvUploadOnProfile(event) {
   const file = event.target.files[0];
   if (!file) return;
 
@@ -966,22 +980,34 @@ function handleCvUploadOnProfile(event) {
   }
 
   cvUploadError.value = '';
+
   const reader = new FileReader();
-  reader.onload = (e) => {
-    // Met à jour le talent dans le store ET dans localStorage
-    const idx = talentStore.addedTalents.findIndex((t) => t.id === talent.value?.id);
-    if (idx !== -1) {
-      talentStore.addedTalents[idx].cvBase64 = e.target.result;
-      talentStore.addedTalents[idx].cvNom = file.name;
-      // Persiste la mise à jour
-      localStorage.setItem('camertalents_added_talents', JSON.stringify(talentStore.addedTalents));
+  reader.onload = async (e) => {
+    try {
+      const data = await talentsAPI.update(talent.value._id, {
+        cvBase64: e.target.result,
+        cvNom: file.name,
+      });
+      if (data.success) {
+        // Met à jour le talent localement sans rechargement
+        talent.value = { ...talent.value, cvBase64: e.target.result, cvNom: file.name };
+      }
+    } catch (error) {
+      cvUploadError.value = `Erreur upload : ${error.message}`;
     }
   };
   reader.readAsDataURL(file);
 }
 onMounted(() => {
+  chargerTalent(route.params.id);
   globalThis.addEventListener('keydown', handleKeydown);
 });
+
+// Si l'utilisateur navigue vers un autre profil sans rechargement
+watch(
+  () => route.params.id,
+  (newId) => chargerTalent(newId),
+);
 onUnmounted(() => {
   globalThis.removeEventListener('keydown', handleKeydown);
   document.body.style.overflow = '';
@@ -1012,11 +1038,23 @@ const memberSince = computed(() => {
 });
 
 // ── Talents similaires (même catégorie, pas le même talent) ──
-const similarTalents = computed(() => {
-  if (!talent.value) return [];
-  return talents.value
-    .filter((t) => t.id !== talent.value.id && t.categorie === talent.value.categorie)
-    .slice(0, 3);
+const similarTalents = ref([]);
+
+// Charge les talents similaires après chargement du profil
+watch(talent, async (newTalent) => {
+  if (!newTalent) return;
+  try {
+    const data = await talentsAPI.getAll({
+      categorie: newTalent.categorie,
+      limit: 4,
+    });
+    if (data.success) {
+      // Exclut le talent courant de la liste
+      similarTalents.value = data.talents.filter((t) => t._id !== newTalent._id).slice(0, 3);
+    }
+  } catch {
+    /* silencieux */
+  }
 });
 </script>
 

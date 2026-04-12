@@ -14,7 +14,7 @@ const mongoose = require('mongoose');
 // ── Sous-schéma : une compétence ──────────────────────────
 const CompetenceSchema = new mongoose.Schema(
   {
-    nom:    { type: String, required: true, trim: true },
+    nom: { type: String, required: true, trim: true },
     niveau: { type: Number, min: 0, max: 100, default: 50 },
   },
   { _id: false }, // pas besoin d'un _id pour chaque compétence
@@ -25,22 +25,22 @@ const TalentSchema = new mongoose.Schema(
   {
     // Lien vers le User propriétaire de ce profil
     userId: {
-      type:     mongoose.Schema.Types.ObjectId,
-      ref:      'User',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
-      unique:   true, // un user = un seul profil talent
+      unique: true, // un user = un seul profil talent
     },
 
     // ── Infos de base ─────────────────────────────────────
     nom: {
-      type:     String,
+      type: String,
       required: [true, 'Le nom est requis'],
-      trim:     true,
+      trim: true,
     },
     metier: {
-      type:     String,
+      type: String,
       required: [true, 'Le métier est requis'],
-      trim:     true,
+      trim: true,
     },
     categorie: {
       type: String,
@@ -54,15 +54,23 @@ const TalentSchema = new mongoose.Schema(
       ],
       required: [true, 'La catégorie est requise'],
     },
-    avatar:  { type: String, default: '' },
-    bio:     { type: String, default: '', maxlength: 400 },
+    avatar: { type: String, default: '' },
+    bio: { type: String, default: '', maxlength: 400 },
 
     // ── Localisation ──────────────────────────────────────
     ville: {
       type: String,
       enum: [
-        'Douala', 'Yaoundé', 'Bafoussam', 'Bamenda',
-        'Garoua', 'Maroua', 'Ngaoundéré', 'Buea', 'Limbé', 'Kribi',
+        'Douala',
+        'Yaoundé',
+        'Bafoussam',
+        'Bamenda',
+        'Garoua',
+        'Maroua',
+        'Ngaoundéré',
+        'Buea',
+        'Limbé',
+        'Kribi',
       ],
       required: [true, 'La ville est requise'],
     },
@@ -70,32 +78,32 @@ const TalentSchema = new mongoose.Schema(
 
     // ── Disponibilité & contact ───────────────────────────
     disponibilite: {
-      type:    String,
-      enum:    ['disponible', 'occupé', 'partiellement disponible'],
+      type: String,
+      enum: ['disponible', 'occupé', 'partiellement disponible'],
       default: 'disponible',
     },
-    telephone:  { type: String, default: '', trim: true },
-    email:      { type: String, default: '', trim: true, lowercase: true },
-    tarifJour:  { type: Number, default: null, min: 0 },
+    telephone: { type: String, default: '', trim: true },
+    email: { type: String, default: '', trim: true, lowercase: true },
+    tarifJour: { type: Number, default: null, min: 0 },
 
     // ── Compétences ───────────────────────────────────────
     competences: {
-      type:    [CompetenceSchema],
+      type: [CompetenceSchema],
       default: [],
       validate: {
         validator: (arr) => arr.length <= 6,
-        message:   'Maximum 6 compétences',
+        message: 'Maximum 6 compétences',
       },
     },
 
     // ── Portfolio ─────────────────────────────────────────
     // Tableau d'URLs d'images hébergées
     portfolio: {
-      type:    [String],
+      type: [String],
       default: [],
       validate: {
         validator: (arr) => arr.length <= 5,
-        message:   'Maximum 5 images de portfolio',
+        message: 'Maximum 5 images de portfolio',
       },
     },
 
@@ -103,7 +111,13 @@ const TalentSchema = new mongoose.Schema(
     // Stocké en base64 (string) — fonctionnel pour commencer
     // En production on préférera stocker le fichier sur S3/Cloudinary
     cvBase64: { type: String, default: '' },
-    cvNom:    { type: String, default: '' },
+    cvNom: { type: String, default: '' },
+
+    // ── Date d'inscription ────────────────────────────────
+    dateInscription: {
+      type: Date,
+      default: Date.now, // Par défaut = date du jour
+    },
 
     // ── Métriques ─────────────────────────────────────────
     vues: { type: Number, default: 0, min: 0 },
@@ -121,7 +135,7 @@ const TalentSchema = new mongoose.Schema(
 TalentSchema.index({ categorie: 1 });
 TalentSchema.index({ ville: 1 });
 TalentSchema.index({ disponibilite: 1 });
-TalentSchema.index({ note: -1 });  // -1 = ordre décroissant
+TalentSchema.index({ note: -1 }); // -1 = ordre décroissant
 // Index "texte" pour la recherche full-text sur nom, métier
 TalentSchema.index({ nom: 'text', metier: 'text' });
 

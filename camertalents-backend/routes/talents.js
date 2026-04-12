@@ -9,9 +9,9 @@
 // ============================================================
 
 const express = require('express');
-const Talent  = require('../models/Talent');
-const User    = require('../models/User');
-const { proteger }  = require('../middleware/auth');
+const Talent = require('../models/Talent');
+const User = require('../models/User');
+const { proteger } = require('../middleware/auth');
 const { autoriser } = require('../middleware/roles');
 
 const router = express.Router();
@@ -31,10 +31,10 @@ router.get('/', async (req, res) => {
       ville,
       disponibilite,
       minNote,
-      sortBy   = 'createdAt',
-      order    = 'desc',
-      page     = 1,
-      limit    = 12,
+      sortBy = 'createdAt',
+      order = 'desc',
+      page = 1,
+      limit = 12,
     } = req.query;
 
     // ── Construction du filtre MongoDB ────────────────────
@@ -57,8 +57,8 @@ router.get('/', async (req, res) => {
       filtre.disponibilite = disponibilite;
     }
 
-    if (minNote && parseFloat(minNote) > 0) {
-      filtre.note = { $gte: parseFloat(minNote) };
+    if (minNote && Number.parseFloat(minNote) > 0) {
+      filtre.note = { $gte: Number.parseFloat(minNote) };
     }
 
     // ── Tri ───────────────────────────────────────────────
@@ -66,34 +66,38 @@ router.get('/', async (req, res) => {
     const sortOrder = order === 'asc' ? 1 : -1;
 
     switch (sortBy) {
-      case 'note':         sortOptions.note      = -1; break;
-      case 'vues':         sortOptions.vues      = -1; break;
-      case 'recent':       sortOptions.createdAt = -1; break;
-      default:             sortOptions.createdAt = -1; break;
+      case 'note':
+        sortOptions.note = -1;
+        break;
+      case 'vues':
+        sortOptions.vues = -1;
+        break;
+      case 'recent':
+        sortOptions.createdAt = -1;
+        break;
+      default:
+        sortOptions.createdAt = -1;
+        break;
     }
 
     // ── Pagination ────────────────────────────────────────
     // skip = combien de documents sauter (page 2 = sauter les 12 premiers)
-    const pageNum  = parseInt(page);
-    const limitNum = parseInt(limit);
-    const skip     = (pageNum - 1) * limitNum;
+    const pageNum = Number.parseInt(page);
+    const limitNum = Number.parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
 
     // ── Exécution de la requête ───────────────────────────
     // .select('-cvBase64') → on exclut le CV de la liste
     // (trop lourd, on le charge seulement sur le profil individuel)
     const [talents, total] = await Promise.all([
-      Talent.find(filtre)
-        .select('-cvBase64')
-        .sort(sortOptions)
-        .skip(skip)
-        .limit(limitNum),
+      Talent.find(filtre).select('-cvBase64').sort(sortOptions).skip(skip).limit(limitNum),
       Talent.countDocuments(filtre),
     ]);
 
     res.status(200).json({
       success: true,
       total,
-      page:       pageNum,
+      page: pageNum,
       totalPages: Math.ceil(total / limitNum),
       talents,
     });
@@ -145,10 +149,7 @@ router.put('/:id', proteger, autoriser('talent', 'admin'), async (req, res) => {
 
     // Vérifie que le talent connecté modifie bien SON profil
     // (sauf si c'est un admin qui peut tout modifier)
-    if (
-      req.user.role !== 'admin' &&
-      talent.userId.toString() !== req.user._id.toString()
-    ) {
+    if (req.user.role !== 'admin' && talent.userId.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
         message: 'Vous ne pouvez modifier que votre propre profil',
@@ -157,9 +158,21 @@ router.put('/:id', proteger, autoriser('talent', 'admin'), async (req, res) => {
 
     // Champs autorisés à la modification
     const champsModifiables = [
-      'nom', 'metier', 'categorie', 'ville', 'quartier',
-      'bio', 'telephone', 'email', 'tarifJour', 'disponibilite',
-      'competences', 'portfolio', 'cvBase64', 'cvNom', 'avatar',
+      'nom',
+      'metier',
+      'categorie',
+      'ville',
+      'quartier',
+      'bio',
+      'telephone',
+      'email',
+      'tarifJour',
+      'disponibilite',
+      'competences',
+      'portfolio',
+      'cvBase64',
+      'cvNom',
+      'avatar',
     ];
 
     // On ne met à jour que les champs envoyés dans la requête
@@ -230,6 +243,8 @@ router.post('/:id/vue', async (req, res) => {
     await Talent.findByIdAndUpdate(req.params.id, { $inc: { vues: 1 } });
     res.status(200).json({ success: true });
   } catch (error) {
+    console.error('\n', error.message);
+
     // On ne retourne pas d'erreur visible — ce n'est pas critique
     res.status(200).json({ success: true });
   }

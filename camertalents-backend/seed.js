@@ -37,6 +37,7 @@ const talentsSeed = [
     ],
     telephone: '+237 699 123 456',
     email: 'kamga.jp@gmail.com',
+    dateInscription: '2024-01-15',
     vues: 342,
     note: 4.8,
     avis: 27,
@@ -60,6 +61,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port4/400/300'],
     telephone: '+237 677 234 567',
     email: 'christelle.ngo@outlook.com',
+    dateInscription: '2024-01-22',
     vues: 289,
     note: 4.9,
     avis: 34,
@@ -83,6 +85,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port6/400/300'],
     telephone: '+237 655 345 678',
     email: 'fopa.eric@gmail.com',
+    dateInscription: '2024-02-03',
     vues: 198,
     note: 4.7,
     avis: 19,
@@ -106,6 +109,7 @@ const talentsSeed = [
     portfolio: [],
     telephone: '+237 690 456 789',
     email: 'talla.b@gmail.com',
+    dateInscription: '2024-02-14',
     vues: 156,
     note: 4.5,
     avis: 14,
@@ -132,6 +136,7 @@ const talentsSeed = [
     ],
     telephone: '+237 677 567 890',
     email: 'sophie.mbarga@gmail.com',
+    dateInscription: '2024-02-20',
     vues: 421,
     note: 4.9,
     avis: 52,
@@ -155,6 +160,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port12/400/300'],
     telephone: '+237 699 678 901',
     email: 'rodrigue.tchoumba@gmail.com',
+    dateInscription: '2024-03-01',
     vues: 267,
     note: 4.6,
     avis: 23,
@@ -181,8 +187,9 @@ const talentsSeed = [
     ],
     telephone: '+237 655 789 012',
     email: 'feudjio.larissa@gmail.com',
+    dateInscription: '2024-03-10',
     vues: 380,
-    note: 5.0,
+    note: 5,
     avis: 41,
     tarifJour: 28000,
   },
@@ -204,6 +211,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port17/400/300'],
     telephone: '+237 677 890 123',
     email: 'ngono.parfait@gmail.com',
+    dateInscription: '2024-03-18',
     vues: 203,
     note: 4.7,
     avis: 31,
@@ -227,6 +235,7 @@ const talentsSeed = [
     portfolio: [],
     telephone: '+237 699 901 234',
     email: 'djomo.clement@gmail.com',
+    dateInscription: '2024-04-02',
     vues: 178,
     note: 4.6,
     avis: 22,
@@ -250,6 +259,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port20/400/300'],
     telephone: '+237 655 012 345',
     email: 'assanga.bruno@gmail.com',
+    dateInscription: '2024-04-10',
     vues: 145,
     note: 4.4,
     avis: 18,
@@ -273,6 +283,7 @@ const talentsSeed = [
     portfolio: [],
     telephone: '+237 677 123 456',
     email: 'aicha.nkemdirim@gmail.com',
+    dateInscription: '2024-04-20',
     vues: 312,
     note: 4.9,
     avis: 45,
@@ -296,6 +307,7 @@ const talentsSeed = [
     portfolio: [],
     telephone: '+237 690 234 567',
     email: 'kouam.pascal@gmail.com',
+    dateInscription: '2024-05-05',
     vues: 189,
     note: 4.7,
     avis: 28,
@@ -319,6 +331,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port22/400/300'],
     telephone: '+237 655 345 678',
     email: 'eyenga.clarisse@gmail.com',
+    dateInscription: '2024-05-12',
     vues: 276,
     note: 4.8,
     avis: 39,
@@ -342,6 +355,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port24/400/300'],
     telephone: '+237 699 456 789',
     email: 'mbianda.rachel@gmail.com',
+    dateInscription: '2024-05-20',
     vues: 231,
     note: 4.6,
     avis: 33,
@@ -368,6 +382,7 @@ const talentsSeed = [
     ],
     telephone: '+237 677 567 890',
     email: 'ngambi.jo@gmail.com',
+    dateInscription: '2024-06-01',
     vues: 318,
     note: 4.9,
     avis: 47,
@@ -391,6 +406,7 @@ const talentsSeed = [
     portfolio: [],
     telephone: '+237 690 678 901',
     email: 'owono.marcel@gmail.com',
+    dateInscription: '2024-06-10',
     vues: 134,
     note: 4.5,
     avis: 16,
@@ -414,6 +430,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port28/400/300'],
     telephone: '+237 655 789 012',
     email: 'djoumessi.w@gmail.com',
+    dateInscription: '2024-06-18',
     vues: 167,
     note: 4.6,
     avis: 15,
@@ -437,6 +454,7 @@ const talentsSeed = [
     portfolio: [],
     telephone: '+237 677 890 123',
     email: 'nkoa.samuel@gmail.com',
+    dateInscription: '2024-07-01',
     vues: 121,
     note: 4.4,
     avis: 20,
@@ -460,6 +478,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port29/400/300'],
     telephone: '+237 699 901 234',
     email: 'bika.ornella@gmail.com',
+    dateInscription: '2024-07-10',
     vues: 245,
     note: 4.8,
     avis: 36,
@@ -483,6 +502,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port30/400/300'],
     telephone: '+237 655 012 345',
     email: 'happi.romaric@gmail.com',
+    dateInscription: '2024-07-22',
     vues: 198,
     note: 4.7,
     avis: 21,
@@ -506,6 +526,7 @@ const talentsSeed = [
     portfolio: [],
     telephone: '+237 677 123 456',
     email: 'mouchili.diane@gmail.com',
+    dateInscription: '2024-08-05',
     vues: 287,
     note: 4.9,
     avis: 43,
@@ -529,6 +550,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port32/400/300'],
     telephone: '+237 690 234 567',
     email: 'zang.pierre@gmail.com',
+    dateInscription: '2024-08-15',
     vues: 143,
     note: 4.5,
     avis: 17,
@@ -552,6 +574,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port34/400/300'],
     telephone: '+237 655 345 678',
     email: 'abena.rosine@gmail.com',
+    dateInscription: '2024-08-25',
     vues: 334,
     note: 4.9,
     avis: 55,
@@ -575,6 +598,7 @@ const talentsSeed = [
     portfolio: [],
     telephone: '+237 699 456 789',
     email: 'bello.hamidou@gmail.com',
+    dateInscription: '2024-09-03',
     vues: 112,
     note: 4.6,
     avis: 29,
@@ -598,6 +622,7 @@ const talentsSeed = [
     portfolio: [],
     telephone: '+237 677 567 890',
     email: 'nganou.cedric@gmail.com',
+    dateInscription: '2024-09-12',
     vues: 156,
     note: 4.7,
     avis: 12,
@@ -621,6 +646,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port36/400/300'],
     telephone: '+237 690 678 901',
     email: 'tsanga.herve@gmail.com',
+    dateInscription: '2024-09-20',
     vues: 178,
     note: 4.7,
     avis: 24,
@@ -644,6 +670,7 @@ const talentsSeed = [
     portfolio: [],
     telephone: '+237 655 789 012',
     email: 'mpeck.fabrice@gmail.com',
+    dateInscription: '2024-10-01',
     vues: 201,
     note: 4.8,
     avis: 38,
@@ -670,8 +697,9 @@ const talentsSeed = [
     ],
     telephone: '+237 677 890 123',
     email: 'essomba.nadege@gmail.com',
+    dateInscription: '2024-10-10',
     vues: 412,
-    note: 5.0,
+    note: 5,
     avis: 61,
     tarifJour: 80000,
   },
@@ -693,6 +721,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port40/400/300'],
     telephone: '+237 699 901 234',
     email: 'simo.patrick@gmail.com',
+    dateInscription: '2024-10-22',
     vues: 223,
     note: 4.6,
     avis: 30,
@@ -716,6 +745,7 @@ const talentsSeed = [
     portfolio: ['https://picsum.photos/seed/port42/400/300'],
     telephone: '+237 655 012 345',
     email: 'onana.gilles@gmail.com',
+    dateInscription: '2024-11-01',
     vues: 134,
     note: 4.5,
     avis: 19,
@@ -723,11 +753,12 @@ const talentsSeed = [
   },
 ];
 
+const pwdAdmin = 'Admin@2024!';
 // ── Compte admin par défaut ───────────────────────────────
 const adminSeed = {
   nom: 'Administrateur CamerTalents',
   email: 'admin@camertalents.cm',
-  password: 'Admin@2024!', // ⚠️ À changer en production
+  password: pwdAdmin,
   role: 'admin',
   avatar: 'https://i.pravatar.cc/150?img=60',
 };
@@ -749,13 +780,14 @@ const seed = async () => {
 
     // Crée un User factice pour les talents du seed
     // (en production chaque talent aura son propre compte)
-    const seedUser = await User.create({
-      nom: 'Seed User',
-      email: 'seed@camertalents.cm',
-      password: 'seed_password_123',
-      role: 'talent',
-    });
+    // const seedUser = await User.create({
+    //   nom: 'Seed User',
+    //   email: 'seed@camertalents.cm',
+    //   password: 'seed_password_123',
+    //   role: 'talent',
+    // });
 
+    const pwdTalent = 'password123';
     // Crée les 30 profils talents
     let count = 0;
     for (const talentData of talentsSeed) {
@@ -763,7 +795,7 @@ const seed = async () => {
       const user = await User.create({
         nom: talentData.nom,
         email: talentData.email,
-        password: 'password123',
+        password: pwdTalent,
         role: 'talent',
       });
 
@@ -776,7 +808,7 @@ const seed = async () => {
       count++;
       process.stdout.write(`\r📦 Talents importés : ${count}/${talentsSeed.length}`);
     }
-
+    console.log('🔥 NOUVEAU SEED EN COURS');
     console.log('\n');
     console.log('✅ ════════════════════════════════════════');
     console.log(`   ${count} talents importés avec succès`);

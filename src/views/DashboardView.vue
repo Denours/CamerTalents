@@ -280,9 +280,9 @@
             <tbody>
               <tr
                 v-for="talent in recentTalents"
-                :key="talent.id"
+                :key="talent._id || talent.id"
                 class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors duration-200 cursor-pointer group"
-                @click="$router.push(`/talent/${talent.id}`)"
+                @click="$router.push(`/talent/${talent._id || talent.id}`)"
               >
                 <!-- Talent -->
                 <td class="py-4">
@@ -362,7 +362,7 @@ import { Doughnut, Bar, Line } from 'vue-chartjs';
 
 import { useTalents } from '../composables/useTalents';
 import { useStats } from '../composables/useStats';
-import { growthData } from '../data/mockData';
+import { GROWTH_DATA } from '../data/constants';
 import StatCard from '../components/dashboard/StatCard.vue';
 
 // ── Enregistrement des modules Chart.js ─────────────────────
@@ -460,11 +460,11 @@ const categoryLegend = computed(() =>
 
 // ── Graphique : Croissance (Line) ────────────────────────────
 const growthChartData = computed(() => ({
-  labels: growthData.map((d) => d.month),
+  labels: GROWTH_DATA.map((d) => d.month),
   datasets: [
     {
       label: 'Inscriptions',
-      data: growthData.map((d) => d.inscriptions),
+      data: GROWTH_DATA.map((d) => d.inscriptions),
       borderColor: '#6C3CE1',
       backgroundColor: 'rgba(108, 60, 225, 0.12)',
       borderWidth: 2.5,

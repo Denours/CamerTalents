@@ -11,15 +11,15 @@
 // DOIT être appelé en PREMIER avant tout autre import
 require('dotenv').config();
 
-const express    = require('express');
-const cors       = require('cors');
-const connectDB  = require('./config/db');
+const express = require('express');
+const cors = require('cors');
+const connectDB = require('./config/db');
 
 // ── Import des routes ─────────────────────────────────────
-const authRoutes      = require('./routes/auth');
-const talentsRoutes   = require('./routes/talents');
+const authRoutes = require('./routes/auth');
+const talentsRoutes = require('./routes/talents');
 const recruteurRoutes = require('./routes/recruteur');
-const adminRoutes     = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 
 // ── Connexion à MongoDB ───────────────────────────────────
 connectDB();
@@ -34,10 +34,12 @@ const app = express();
 
 // CORS : autorise le frontend Vue.js à communiquer avec ce serveur
 // Sans ça, le navigateur bloquerait les requêtes cross-origin
-app.use(cors({
-  origin:      process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true, // autorise l'envoi de cookies si besoin
-}));
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    credentials: true, // autorise l'envoi de cookies si besoin
+  }),
+);
 
 // Permet à Express de lire les corps de requête JSON
 // ex: req.body contiendra { nom: "Kamga", email: "..." }
@@ -63,6 +65,16 @@ app.use('/api/recruteur', recruteurRoutes);
 // Routes d'administration → /api/admin/...
 app.use('/api/admin', adminRoutes);
 
+// ── Route de base de l'API ───────────────────────────────
+// Permet de vérifier facilement l'accès à /api
+app.get('/api', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'API CamerTalents disponible',
+    endpoints: ['/api/auth', '/api/talents', '/api/recruteur', '/api/admin', '/api/health'],
+  });
+});
+
 // ── Route de santé (health check) ────────────────────────
 // Permet de vérifier que le serveur tourne
 app.get('/api/health', (req, res) => {
@@ -70,7 +82,7 @@ app.get('/api/health', (req, res) => {
     success: true,
     message: '✅ Serveur CamerTalents opérationnel',
     version: '1.0.0',
-    env:     process.env.NODE_ENV,
+    env: process.env.NODE_ENV,
   });
 });
 

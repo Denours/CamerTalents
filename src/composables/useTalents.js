@@ -1,4 +1,4 @@
-// src/composables/useTalents.js
+// src/composables/useTalents.js — VERSION BACKEND
 import { useTalentStore } from '../stores/talentStore';
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
@@ -8,6 +8,7 @@ export function useTalents() {
   const { talents, isLoading, totalTalents } = storeToRefs(store);
 
   onMounted(async () => {
+    // Charge depuis l'API si le store est vide
     if (talents.value.length === 0) {
       await store.fetchTalents();
     }
@@ -18,6 +19,7 @@ export function useTalents() {
     isLoading,
     totalTalents,
     getTalentById: store.getTalentById,
-    addTalent: store.addTalent,
+    // addTalent et removeTalent sont maintenant gérés
+    // directement via talentsAPI dans les vues concernées
   };
 }

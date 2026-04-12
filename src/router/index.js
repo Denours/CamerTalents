@@ -156,26 +156,14 @@ router.beforeEach((to, from) => {
   // ── 1. Mise à jour du titre de la page ────────────────────
   document.title = to.meta.title || 'CamerTalents';
 
-  // ── 2. Lecture de l'état auth depuis localStorage ─────────
-  // On lit directement localStorage ici pour éviter les
-  // problèmes de circularité avec l'import du store Pinia
-  // (le store est initialisé APRÈS le router)
-  const currentUser = (() => {
-    try {
-      const raw = localStorage.getItem('camertalents_user');
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  })();
-
-  const isLoggedIn = currentUser !== null;
-  const userRole = currentUser?.role ?? null;
+  const token = localStorage.getItem('camertalents_token');
+  const isLoggedIn = !!token;
+  const userRole = localStorage.getItem('camertalents_role');
 
   // ── 3. Routes guestOnly (login, register) ─────────────────
   // Si l'utilisateur est déjà connecté et essaie d'accéder
   // à /login ou /register → redirige vers son dashboard
-  if (to.meta.guestOnly && isLoggedIn) {
+  if (to.meta.guestOnly && isLoggedIn && userRole) {
     return getDashboardRoute(userRole);
   }
 
@@ -194,7 +182,7 @@ router.beforeEach((to, from) => {
   // ── 5. Vérification du rôle ───────────────────────────────
   // Si la route nécessite un rôle spécifique et que
   // l'utilisateur n'a pas ce rôle → redirige vers son dashboard
-  if (to.meta.requiresAuth && to.meta.role && isLoggedIn) {
+  if (to.meta.requiresAuth && to.meta.role && isLoggedIn && userRole) {
     if (userRole !== to.meta.role) {
       // L'utilisateur est connecté mais n'a pas le bon rôle
       // Ex: un talent qui essaie d'accéder à /admin
@@ -202,21 +190,13 @@ router.beforeEach((to, from) => {
     }
   }
   // ── 6. Navigation autorisée ───────────────────────────────
-  return null;
+  return true;
 });
 
 // ── Helper : retourne la route du dashboard selon le rôle ───
 function getDashboardRoute(role) {
-  switch (role) {
-    case 'talent':
-      return { name: 'talent-dashboard' };
-    case 'recruteur':
-      return { name: 'recruteur-dashboard' };
-    case 'admin':
-      return { name: 'admin' };
-    default:
-      return { name: 'home' };
-  }
+  const map = { talent: 'talent-dashboard', recruteur: 'recruteur-dashboard', admin: 'admin' };
+  return { name: map[role] || 'home' };
 }
 
 export default router;

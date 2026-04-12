@@ -805,6 +805,24 @@
               </svg>
             </span>
             <span v-else class="flex items-center gap-2"> ✅ Créer mon profil </span>
+            <div
+              v-if="authStore.authError"
+              class="flex items-center gap-2 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              {{ authStore.authError }}
+            </div>
           </button>
         </div>
       </div>
@@ -841,7 +859,7 @@
               </svg>
             </div>
 
-            <h2 class="font-title text-3xl font-bold mb-3">Bienvenue sur CamerTalents ! 🎉</h2>
+            <h2 class="font-title text-3xl font-bold mb-3 text-white">Bienvenue sur CamerTalents ! 🎉</h2>
             <p class="text-white/50 mb-8 leading-relaxed">
               Ton profil <strong class="text-white">{{ form.nom }}</strong>
               a été créé avec succès. Tu es maintenant visible par des milliers de personnes au
@@ -856,20 +874,8 @@
               >
                 Accéder à mon espace →
               </RouterLink>
-              <RouterLink
-                :to="`/talent/${newTalentId}`"
-                @click="showSuccess = false"
-                class="w-full py-3.5 rounded-xl border border-white/20 text-white/60 font-medium text-sm text-center hover:border-white/40 hover:text-white transition-all duration-200"
-              >
-                Voir mon profil public
-              </RouterLink>
-              <RouterLink
-                to="/explore"
-                @click="showSuccess = false"
-                class="w-full py-3.5 rounded-xl border border-white/20 text-white/60 font-medium text-sm hover:border-white/40 hover:text-white transition-all duration-200"
-              >
-                Explorer les autres talents
-              </RouterLink>
+            
+            
             </div>
           </div>
         </div>
@@ -880,13 +886,11 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import { useTalentStore } from '../stores/talentStore';
-import { CATEGORIES, VILLES } from '../data/mockData';
+import { CATEGORIES, VILLES } from '../data/constants';
 import RecapRow from '../components/onboarding/RecapRow.vue';
 import { useAuthStore } from '../stores/authStore';
 
 // ── Store ────────────────────────────────────────────────────
-const talentStore = useTalentStore();
 const authStore = useAuthStore();
 
 // ── Étapes du stepper ────────────────────────────────────────
@@ -1142,30 +1146,54 @@ function getStepClass(index) {
 async function submitForm() {
   if (!validateStep(2)) return;
   isSubmitting.value = true;
-  await new Promise((resolve) => setTimeout(resolve, 1500));
 
-  // Nettoyage des données avant envoi
-  const cleanCompetences = form.value.competences
-    .filter((s) => s.nom.trim())
-    .map(({ nom, niveau }) => ({ nom, niveau }));
+  try {
+    // Nettoyage des données
+    const cleanCompetences = form.value.competences
+      .filter((s) => s.nom.trim())
+      .map(({ nom, niveau }) => ({ nom, niveau }));
 
-  const cleanPortfolio = form.value.portfolio.filter((url) => url.trim().length > 0);
+    const cleanPortfolio = form.value.portfolio.filter((url) => url.trim().length > 0);
 
-  // addTalent() persiste automatiquement dans localStorage
-  const newTalent = talentStore.addTalent({
-    ...form.value,
-    competences: cleanCompetences,
-    portfolio: cleanPortfolio,
-    avatar: form.value.avatar,
-  });
+    // Prépare toutes les données pour l'API
+    // registerTalent crée simultanément le User + le Talent en base
+    const talentData = {
+      // Infos compte
+      nom: form.value.nom,
+      email: form.value.email,
+      password: form.value.password,
+      // Infos profil public
+      metier: form.value.metier,
+      categorie: form.value.categorie,
+      ville: form.value.ville,
+      quartier: form.value.quartier,
+      bio: form.value.bio,
+      telephone: form.value.telephone,
+      tarifJour: form.value.tarifJour,
+      disponibilite: form.value.disponibilite,
+      competences: cleanCompetences,
+      portfolio: cleanPortfolio,
+      cvBase64: form.value.cvBase64,
+      cvNom: form.value.cvNom,
+      avatar: form.value.avatar,
+    };
 
-  // ── Ouvre la session du talent après création ─────────────
-  // Le talent est maintenant connecté immédiatement
-  await authStore.registerTalent({ ...form.value, avatar: newTalent.avatar }, newTalent.id);
+    // Un seul appel API crée le User + le Talent + ouvre la session
+    const result = await authStore.registerTalent(talentData);
 
-  newTalentId.value = newTalent.id;
-  isSubmitting.value = false;
-  showSuccess.value = true;
+    if (!result.success) {
+      // L'erreur est déjà dans authStore.authError — affichée dans le template
+      return;
+    }
+
+    // L'id MongoDB du talent créé vient de la réponse API
+    newTalentId.value = result.talentId?.toString() || '';
+    showSuccess.value = true;
+  } catch (error) {
+    console.error('Erreur inscription talent:', error);
+  } finally {
+    isSubmitting.value = false;
+  }
 }
 </script>
 

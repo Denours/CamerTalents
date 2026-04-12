@@ -2,9 +2,16 @@
 import { ref } from 'vue';
 import AppNavbar from './components/layout/AppNavbar.vue';
 import AppFooter from './components/layout/AppFooter.vue';
+import { useAuthStore } from './stores/authStore';
+
+const authStore = useAuthStore();
 
 const isDark = ref(false);
 const toggleTheme = () => (isDark.value = !isDark.value);
+
+// Si un token JWT existe en localStorage, demande au serveur
+// de redonner le profil utilisateur → reconnecte automatiquement
+authStore.init();
 </script>
 
 <template>

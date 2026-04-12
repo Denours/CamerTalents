@@ -334,7 +334,7 @@
                       <div class="flex items-center justify-end gap-2">
                         <!-- Voir le profil -->
                         <RouterLink
-                          :to="`/talent/${talent.id}`"
+                          :to="`/talent/${talent._id}`"
                           class="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.12] transition-all duration-200"
                           title="Voir le profil"
                         >
@@ -355,7 +355,6 @@
                         </RouterLink>
                         <!-- Supprimer (uniquement addedTalents) -->
                         <button
-                          v-if="isAddedTalent(talent.id)"
                           @click="confirmerSuppression(talent)"
                           class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-500/20 transition-all duration-200"
                           title="Supprimer le profil"
@@ -376,13 +375,6 @@
                             />
                           </svg>
                         </button>
-                        <!-- Label "Mock" pour les talents non modifiables -->
-                        <span
-                          v-else
-                          class="text-[10px] px-2 py-0.5 rounded bg-white/[0.04] text-white/20 border border-white/[0.06]"
-                        >
-                          mock
-                        </span>
                       </div>
                     </td>
                   </tr>
@@ -604,16 +596,10 @@
                 <span class="text-sm text-white/40">Stack</span>
                 <span class="text-sm text-white">Vue.js 3 + Pinia</span>
               </div>
-              <div class="flex justify-between items-center py-2 border-b border-white/[0.05]">
-                <span class="text-sm text-white/40">Talents mock</span>
-                <span class="font-mono text-sm text-white">
-                  {{ mockTalentsCount }}
-                </span>
-              </div>
               <div class="flex justify-between items-center py-2">
                 <span class="text-sm text-white/40">Talents inscrits</span>
                 <span class="font-mono text-sm text-white">
-                  {{ talentStore.addedTalents.length }}
+                  {{ talentsData.length }}
                 </span>
               </div>
             </div>
@@ -684,86 +670,42 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
-import { useTalentStore } from '@/stores/talentStore';
-import { useStats } from '@/composables/useStats';
-import { mockTalents } from '@/data/mockData';
+import { talentsAPI, adminAPI } from '../services/api';
 
 const router = useRouter();
 const authStore = useAuthStore();
-const talentStore = useTalentStore();
-const { talentsByCategory } = useStats();
 
+const statsData = ref(null); // stats depuis /api/admin/stats
+const comptesData = ref([]); // comptes depuis /api/admin/comptes
+const talentsData = ref([]); // talents depuis /api/talents
+const isLoadingData = ref(true);
+
+onMounted(async () => {
+  await chargerDonnees();
+});
+
+async function chargerDonnees() {
+  isLoadingData.value = true;
+  try {
+    const [statsRes, comptesRes, talentsRes] = await Promise.all([
+      adminAPI.getStats(),
+      adminAPI.getComptes(),
+      talentsAPI.getAll({ limit: 100 }),
+    ]);
+    if (statsRes.success) statsData.value = statsRes.stats;
+    if (comptesRes.success) comptesData.value = comptesRes.comptes;
+    if (talentsRes.success) talentsData.value = talentsRes.talents;
+  } catch (error) {
+    console.error('Erreur chargement admin:', error.message);
+  } finally {
+    isLoadingData.value = false;
+  }
+}
 // ── Tabs ─────────────────────────────────────────────────────
 const activeTab = ref('overview');
-
-const tabs = computed(() => [
-  {
-    id: 'overview',
-    emoji: '📊',
-    label: "Vue d'ensemble",
-  },
-  {
-    id: 'talents',
-    emoji: '👤',
-    label: 'Talents',
-    count: talentStore.talents.length,
-  },
-  {
-    id: 'comptes',
-    emoji: '🔑',
-    label: 'Comptes',
-    count: comptesInscrits.value.length,
-  },
-  {
-    id: 'settings',
-    emoji: '⚙️',
-    label: 'Paramètres',
-  },
-]);
-
-// ── KPIs ─────────────────────────────────────────────────────
-const kpis = computed(() => [
-  {
-    emoji: '👤',
-    value: talentStore.talents.length,
-    label: 'Total talents',
-    trend: `+${talentStore.addedTalents.length} inscrits`,
-    up: true,
-  },
-  {
-    emoji: '🟢',
-    value: talentStore.talents.filter((t) => t.disponibilite === 'disponible').length,
-    label: 'Disponibles',
-    trend: `${Math.round(
-      (talentStore.talents.filter((t) => t.disponibilite === 'disponible').length /
-        talentStore.talents.length) *
-        100,
-    )}%`,
-    up: true,
-  },
-  {
-    emoji: '🔑',
-    value: comptesInscrits.value.length,
-    label: 'Comptes inscrits',
-    trend: 'Hors démos',
-    up: true,
-  },
-  {
-    emoji: '⭐',
-    value:
-      talentStore.talents.length > 0
-        ? (
-            talentStore.talents.reduce((s, t) => s + t.note, 0) / talentStore.talents.length
-          ).toFixed(1)
-        : '—',
-    label: 'Note moyenne',
-    trend: 'Stable',
-    up: null,
-  },
-]);
 
 // ── Répartition catégories ───────────────────────────────────
 const barColors = ['#6C3CE1', '#F97316', '#EC4899', '#06B6D4', '#22C55E', '#EAB308'];
@@ -777,20 +719,75 @@ const catEmojis = {
   'Transport & Logistique': '🚗',
 };
 
-const repartitionCategories = computed(() =>
-  Object.entries(talentsByCategory.value)
-    .map(([label, count]) => ({ label, count }))
-    .sort((a, b) => b.count - a.count),
-);
+const repartitionCategories = computed(() => statsData.value?.repartitionCategories || []);
 
 const maxCatCount = computed(() => Math.max(...repartitionCategories.value.map((c) => c.count), 1));
 
+const derniersInscrits = computed(() => statsData.value?.derniersInscrits || []);
+
+const tabs = computed(() => [
+  {
+    id: 'overview',
+    emoji: '📊',
+    label: "Vue d'ensemble",
+  },
+  {
+    id: 'talents',
+    emoji: '👤',
+    label: 'Talents',
+    count: talentsData.value.length,
+  },
+  {
+    id: 'comptes',
+    emoji: '🔑',
+    label: 'Comptes',
+    count: comptesInscrits.value.length,
+  },
+  {
+    id: 'settings',
+    emoji: '⚙️',
+    label: 'Paramètres',
+  },
+]);
+const kpis = computed(() => {
+  if (!statsData.value) return [];
+  return [
+    {
+      emoji: '👤',
+      value: statsData.value.totalTalents,
+      label: 'Total talents',
+      trend: `${statsData.value.totalUsers} comptes`,
+      up: true,
+    },
+    {
+      emoji: '🕴️',
+      value: statsData.value.disponibilite?.disponible || 0,
+      label: 'Disponibles',
+      trend: `${statsData.value.tauxDisponibilite}%`,
+      up: true,
+    },
+    {
+      emoji: '🔑',
+      value: comptesData.value.length,
+      label: 'Comptes inscrits',
+      trend: 'Base de données',
+      up: true,
+    },
+    {
+      emoji: '⭐',
+      value: statsData.value.noteMoyenne,
+      label: 'Note moyenne',
+      trend: 'Stable',
+      up: null,
+    },
+  ];
+});
 // ── Derniers inscrits ────────────────────────────────────────
-const derniersInscrits = computed(() =>
-  [...talentStore.talents]
-    .sort((a, b) => new Date(b.dateInscription) - new Date(a.dateInscription))
-    .slice(0, 5),
-);
+// const derniersInscrits = computed(() =>
+//   [...talentStore.talents]
+//     .sort((a, b) => new Date(b.dateInscription) - new Date(a.dateInscription))
+//     .slice(0, 5),
+// );
 
 // ── Gestion talents ──────────────────────────────────────────
 const searchAdmin = ref('');
@@ -798,7 +795,7 @@ const filtreStatutAdmin = ref('tous');
 const talentASupprimer = ref(null);
 
 const talentsFiltresAdmin = computed(() => {
-  let results = [...talentStore.talents];
+  let results = [...talentsData.value];
   if (searchAdmin.value.trim()) {
     const q = searchAdmin.value.toLowerCase();
     results = results.filter(
@@ -814,71 +811,57 @@ const talentsFiltresAdmin = computed(() => {
   return results;
 });
 
-function isAddedTalent(id) {
-  return talentStore.addedTalents.some((t) => t.id === id);
-}
-
 function confirmerSuppression(talent) {
   talentASupprimer.value = talent;
 }
 
-function executerSuppression() {
+async function executerSuppression() {
   if (!talentASupprimer.value) return;
-  talentStore.removeTalent(talentASupprimer.value.id);
-  talentASupprimer.value = null;
+  try {
+    await talentsAPI.delete(talentASupprimer.value._id);
+    talentsData.value = talentsData.value.filter((t) => t._id !== talentASupprimer.value._id);
+    talentASupprimer.value = null;
+  } catch (error) {
+    alert(`Erreur suppression : ${error.message}`);
+  }
 }
 
 // ── Gestion comptes ──────────────────────────────────────────
-const comptesInscrits = computed(() => {
-  try {
-    const raw = localStorage.getItem('camertalents_accounts');
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-});
+const comptesInscrits = computed(() => comptesData.value);
 
-const comptesDemos = [
-  { emoji: '🛡️', label: 'Administrateur', email: 'admin@camertalents.cm' },
-  { emoji: '🏢', label: 'Recruteur — Marie T.', email: 'recruteur@demo.cm' },
-  { emoji: '🎨', label: 'Talent — Kamga J-P', email: 'talent@demo.cm' },
-];
+const comptesDemos = [{ emoji: '🛡️', label: 'Administrateur', email: 'admin@camertalents.cm' }];
 
-function supprimerCompte(compte) {
+async function supprimerCompte(compte) {
   try {
-    const accounts = JSON.parse(localStorage.getItem('camertalents_accounts') || '[]');
-    const filtered = accounts.filter((a) => a.id !== compte.id);
-    localStorage.setItem('camertalents_accounts', JSON.stringify(filtered));
-    // Force le rechargement du computed
-    globalThis.dispatchEvent(new Event('storage'));
-  } catch {
-    /* silencieux */
+    await adminAPI.supprimerCompte(compte._id);
+    comptesData.value = comptesData.value.filter((c) => c._id !== compte._id);
+  } catch (error) {
+    alert(`Erreur suppression compte : ${error.message}`);
   }
 }
 
 // ── Paramètres — Actions dangereuses ─────────────────────────
-function supprimerTousLesTalents() {
-  if (!confirm('Supprimer tous les profils créés ?')) return;
-  talentStore.clearAddedTalents();
+async function supprimerTousLesTalents() {
+  if (!confirm('Supprimer tous les profils ?')) return;
+  await chargerDonnees();
 }
 
-function supprimerTousLesComptes() {
+async function supprimerTousLesComptes() {
   if (!confirm('Supprimer tous les comptes inscrits ?')) return;
-  localStorage.removeItem('camertalents_accounts');
-  globalThis.dispatchEvent(new Event('storage'));
+  await chargerDonnees();
 }
 
-function resetComplet() {
+async function resetComplet() {
   if (!confirm('Reset complet ? Cette action est irréversible !')) return;
-  talentStore.clearAddedTalents();
-  localStorage.removeItem('camertalents_accounts');
-  localStorage.removeItem('camertalents_user');
-  authStore.logout();
-  router.push('/');
+  try {
+    await adminAPI.reset();
+    await chargerDonnees();
+    authStore.logout();
+    router.push('/');
+  } catch (error) {
+    alert(`Erreur reset : ${error.message}`);
+  }
 }
-
-// ── Infos mock ───────────────────────────────────────────────
-const mockTalentsCount = mockTalents.length;
 
 // ── Helpers ──────────────────────────────────────────────────
 function formatDate(dateStr) {

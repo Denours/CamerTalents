@@ -43,7 +43,7 @@
           <div class="flex flex-wrap gap-3">
             <RouterLink
               v-if="monProfil"
-              :to="`/talent/${monProfil.id}?from=dashboard`"
+              :to="`/talent/${monProfil?._id}?from=dashboard`"
               class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/20 text-white/60 text-sm font-medium hover:border-white/40 hover:text-white transition-all duration-200"
             >
               <svg
@@ -423,40 +423,6 @@
             </div>
           </div>
 
-          <!-- Liens rapides -->
-          <div
-            class="section-card"
-            v-motion
-            :initial="{ opacity: 0, x: 20 }"
-            :visible="{ opacity: 1, x: 0, transition: { duration: 500, delay: 200 } }"
-          >
-            <h3 class="text-sm font-semibold text-white/50 uppercase tracking-widest mb-4">
-              Liens rapides
-            </h3>
-            <div class="space-y-1">
-              <RouterLink
-                v-for="link in quickLinks"
-                :key="link.to"
-                :to="link.to"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/[0.05] transition-all duration-200"
-              >
-                <span class="text-base">{{ link.emoji }}</span>
-                {{ link.label }}
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  class="ml-auto opacity-30"
-                >
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </RouterLink>
-            </div>
-          </div>
-
           <!-- Déconnexion -->
           <button
             @click="handleLogout"
@@ -483,20 +449,29 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/authStore';
-import { useTalentStore } from '@/stores/talentStore';
+import { useAuthStore } from '../stores/authStore';
+import { talentsAPI } from '../services/api';
 
 const router = useRouter();
 const authStore = useAuthStore();
-const talentStore = useTalentStore();
 
-// ── Profil complet du talent connecté ───────────────────────
-// On récupère toutes les données depuis talentStore via talentId
-const monProfil = computed(() => {
-  if (!authStore.user?.talentId) return null;
-  return talentStore.getTalentById(authStore.user.talentId);
+const monProfil = ref(null);
+
+onMounted(async () => {
+  if (authStore.user?.talentId) {
+    try {
+      const data = await talentsAPI.getById(authStore.user.talentId);
+      if (data.success) {
+        monProfil.value = data.talent;
+        console.log('Profil charge');
+      }
+    } catch (error) {
+      console.error(`Erreur :  ${error.message}`);
+      /* silencieux */
+    }
+  }
 });
 
 // ── Date d'inscription ───────────────────────────────────────
@@ -610,21 +585,19 @@ const disponibiliteOptions = [
 
 const currentDisponibilite = computed(() => monProfil.value?.disponibilite || 'disponible');
 
-function updateDisponibilite(value) {
+async function updateDisponibilite(value) {
   if (!monProfil.value) return;
-  // Met à jour dans talentStore + localStorage
-  const idx = talentStore.addedTalents.findIndex((t) => t.id === monProfil.value.id);
-  if (idx !== -1) {
-    talentStore.addedTalents[idx].disponibilite = value;
-    localStorage.setItem('camertalents_added_talents', JSON.stringify(talentStore.addedTalents));
+  try {
+    const data = await talentsAPI.update(monProfil.value._id, {
+      disponibilite: value,
+    });
+    if (data.success) {
+      monProfil.value = { ...monProfil.value, disponibilite: value };
+    }
+  } catch (error) {
+    console.error('Erreur update disponibilité:', error.message);
   }
 }
-
-// ── Liens rapides ────────────────────────────────────────────
-const quickLinks = computed(() => [
-  { emoji: '📊', label: 'Tableau de bord public', to: '/dashboard' },
-  { emoji: '⚙️', label: 'Modifier mon profil', to: '/talent/edit' },
-]);
 
 // ── Déconnexion ──────────────────────────────────────────────
 function handleLogout() {

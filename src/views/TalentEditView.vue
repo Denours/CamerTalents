@@ -673,32 +673,35 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { talentsAPI } from '../services/api';
 import { useAuthStore } from '../stores/authStore';
-import { useTalentStore } from '../stores/talentStore';
-import { CATEGORIES, VILLES } from '../data/mockData';
+import { CATEGORIES, VILLES } from '../data/constants';
 
 const router = useRouter();
 const authStore = useAuthStore();
-const talentStore = useTalentStore();
 
 // ── Profil actuel du talent ──────────────────────────────────
-const monProfil = computed(() => {
-  if (!authStore.user?.talentId) return null;
-  return talentStore.getTalentById(authStore.user.talentId);
-});
+const monProfil = ref(null);
 
-// Redirige si pas de profil talent
-onMounted(() => {
+// Charge le profil talent depuis l'API au montage
+onMounted(async () => {
   if (!authStore.isLoggedIn || !authStore.isTalent) {
     router.push('/login');
     return;
   }
-  if (!monProfil.value) {
+  if (!authStore.user?.talentId) {
     router.push('/onboarding');
     return;
   }
-  // Initialise le formulaire avec les données actuelles
-  initForm();
+  try {
+    const data = await talentsAPI.getById(authStore.user.talentId);
+    if (data.success) {
+      monProfil.value = data.talent;
+      initForm();
+    }
+  } catch {
+    router.push('/onboarding');
+  }
 });
 
 // ── Formulaire d'édition ─────────────────────────────────────
@@ -891,45 +894,45 @@ async function saveProfile() {
 
   isSaving.value = true;
 
-  await new Promise((resolve) => setTimeout(resolve, 800));
+  try {
+    const cleanCompetences = editForm.value.competences
+      .filter((s) => s.nom.trim())
+      .map(({ nom, niveau }) => ({ nom, niveau }));
 
-  // Nettoie les compétences (retire les entrées vides)
-  const cleanCompetences = editForm.value.competences
-    .filter((s) => s.nom.trim())
-    .map(({ nom, niveau }) => ({ nom, niveau }));
+    const cleanPortfolio = editForm.value.portfolio.filter((url) => url.trim().length > 0);
 
-  // Nettoie le portfolio (retire les URLs vides)
-  const cleanPortfolio = editForm.value.portfolio.filter((url) => url.trim().length > 0);
-
-  // Met à jour dans talentStore
-  const idx = talentStore.addedTalents.findIndex((t) => t.id === monProfil.value?.id);
-
-  if (idx !== -1) {
-    // Talent créé via onboarding — on peut le modifier directement
-    talentStore.addedTalents[idx] = {
-      ...talentStore.addedTalents[idx],
+    const updates = {
       ...editForm.value,
       competences: cleanCompetences,
       portfolio: cleanPortfolio,
     };
-    localStorage.setItem('camertalents_added_talents', JSON.stringify(talentStore.addedTalents));
-  }
-  // Note : les talents du mockData sont en lecture seule
-  // (ils n'existent pas dans addedTalents)
 
-  // Met à jour aussi l'avatar dans authStore si changé
-  if (editForm.value.avatar !== authStore.user?.avatar) {
-    await authStore.updateProfile({ avatar: editForm.value.avatar });
-  }
+    // Appel API — met à jour le talent en base de données
+    const data = await talentsAPI.update(authStore.user.talentId, updates);
 
-  isSaving.value = false;
-  // Met à jour le snapshot
-  originalForm.value = JSON.stringify(editForm.value);
-  // Affiche le toast
-  showToast.value = true;
-  setTimeout(() => {
-    showToast.value = false;
-  }, 3000);
+    if (data.success) {
+      monProfil.value = data.talent;
+
+      // Met à jour l'avatar dans le store auth si changé
+      if (editForm.value.avatar !== authStore.user?.avatar) {
+        authStore.updateUserLocalement({ avatar: editForm.value.avatar });
+      }
+
+      // Met à jour le snapshot pour que hasChanges repasse à false
+      originalForm.value = JSON.stringify(editForm.value);
+
+      showToast.value = true;
+      setTimeout(() => {
+        showToast.value = false;
+      }, 3000);
+    }
+  } catch (error) {
+    console.error('Erreur saveProfile:', error.message);
+    // Affiche l'erreur à l'utilisateur
+    alert(`Erreur lors de la sauvegarde : ${error.message}`);
+  } finally {
+    isSaving.value = false;
+  }
 }
 </script>
 

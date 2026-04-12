@@ -13,7 +13,7 @@
 //  confirmer que le token est authentique.
 // ============================================================
 
-const jwt  = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 // ── Middleware principal : protège une route ──────────────
@@ -23,12 +23,9 @@ const proteger = async (req, res, next) => {
 
     // Le token est envoyé dans le header Authorization
     // Format : "Bearer eyJhbGciOi..."
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith('Bearer')
-    ) {
-      token = req.headers.authorization.split(' ')[1];
-    }
+    token = req.headers.authorization?.startsWith('Bearer')
+      ? req.headers.authorization?.split(' ')?.[1]
+      : undefined;
 
     if (!token) {
       return res.status(401).json({
@@ -59,7 +56,7 @@ const proteger = async (req, res, next) => {
   } catch (error) {
     return res.status(401).json({
       success: false,
-      message: 'Token invalide ou expiré',
+      message: 'Token invalide ou expiré ' + error,
     });
   }
 };
