@@ -536,7 +536,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useTalents } from '../composables/useTalents';
 import { useStats } from '../composables/useStats';
 import TalentCard from '../components/talent/TalentCard.vue';
-import { CATEGORIES, VILLES } from '../data/constants';
+import { CATEGORIES } from '../data/constants';
 import { useFilterStore } from '../stores/filterStore';
 import { useRouter } from 'vue-router';
 import {
