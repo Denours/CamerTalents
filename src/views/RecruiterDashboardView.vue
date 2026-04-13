@@ -159,7 +159,7 @@
                 class="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-200 group"
               >
                 <img
-                  :src="talent.avatar"
+                  :src="talent.avatar || defaultAvatar"
                   :alt="talent.nom"
                   class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
                 />
@@ -484,6 +484,9 @@ const { talents } = useTalents();
 
 const talentsFavoris = ref([]);
 const talentsRecommandesData = ref([]);
+
+const defaultAvatar =
+  'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg';
 
 onMounted(async () => {
   const [favorisRes, talentsRes] = await Promise.all([

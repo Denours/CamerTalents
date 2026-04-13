@@ -567,6 +567,161 @@
                 </div>
               </div>
             </Transition>
+
+            <!-- TAB : Avis -->
+            <Transition name="tab-fade" mode="out-in">
+              <div v-if="activeTab === 'avis'" key="avis">
+                <div class="space-y-8">
+                  <!-- Statistiques des avis -->
+                  <div class="flex items-center gap-8">
+                    <!-- Note moyenne et count -->
+                    <div>
+                      <p class="text-4xl font-bold text-white mb-1">
+                        {{ talent.note.toFixed(1) }}
+                        <span class="text-lg text-white/50">/5</span>
+                      </p>
+                      <p class="text-sm text-white/50">basé sur {{ talent.avis }} avis</p>
+                      <!-- Étoiles -->
+                      <div class="flex items-center gap-1 mt-3">
+                        <template v-for="i in 5" :key="i">
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            :fill="i <= Math.round(talent.note) ? '#EAB308' : 'none'"
+                            :stroke="
+                              i <= Math.round(talent.note) ? '#EAB308' : 'rgba(255,255,255,0.2)'
+                            "
+                            stroke-width="2"
+                          >
+                            <polygon
+                              points="12 2 15.09 10.26 24 10.26 17.82 15.88 20.91 24 12 18.35 3.09 24 6.18 15.88 0 10.26 8.91 10.26"
+                            />
+                          </svg>
+                        </template>
+                      </div>
+                    </div>
+
+                    <!-- Bouton laisser un avis (recruteurs seulement) -->
+                    <button
+                      v-if="authStore.isRecruteur"
+                      @click="ouvrirModuleAvis"
+                      class="ml-auto self-start px-6 py-3 rounded-xl bg-primary/15 border border-primary/30 text-primary-100 font-medium hover:bg-primary/25 transition-colors"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        class="inline mr-2"
+                      >
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                      Laisser un avis
+                    </button>
+                  </div>
+
+                  <!-- Distribution des notes (optionnel mais cool) -->
+                  <div class="mt-8 pt-8 border-t border-white/[0.06]">
+                    <p class="text-sm font-semibold text-white mb-4">Distribution des notes</p>
+                    <div class="space-y-2">
+                      <template v-for="stars in [5, 4, 3, 2, 1]" :key="stars">
+                        <div class="flex items-center gap-3">
+                          <span class="text-xs text-white/40 w-4">{{ stars }}★</span>
+                          <div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div
+                              class="h-full bg-primary transition-all duration-500"
+                              :style="{
+                                width: avisList.length
+                                  ? `${(avisList.filter((a) => a.note === stars).length / avisList.length) * 100}%`
+                                  : '0%',
+                              }"
+                            />
+                          </div>
+                          <span class="text-xs text-white/40 w-6 text-right">
+                            {{ avisList.filter((a) => a.note === stars).length }}
+                          </span>
+                        </div>
+                      </template>
+                    </div>
+                  </div>
+
+                  <!-- Liste des avis -->
+                  <div class="mt-8 pt-8 border-t border-white/[0.06]">
+                    <h3 class="font-title font-bold text-white mb-6">
+                      {{ avisList.length === 0 ? 'Aucun avis pour le moment' : 'Récents avis' }}
+                    </h3>
+
+                    <div v-if="avisList.length === 0" class="text-center py-10">
+                      <div class="text-4xl mb-3">💬</div>
+                      <p class="text-white/40">Soyez le premier à laisser un avis!</p>
+                    </div>
+
+                    <div v-else class="space-y-6">
+                      <div
+                        v-for="avis in avisList"
+                        :key="`${avis.auteurId}-${avis.dateAvis}`"
+                        class="p-5 rounded-2xl bg-white/[0.04] border border-white/[0.08] hover:border-white/[0.12] transition-all duration-200"
+                      >
+                        <!-- Header avis -->
+                        <div class="flex items-start justify-between mb-3">
+                          <div class="flex items-center gap-3">
+                            <img
+                              :src="
+                                avis.auteurAvatar ||
+                                'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'
+                              "
+                              :alt="avis.auteurNom"
+                              class="w-10 h-10 rounded-full object-cover"
+                            />
+                            <div class="min-w-0">
+                              <p class="text-sm font-semibold text-white truncate">
+                                {{ avis.auteurNom }}
+                              </p>
+                              <p class="text-xs text-white/40">
+                                {{
+                                  new Date(avis.dateAvis).toLocaleDateString('fr-FR', {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric',
+                                  })
+                                }}
+                              </p>
+                            </div>
+                          </div>
+                          <!-- Étoiles de la note -->
+                          <div class="flex gap-1">
+                            <template v-for="i in 5" :key="i">
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                :fill="i <= avis.note ? '#EAB308' : 'none'"
+                                :stroke="i <= avis.note ? '#EAB308' : 'rgba(255,255,255,0.2)'"
+                                stroke-width="2"
+                              >
+                                <polygon
+                                  points="12 2 15.09 10.26 24 10.26 17.82 15.88 20.91 24 12 18.35 3.09 24 6.18 15.88 0 10.26 8.91 10.26"
+                                />
+                              </svg>
+                            </template>
+                          </div>
+                        </div>
+
+                        <!-- Commentaire -->
+                        <p v-if="avis.commentaire" class="text-sm text-white/70 leading-relaxed">
+                          {{ avis.commentaire }}
+                        </p>
+                        <p v-else class="text-sm text-white/40 italic">Pas de commentaire</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Transition>
           </div>
 
           <!-- ── Sidebar (1/3) ───────────────────────── -->
@@ -835,6 +990,111 @@
         </div>
       </Transition>
     </Teleport>
+
+    <!-- ════════════════════════════════════════════
+     MODAL LAISSER UN AVIS
+════════════════════════════════════════════ -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div
+          v-if="avisModuleOpen"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          @click.self="fermerModuleAvis"
+        >
+          <div class="bg-[#1A1230] border border-white/10 rounded-2xl p-8 max-w-md w-full">
+            <div class="text-center mb-8">
+              <h2 class="font-title text-2xl font-bold text-white mb-2">Votre avis</h2>
+              <p class="text-white/50">Aidez autres recruteurs avec votre retour d'expérience</p>
+            </div>
+
+            <!-- Sélecteur d'étoiles -->
+            <div class="flex justify-center gap-3 mb-6">
+              <button
+                v-for="i in 5"
+                :key="i"
+                @click="noteForm = i"
+                class="group flex items-center justify-center transition-transform duration-200 hover:scale-125"
+              >
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  :fill="i <= noteForm ? '#EAB308' : 'none'"
+                  :stroke="i <= noteForm ? '#EAB308' : 'rgba(255,255,255,0.3)'"
+                  stroke-width="2"
+                  :class="{ 'transition-all duration-200': i <= noteForm }"
+                >
+                  <polygon
+                    points="12 2 15.09 10.26 24 10.26 17.82 15.88 20.91 24 12 18.35 3.09 24 6.18 15.88 0 10.26 8.91 10.26"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Affichage de la note sélectionnée -->
+            <p v-if="noteForm > 0" class="text-center text-sm text-white/60 mb-6">
+              Vous donnez
+              <span class="font-bold text-white"
+                >{{ noteForm }} étoile{{ noteForm > 1 ? 's' : '' }}</span
+              >
+            </p>
+
+            <!-- Champ de commentaire -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-white mb-2">
+                Commentaire <span class="text-white/40">(optionnel, max 500 caractères)</span>
+              </label>
+              <textarea
+                v-model="commentaireForm"
+                placeholder="Partagez votre expérience avec ce talent..."
+                maxlength="500"
+                rows="4"
+                class="w-full px-4 py-3 rounded-xl bg-white/[0.08] border border-white/[0.12] text-white placeholder:text-white/30 focus:outline-none focus:border-primary/50 focus:bg-white/[0.12] transition-all duration-200 resize-none"
+              />
+              <p class="text-xs text-white/40 mt-1">{{ commentaireForm.length }} / 500</p>
+            </div>
+
+            <!-- Message d'erreur -->
+            <p v-if="avisError" class="text-sm text-red-400 mb-6">
+              {{ avisError }}
+            </p>
+
+            <!-- Boutons -->
+            <div class="flex gap-3">
+              <button
+                @click="fermerModuleAvis"
+                class="flex-1 px-4 py-2 rounded-xl border border-white/20 text-white/70 hover:bg-white/10 font-medium transition-colors"
+                :disabled="submitAvisLoading"
+              >
+                Annuler
+              </button>
+              <button
+                @click="soumettreAvis"
+                class="flex-1 px-4 py-2 rounded-xl bg-primary text-white font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                :disabled="submitAvisLoading || noteForm === 0"
+              >
+                <svg
+                  v-if="!submitAvisLoading"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <div
+                  v-else
+                  class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+                />
+                {{ submitAvisLoading ? 'Envoi...' : "Envoyer l'avis" }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </main>
 </template>
 
@@ -876,6 +1136,75 @@ async function chargerTalent(id) {
 
 const cvUploadError = ref('');
 const cvViewerOpen = ref(false);
+
+// ── Avis/Notation ────────────────────────────────────────────
+const avisList = ref([]);
+const avisLoading = ref(false);
+const avisModuleOpen = ref(false);
+const noteForm = ref(0);
+const commentaireForm = ref('');
+const submitAvisLoading = ref(false);
+const avisError = ref('');
+
+async function chargerAvis(id) {
+  if (!id) return;
+  avisLoading.value = true;
+  try {
+    const data = await talentsAPI.getAvis(id);
+    if (data.success) {
+      avisList.value = data.avis || [];
+    }
+  } catch (err) {
+    console.error('Erreur lors du chargement des avis:', err);
+    avisList.value = [];
+  } finally {
+    avisLoading.value = false;
+  }
+}
+
+function ouvrirModuleAvis() {
+  if (!authStore.isRecruteur) {
+    alert('Seuls les recruteurs peuvent laisser des avis.');
+    return;
+  }
+  avisModuleOpen.value = true;
+}
+
+function fermerModuleAvis() {
+  avisModuleOpen.value = false;
+  noteForm.value = 0;
+  commentaireForm.value = '';
+  avisError.value = '';
+}
+
+async function soumettreAvis() {
+  if (noteForm.value === 0) {
+    avisError.value = 'Veuillez donner une note.';
+    return;
+  }
+
+  submitAvisLoading.value = true;
+  avisError.value = '';
+  try {
+    const res = await talentsAPI.ajouterAvis(talent.value._id, {
+      note: noteForm.value,
+      commentaire: commentaireForm.value,
+    });
+
+    if (res.success) {
+      // Recharger les avis et mettre à jour le talent
+      await chargerAvis(talent.value._id);
+      talent.value = res.talent;
+      fermerModuleAvis();
+    } else {
+      avisError.value = res.message || 'Erreur lors de la soumission.';
+    }
+  } catch (err) {
+    avisError.value = err.message || 'Erreur serveur.';
+  } finally {
+    submitAvisLoading.value = false;
+  }
+}
 // ── Couleur par catégorie ────────────────────────────────────
 const categoryColors = {
   'Tech & Digital': '#6C3CE1',
@@ -912,6 +1241,7 @@ const tabs = [
   { id: 'about', label: 'À propos' },
   { id: 'skills', label: 'Compétences' },
   { id: 'portfolio', label: 'Portfolio' },
+  { id: 'avis', label: 'Avis' },
 ];
 const activeTab = ref('about');
 
@@ -928,6 +1258,12 @@ watch(activeTab, async (tab) => {
     setTimeout(() => {
       skillsVisible.value = true;
     }, 100);
+  }
+  if (tab === 'avis' && talent.value) {
+    // Charger les avis si on n'les a pas encore
+    if (avisList.value.length === 0) {
+      await chargerAvis(talent.value._id);
+    }
   }
 });
 

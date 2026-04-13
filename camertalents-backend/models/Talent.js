@@ -123,6 +123,21 @@ const TalentSchema = new mongoose.Schema(
     vues: { type: Number, default: 0, min: 0 },
     note: { type: Number, default: 0, min: 0, max: 5 },
     avis: { type: Number, default: 0, min: 0 },
+    // ── Liste des avis (feedback des recruteurs) ────
+    avisListe: [
+      {
+        auteurId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+          required: true,
+        },
+        auteurNom: { type: String, required: true, trim: true },
+        auteurAvatar: { type: String, default: '' },
+        note: { type: Number, required: true, min: 1, max: 5 },
+        commentaire: { type: String, default: '', maxlength: 500 },
+        dateAvis: { type: Date, default: Date.now },
+      },
+    ],
   },
   {
     timestamps: true, // createdAt, updatedAt automatiques

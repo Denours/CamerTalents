@@ -270,4 +270,106 @@ router.post('/:id/vue', proteger, async (req, res) => {
   }
 });
 
+// ════════════════════════════════════════════════════════════
+//  POST /api/talents/:id/avis
+//  Ajoute un avis (note + commentaire) d'un recruteur
+//  Route PROTÉGÉE — seuls les recruteurs peuvent laisser des avis
+// ════════════════════════════════════════════════════════════
+router.post('/:id/avis', proteger, async (req, res) => {
+  try {
+    const talentId = req.params.id;
+    const { note, commentaire } = req.body;
+    const recruteur = req.user;
+
+    // Vérifier que l'utilisateur est un recruteur
+    if (recruteur.role !== 'recruteur') {
+      return res.status(403).json({
+        success: false,
+        message: 'Seuls les recruteurs peuvent laisser des avis.',
+      });
+    }
+
+    // Valider la note
+    if (!note || note < 1 || note > 5) {
+      return res.status(400).json({ success: false, message: 'La note doit être entre 1 et 5.' });
+    }
+
+    // Récupérer le talent
+    const talent = await Talent.findById(talentId);
+    if (!talent) {
+      return res.status(404).json({ success: false, message: 'Talent introuvable.' });
+    }
+
+    // Vérifier s'il a déjà laissé un avis pour ce talent
+    const avisExistant = talent.avisListe.find(
+      (a) => a.auteurId.toString() === recruteur._id.toString(),
+    );
+
+    if (avisExistant) {
+      // Mettre à jour l'avis existant
+      avisExistant.note = note;
+      avisExistant.commentaire = commentaire || '';
+      avisExistant.dateAvis = new Date();
+    } else {
+      // Créer un nouvel avis
+      talent.avisListe.push({
+        auteurId: recruteur._id,
+        auteurNom: recruteur.nom,
+        auteurAvatar: recruteur.avatar,
+        note,
+        commentaire: commentaire || '',
+        dateAvis: new Date(),
+      });
+    }
+
+    // Recalculer la note moyenne
+    const noteMoyenne =
+      talent.avisListe.reduce((sum, avis) => sum + avis.note, 0) / talent.avisListe.length;
+    talent.note = Math.round(noteMoyenne * 10) / 10; // Arrondir à 1 décimale
+    talent.avis = talent.avisListe.length;
+
+    const talentMisAJour = await talent.save();
+
+    res.status(200).json({
+      success: true,
+      message: avisExistant ? 'Avis mis à jour.' : 'Avis créé.',
+      talent: talentMisAJour,
+    });
+  } catch (error) {
+    console.error('Erreur POST /talents/:id/avis:', error.message);
+    res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════
+//  GET /api/talents/:id/avis
+//  Récupère tous les avis d'un talent
+//  Route PUBLIQUE — accessible à tous
+// ════════════════════════════════════════════════════════════
+router.get('/:id/avis', async (req, res) => {
+  try {
+    const talentId = req.params.id;
+
+    const talent = await Talent.findById(talentId).select('avisListe note avis');
+    if (!talent) {
+      return res.status(404).json({ success: false, message: 'Talent introuvable.' });
+    }
+
+    // Trier les avis par date décroissante (plus récents en premier)
+    const avisTriés = talent.avisListe.sort((a, b) => new Date(b.dateAvis) - new Date(a.dateAvis));
+
+    res.status(200).json({
+      success: true,
+      avis: avisTriés,
+      stats: {
+        note: talent.note,
+        total: talent.avis,
+      },
+    });
+  } catch (error) {
+    console.error('Erreur GET /talents/:id/avis:', error.message);
+    res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
 module.exports = router;

@@ -112,6 +112,12 @@ export const talentsAPI = {
 
   // Incrémenter le compteur de vues
   incrementerVues: (id) => api.post(`/talents/${id}/vue`),
+
+  // Ajouter un avis (note + commentaire)
+  ajouterAvis: (id, data) => api.post(`/talents/${id}/avis`, data),
+
+  // Récupérer les avis d'un talent
+  getAvis: (id) => api.get(`/talents/${id}/avis`),
 };
 
 // ══════════════════════════════════════════════════════════
