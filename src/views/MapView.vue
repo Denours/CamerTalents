@@ -182,6 +182,32 @@
         </div>
       </div>
     </div>
+    <!-- Modal Explore Bloqué pour Talents -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div
+          v-if="exploreBlockedModalOpen"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          @click.self="exploreBlockedModalOpen = false"
+        >
+          <div class="bg-[#1A1230] rounded-2xl p-6 max-w-md w-full border border-white/10">
+            <div class="text-center">
+              <div class="text-4xl mb-4">🚫</div>
+              <h3 class="text-xl font-bold text-white mb-2">Accès refusé</h3>
+              <p class="text-white/70 mb-6">
+                En tant que Talent vous ne pouvez pas explorer d'autres talents.
+              </p>
+              <button
+                @click="exploreBlockedModalOpen = false"
+                class="px-6 py-2 bg-primary rounded-lg text-white font-medium hover:bg-primary-600 transition-colors"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </main>
 </template>
 
@@ -190,6 +216,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useTalents } from '../composables/useTalents';
 import { useStats } from '../composables/useStats';
 import { useFilterStore } from '../stores/filterStore';
+import { useAuthStore } from '../stores/authStore';
 import { useRouter } from 'vue-router';
 import { VILLES_COORDS } from '../data/constants';
 
@@ -198,15 +225,21 @@ const { talents } = useTalents();
 const { talentsByCity } = useStats();
 const router = useRouter();
 const filterStore = useFilterStore();
+const authStore = useAuthStore();
 
 // ── Refs ─────────────────────────────────────────────────────
 const mapEl = ref(null); // div hôte de Leaflet
 const selectedCity = ref(null); // ville sélectionnée au clic
+const exploreBlockedModalOpen = ref(false); // modal pour talents
 
 let mapInstance = null; // instance Leaflet (en dehors de la réactivité)
 let markersLayer = null; // couche des marqueurs
 
 function goToCity(cityLabel) {
+  if (authStore.isTalent) {
+    exploreBlockedModalOpen.value = true;
+    return;
+  }
   // 1. Réinitialise tous les filtres proprement
   filterStore.resetFilters();
   // 2. Applique la catégorie cliquée

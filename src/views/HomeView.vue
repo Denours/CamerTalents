@@ -71,7 +71,7 @@
               :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 300 } }"
               class="flex flex-wrap gap-4"
             >
-              <RouterLink to="/explore" class="btn-primary">
+              <button @click="handleExploreClick" class="btn-primary">
                 Explorer les talents
                 <svg
                   width="16"
@@ -85,8 +85,8 @@
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
                 </svg>
-              </RouterLink>
-              <RouterLink to="/onboarding" class="btn-ghost"> Créer mon profil </RouterLink>
+              </button>
+              <button @click="handleCreateProfileClick" class="btn-ghost">Créer mon profil</button>
             </div>
           </div>
           <!-- Colonne droite : floating talent cards -->
@@ -454,7 +454,7 @@
                 Crée ton profil en 3 minutes et commence à être visible par des milliers de
                 recruteurs et particuliers au Cameroun.
               </p>
-              <RouterLink to="/onboarding" class="btn-primary btn-primary--large">
+              <button @click="handleCreateProfileClick" class="btn-primary btn-primary--large">
                 Créer mon profil maintenant
                 <svg
                   width="18"
@@ -467,7 +467,7 @@
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
                 </svg>
-              </RouterLink>
+              </button>
               <p class="text-white/30 text-xs mt-4">Gratuit · Sans engagement · En 3 minutes</p>
             </div>
           </div>
@@ -528,6 +528,60 @@
         </div>
       </Transition>
     </Teleport>
+
+    <!-- Modal Explore Bloqué pour Talents -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div
+          v-if="exploreBlockedModalOpen"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          @click.self="exploreBlockedModalOpen = false"
+        >
+          <div class="bg-[#1A1230] rounded-2xl p-6 max-w-md w-full border border-white/10">
+            <div class="text-center">
+              <div class="text-4xl mb-4">🚫</div>
+              <h3 class="text-xl font-bold text-white mb-2">Accès refusé</h3>
+              <p class="text-white/70 mb-6">
+                En tant que Talent vous ne pouvez pas explorer d'autres talents.
+              </p>
+              <button
+                @click="exploreBlockedModalOpen = false"
+                class="px-6 py-2 bg-primary rounded-lg text-white font-medium hover:bg-primary-600 transition-colors"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
+    <!-- Modal Créer Profil Bloqué (Talent/Recruteur/Admin connectés) -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div
+          v-if="createProfileBlockedModalOpen"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          @click.self="createProfileBlockedModalOpen = false"
+        >
+          <div class="bg-[#1A1230] rounded-2xl p-6 max-w-md w-full border border-white/10">
+            <div class="text-center">
+              <div class="text-4xl mb-4">ℹ️</div>
+              <h3 class="text-xl font-bold text-white mb-2">Information</h3>
+              <p class="text-white/70 mb-6">
+                {{ createProfileBlockedMessage }}
+              </p>
+              <button
+                @click="createProfileBlockedModalOpen = false"
+                class="px-6 py-2 bg-primary rounded-lg text-white font-medium hover:bg-primary-600 transition-colors"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -539,6 +593,7 @@ import TalentCard from '../components/talent/TalentCard.vue';
 import { CATEGORIES } from '../data/constants';
 import { useFilterStore } from '../stores/filterStore';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/authStore';
 import {
   Laptop,
   Hammer,
@@ -553,6 +608,7 @@ import {
 
 const router = useRouter();
 const filterStore = useFilterStore();
+const authStore = useAuthStore();
 
 // ── Données des talents ──────────────────────────────────────
 const { talents, isLoading } = useTalents();
@@ -570,8 +626,11 @@ const topTalents = computed(() => [...talents.value].sort((a, b) => b.note - a.n
 const statsSection = ref(null);
 const statsVisible = ref(false);
 
-// ── Modal recruteur ───────────────────────────────────────────
+// ── Modals ────────────────────────────────────────────────────
 const recruiterModalOpen = ref(false);
+const exploreBlockedModalOpen = ref(false);
+const createProfileBlockedModalOpen = ref(false);
+const createProfileBlockedMessage = ref('');
 
 const bigStats = computed(() => [
   {
@@ -665,7 +724,36 @@ const howItWorks = [
   },
 ];
 
-// ── Modal recruteur ───────────────────────────────────────────
+// ── Handlers pour explorer ────────────────────────────────────
+function handleExploreClick() {
+  if (authStore.isTalent) {
+    exploreBlockedModalOpen.value = true;
+  } else {
+    router.push('/explore');
+  }
+}
+
+// ── Handlers pour créer profil ────────────────────────────────
+function handleCreateProfileClick() {
+  if (authStore.isLoggedIn) {
+    if (authStore.isTalent) {
+      createProfileBlockedMessage.value = 'Vous avez déjà un profil Talent';
+      createProfileBlockedModalOpen.value = true;
+    } else if (authStore.isRecruteur) {
+      createProfileBlockedMessage.value =
+        'Vous etes un recruteur, deconnectez-vous pour pouvoir créer un profil Talent';
+      createProfileBlockedModalOpen.value = true;
+    } else if (authStore.isAdmin) {
+      createProfileBlockedMessage.value =
+        "Vous etes l'admininstrateur, deconnectez-vous pour pouvoir créer un profil Talent";
+      createProfileBlockedModalOpen.value = true;
+    }
+  } else {
+    router.push('/onboarding');
+  }
+}
+
+// ── Modals ────────────────────────────────────────────────────
 function showRecruiterModal() {
   recruiterModalOpen.value = true;
 }
