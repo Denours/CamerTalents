@@ -465,11 +465,9 @@ onMounted(async () => {
       const data = await talentsAPI.getById(authStore.user.talentId);
       if (data.success) {
         monProfil.value = data.talent;
-        console.log('Profil charge');
       }
     } catch (error) {
       console.error(`Erreur :  ${error.message}`);
-      /* silencieux */
     }
   }
 });

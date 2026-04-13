@@ -61,8 +61,8 @@
               :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 200 } }"
               class="text-white/60 text-lg leading-relaxed mb-10 max-w-lg"
             >
-              Développeurs, artisans, créatifs, formateurs — CamerTalents connecte les talents locaux
-              avec ceux qui en ont besoin, partout au Cameroun.
+              Développeurs, artisans, créatifs, formateurs — CamerTalents connecte les talents
+              locaux avec ceux qui en ont besoin, partout au Cameroun.
             </p>
             <!-- CTAs -->
             <div
@@ -451,8 +451,8 @@
                 <span class="text-gradient">gratuitement</span>
               </h2>
               <p class="text-white/50 text-lg mb-10 max-w-lg mx-auto">
-                Crée ton profil en 3 minutes et commence à être visible par des milliers de recruteurs
-                et particuliers au Cameroun.
+                Crée ton profil en 3 minutes et commence à être visible par des milliers de
+                recruteurs et particuliers au Cameroun.
               </p>
               <RouterLink to="/onboarding" class="btn-primary btn-primary--large">
                 Créer mon profil maintenant
@@ -556,7 +556,7 @@ const filterStore = useFilterStore();
 
 // ── Données des talents ──────────────────────────────────────
 const { talents, isLoading } = useTalents();
-const { availabilityRate, averageRating } = useStats();
+const { availabilityRate, averageRating, talentsByCity } = useStats();
 
 // 5 premiers talents pour les floating cards du hero
 const featuredTalents = computed(() =>
@@ -579,7 +579,7 @@ const bigStats = computed(() => [
     label: 'Talents inscrits',
   },
   {
-    display: statsVisible.value ? VILLES.length : '0',
+    display: statsVisible.value ? Object.keys(talentsByCity.value).length : '0',
     label: 'Villes couvertes',
   },
   {
