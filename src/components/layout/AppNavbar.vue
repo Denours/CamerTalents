@@ -22,15 +22,15 @@
 
         <!-- ── Navigation desktop ────────────────────── -->
         <div class="hidden md:flex items-center gap-1">
-          <RouterLink
+          <button
             v-for="link in navLinks"
             :key="link.to"
-            :to="link.to"
+            @click="handleNavClick(link)"
             class="nav-link"
             :class="isActive(link.to) ? 'nav-link--active' : ''"
           >
             {{ link.label }}
-          </RouterLink>
+          </button>
         </div>
 
         <!-- ── Actions desktop ───────────────────────── -->
@@ -240,16 +240,15 @@
       >
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
           <!-- Liens de navigation publics -->
-          <RouterLink
+          <button
             v-for="link in navLinks"
             :key="link.to"
-            :to="link.to"
+            @click="handleNavClick(link)"
             class="mobile-nav-link"
             :class="isActive(link.to) ? 'mobile-nav-link--active' : ''"
-            @click="closeMobileMenu"
           >
             {{ link.label }}
-          </RouterLink>
+          </button>
 
           <!-- Séparateur -->
           <div class="my-2 border-t border-white/[0.06]" />
@@ -414,6 +413,61 @@
 
   <!-- Spacer -->
   <div class="h-16" />
+
+  <!-- Modal Explorer pour talents -->
+  <Teleport to="body">
+    <Transition name="modal">
+      <div
+        v-if="exploreModalOpen"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+        @click.self="exploreModalOpen = false"
+      >
+        <div class="bg-[#1A1230] rounded-2xl p-6 max-w-md w-full border border-white/10">
+          <div class="text-center">
+            <div class="text-4xl mb-4">🚫</div>
+            <h3 class="text-xl font-bold text-white mb-2">Accès refusé</h3>
+            <p class="text-white/70 mb-6">
+              En tant que Talent vous ne pouvez pas explorer d'autres talents.
+            </p>
+            <button
+              @click="exploreModalOpen = false"
+              class="px-6 py-2 bg-primary rounded-lg text-white font-medium hover:bg-primary-600 transition-colors"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
+
+  <!-- Modal Statistiques pour talents -->
+  <Teleport to="body">
+    <Transition name="modal">
+      <div
+        v-if="statsModalOpen"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+        @click.self="statsModalOpen = false"
+      >
+        <div class="bg-[#1A1230] rounded-2xl p-6 max-w-md w-full border border-white/10">
+          <div class="text-center">
+            <div class="text-4xl mb-4">📊</div>
+            <h3 class="text-xl font-bold text-white mb-2">Accès refusé</h3>
+            <p class="text-white/70 mb-6">
+              En tant que Talent vous ne pouvez pas consulter l'aperçu des statistiques de
+              CamerTalents.
+            </p>
+            <button
+              @click="statsModalOpen = false"
+              class="px-6 py-2 bg-primary rounded-lg text-white font-medium hover:bg-primary-600 transition-colors"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup>
@@ -437,14 +491,16 @@ const mobileMenuOpen = ref(false);
 const isScrolled = ref(false);
 const dropdownOpen = ref(false);
 const dropdownRef = ref(null);
+const exploreModalOpen = ref(false);
+const statsModalOpen = ref(false);
 
 // ── Liens de navigation publics ──────────────────────────────
-const navLinks = [
+const navLinks = computed(() => [
   { to: '/', label: 'Accueil' },
-  { to: '/explore', label: 'Explorer' },
-  { to: '/dashboard', label: 'Statistiques' },
+  { to: '/explore', label: 'Explorer', modal: authStore.isTalent ? 'explore' : null },
+  { to: '/dashboard', label: 'Statistiques', modal: authStore.isTalent ? 'stats' : null },
   { to: '/map', label: 'Carte' },
-];
+]);
 
 // ── Badge rôle ───────────────────────────────────────────────
 const roleLabel = computed(() => {
@@ -494,6 +550,19 @@ const userMenuItems = computed(() => {
 // ── Helpers ──────────────────────────────────────────────────
 function isActive(path) {
   return route.path === path || route.path.startsWith(path + '/');
+}
+
+function handleNavClick(link) {
+  if (link.modal === 'explore') {
+    exploreModalOpen.value = true;
+    mobileMenuOpen.value = false;
+  } else if (link.modal === 'stats') {
+    statsModalOpen.value = true;
+    mobileMenuOpen.value = false;
+  } else {
+    router.push(link.to);
+    mobileMenuOpen.value = false;
+  }
 }
 
 function toggleMobileMenu() {
@@ -590,5 +659,16 @@ onUnmounted(() => {
 .mobile-menu-leave-to {
   opacity: 0;
   transform: translateY(-8px);
+}
+
+/* ── Animation modals ───────────────────────────────────── */
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.2s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 </style>

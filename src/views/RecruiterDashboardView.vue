@@ -154,8 +154,8 @@
             <div v-if="talentsFavoris.length > 0" class="space-y-3">
               <RouterLink
                 v-for="talent in talentsFavoris.slice(0, 4)"
-                :key="talent.id"
-                :to="`/talent/${talent.id}`"
+                :key="talent._id"
+                :to="`/talent/${talent._id}`"
                 class="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-200 group"
               >
                 <img
@@ -255,8 +255,8 @@
             <div class="grid sm:grid-cols-2 gap-4">
               <RouterLink
                 v-for="talent in talentsRecommandes"
-                :key="talent.id"
-                :to="`/talent/${talent.id}`"
+                :key="talent._id"
+                :to="`/talent/${talent._id}`"
                 class="flex items-start gap-3 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-secondary/20 transition-all duration-200 group"
               >
                 <img
@@ -288,19 +288,19 @@
                   @click.prevent="toggleFavoriEtRecharger(talent._id)"
                   class="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center transition-all duration-200"
                   :class="
-                    authStore.isFavori(talent.id)
+                    authStore.isFavori(talent._id)
                       ? 'text-secondary bg-secondary/15'
                       : 'text-white/20 hover:text-secondary hover:bg-secondary/10'
                   "
                   :title="
-                    authStore.isFavori(talent.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'
+                    authStore.isFavori(talent._id) ? 'Retirer des favoris' : 'Ajouter aux favoris'
                   "
                 >
                   <svg
                     width="13"
                     height="13"
                     viewBox="0 0 24 24"
-                    :fill="authStore.isFavori(talent.id) ? 'currentColor' : 'none'"
+                    :fill="authStore.isFavori(talent._id) ? 'currentColor' : 'none'"
                     stroke="currentColor"
                     stroke-width="2"
                   >

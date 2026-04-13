@@ -215,7 +215,7 @@
           tag="div"
           class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
         >
-          <div v-for="talent in favorisAffiches" :key="talent.id" class="favori-card group">
+          <div v-for="talent in favorisAffiches" :key="talent._id" class="favori-card group">
             <!-- Bouton retirer (coin haut droit) -->
             <button
               @click="confirmerSuppression(talent)"
@@ -240,7 +240,7 @@
             </button>
 
             <!-- Lien vers le profil -->
-            <RouterLink :to="`/talent/${talent.id}`" class="block">
+            <RouterLink :to="`/talent/${talent._id}`" class="block">
               <!-- En-tête de la card -->
               <div class="flex items-start gap-4 mb-4">
                 <img

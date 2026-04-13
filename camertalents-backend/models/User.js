@@ -64,6 +64,14 @@ const UserSchema = new mongoose.Schema(
         ref: 'Talent',
       },
     ],
+
+    // Liste des IDs de talents dont le profil a été vu (pour les recruteurs)
+    vuesTalents: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Talent',
+      },
+    ],
   },
   {
     // timestamps: true → MongoDB ajoute automatiquement

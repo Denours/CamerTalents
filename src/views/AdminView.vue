@@ -169,7 +169,7 @@
               <div class="space-y-3">
                 <div
                   v-for="talent in derniersInscrits"
-                  :key="talent.id"
+                  :key="talent._id"
                   class="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]"
                 >
                   <img
@@ -259,7 +259,7 @@
                 <tbody>
                   <tr
                     v-for="talent in talentsFiltresAdmin"
-                    :key="talent.id"
+                    :key="talent._id"
                     class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors duration-200"
                   >
                     <!-- Talent -->

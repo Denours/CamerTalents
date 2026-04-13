@@ -12,6 +12,7 @@ import { authAPI, recruteurAPI } from '../services/api';
 // Clés de stockage
 const TOKEN_KEY = 'camertalents_token';
 const ROLE_KEY = 'camertalents_role'; // lu par le router guard
+const TALENT_ID_KEY = 'camertalents_talentId';
 
 export const useAuthStore = defineStore('auth', () => {
   // ══════════════════════════════════════════════════════════
@@ -59,6 +60,9 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await authAPI.me();
       if (data.success) {
         user.value = data.user;
+        if (data.user.talentId) {
+          localStorage.setItem(TALENT_ID_KEY, data.user.talentId);
+        }
       }
     } catch {
       // Token expiré ou invalide → on le supprime
@@ -80,6 +84,9 @@ export const useAuthStore = defineStore('auth', () => {
 
       localStorage.setItem(TOKEN_KEY, data.token);
       localStorage.setItem(ROLE_KEY, data.user.role);
+      if (data.user.talentId) {
+        localStorage.setItem(TALENT_ID_KEY, data.user.talentId);
+      }
       user.value = data.user;
 
       return { success: true, user: data.user, talentId: data.user.talentId };
@@ -129,6 +136,9 @@ export const useAuthStore = defineStore('auth', () => {
       // Sauvegarde le token ET le rôle (lu par le router guard)
       localStorage.setItem(TOKEN_KEY, data.token);
       localStorage.setItem(ROLE_KEY, data.user.role);
+      if (data.user.talentId) {
+        localStorage.setItem(TALENT_ID_KEY, data.user.talentId);
+      }
       user.value = data.user;
 
       return { success: true, user: data.user };
@@ -152,6 +162,7 @@ export const useAuthStore = defineStore('auth', () => {
     } finally {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(ROLE_KEY);
+      localStorage.removeItem(TALENT_ID_KEY);
       user.value = null;
       authError.value = '';
     }

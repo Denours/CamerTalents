@@ -30,14 +30,14 @@ const routes = [
     path: '/talent/:id',
     name: 'talent-profile',
     component: () => import('../views/TalentProfileView.vue'),
-    meta: { title: 'Profil Talent — CamerTalents' },
+    meta: { title: 'Profil Talent — CamerTalents', requiresAuth: true },
     props: true,
   },
   {
     path: '/dashboard',
     name: 'dashboard',
     component: () => import('../views/DashboardView.vue'),
-    meta: { title: 'Tableau de bord — CamerTalents' },
+    meta: { title: 'Tableau de bord — CamerTalents', requiresAuth: true },
   },
   {
     path: '/map',
@@ -149,9 +149,7 @@ const router = createRouter({
   },
 });
 
-// ══════════════════════════════════════════════════════════════
-//  GUARDS DE NAVIGATION
-// ══════════════════════════════════════════════════════════════
+// ── Guards de navigation ─────────────────────────────────────
 router.beforeEach((to, from) => {
   // ── 1. Mise à jour du titre de la page ────────────────────
   document.title = to.meta.title || 'CamerTalents';
@@ -159,6 +157,7 @@ router.beforeEach((to, from) => {
   const token = localStorage.getItem('camertalents_token');
   const isLoggedIn = !!token;
   const userRole = localStorage.getItem('camertalents_role');
+  const userTalentId = localStorage.getItem('camertalents_talentId'); // On devra stocker ça
 
   // ── 3. Routes guestOnly (login, register) ─────────────────
   // Si l'utilisateur est déjà connecté et essaie d'accéder
@@ -189,7 +188,21 @@ router.beforeEach((to, from) => {
       return getDashboardRoute(userRole);
     }
   }
-  // ── 6. Navigation autorisée ───────────────────────────────
+
+  // ── 6. Règles spéciales pour les talents ─────────────────
+  // Les talents peuvent voir leur propre profil
+  if (to.name === 'talent-profile' && isLoggedIn && userRole === 'talent') {
+    const talentId = to.params.id;
+    if (userTalentId && userTalentId === talentId) {
+      // Autoriser l'accès à son propre profil
+      return true;
+    } else {
+      // Interdire l'accès aux autres profils
+      return getDashboardRoute(userRole);
+    }
+  }
+
+  // ── 7. Navigation autorisée ───────────────────────────────
   return true;
 });
 

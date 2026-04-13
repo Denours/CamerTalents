@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
     const filtre = {};
 
     // Recherche full-text sur nom et métier
-    if (search && search.trim()) {
+    if (search?.trim()) {
       filtre.$text = { $search: search.trim() };
     }
 
@@ -67,16 +67,16 @@ router.get('/', async (req, res) => {
 
     switch (sortBy) {
       case 'note':
-        sortOptions.note = -1;
+        sortOptions.note = sortOrder;
         break;
       case 'vues':
-        sortOptions.vues = -1;
+        sortOptions.vues = sortOrder;
         break;
       case 'recent':
-        sortOptions.createdAt = -1;
+        sortOptions.createdAt = sortOrder;
         break;
       default:
-        sortOptions.createdAt = -1;
+        sortOptions.createdAt = sortOrder;
         break;
     }
 
@@ -237,10 +237,30 @@ router.delete('/:id', proteger, autoriser('admin'), async (req, res) => {
 //  Incrémente le compteur de vues d'un profil
 //  Route PUBLIQUE — appelée quand on visite un profil
 // ════════════════════════════════════════════════════════════
-router.post('/:id/vue', async (req, res) => {
+router.post('/:id/vue', proteger, async (req, res) => {
   try {
-    // $inc = opérateur MongoDB pour incrémenter un champ
-    await Talent.findByIdAndUpdate(req.params.id, { $inc: { vues: 1 } });
+    const talentId = req.params.id;
+    const userId = req.user.id; // req.user ajouté par le middleware proteger
+    const user = req.user;
+
+    // Vérifier si l'utilisateur est un recruteur
+    if (user.role !== 'recruteur') {
+      return res
+        .status(403)
+        .json({ success: false, message: 'Seuls les recruteurs peuvent incrémenter les vues.' });
+    }
+
+    // Vérifier si ce recruteur a déjà vu ce talent
+    if (user?.vuesTalents.includes(talentId)) {
+      return res.status(200).json({ success: true, message: 'Vue déjà comptée.' });
+    }
+
+    // Incrémenter les vues du talent
+    await Talent.findByIdAndUpdate(talentId, { $inc: { vues: 1 } });
+
+    // Ajouter le talentId aux vues du recruteur
+    await User.findByIdAndUpdate(userId, { $push: { vuesTalents: talentId } });
+
     res.status(200).json({ success: true });
   } catch (error) {
     console.error('\n', error.message);
