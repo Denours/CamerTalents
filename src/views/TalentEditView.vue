@@ -573,7 +573,7 @@
           </div>
 
           <!-- Zone d'upload -->
-          <div
+          <label
             class="flex flex-col items-center justify-center gap-3 w-full py-8 rounded-xl border-2 border-dashed border-white/15 cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-all duration-200 group"
           >
             <div
@@ -611,7 +611,7 @@
               class="hidden"
               @change="handleCvUpload"
             />
-          </div>
+          </label>
           <p v-if="cvError" class="text-xs text-red-400 mt-2">{{ cvError }}</p>
         </div>
       </div>
@@ -862,10 +862,14 @@ function handleCvUpload(event) {
   ];
   if (!allowed.includes(file.type)) {
     cvError.value = 'Format non supporté. Acceptés : PDF, DOC, DOCX';
+    // Réinitialise l'input pour permettre de sélectionner à nouveau
+    event.target.value = '';
     return;
   }
   if (file.size > 5 * 1024 * 1024) {
     cvError.value = 'Fichier trop lourd. Maximum 5 Mo.';
+    // Réinitialise l'input pour permettre de sélectionner à nouveau
+    event.target.value = '';
     return;
   }
   cvError.value = '';
@@ -873,6 +877,8 @@ function handleCvUpload(event) {
   const reader = new FileReader();
   reader.onload = (e) => {
     editForm.value.cvBase64 = e.target.result;
+    // Réinitialise l'input pour permettre de sélectionner le même fichier à nouveau
+    event.target.value = '';
   };
   reader.readAsDataURL(file);
 }

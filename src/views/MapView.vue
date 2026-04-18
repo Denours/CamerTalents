@@ -277,8 +277,8 @@ const totalTalents = computed(() => talents.value.length);
 // ── Couleurs par catégorie ────────────────────────────────────
 const legend = [
   { label: maxCityCount.value, color: '#EAB308' },
-  { label: sortedCities.value[1].count, color: '#6C3CE1' },
-  { label: sortedCities.value[2].count, color: '#F97316' },
+  { label: sortedCities.value[1]?.count, color: '#6C3CE1' },
+  { label: sortedCities.value[2]?.count, color: '#F97316' },
   { label: sortedCities.value[3]?.count, color: '#22C55E' },
   { label: sortedCities.value[4]?.count, color: '#06B6D4' },
   { label: sortedCities.value[5]?.count, color: '#EC4899' },

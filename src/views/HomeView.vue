@@ -101,7 +101,7 @@
               class="floating-card floating-card--main absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
             >
               <img
-                :src="featuredTalents[0]?.avatar"
+                :src="featuredTalents[0]?.avatar || defaultAvatar"
                 alt="Avatar"
                 class="w-12 h-12 rounded-full object-cover ring-2 ring-primary/50"
               />
@@ -117,8 +117,8 @@
               style="animation-delay: 0s"
             >
               <img
-                :src="featuredTalents[1]?.avatar"
-                alt=""
+                :src="featuredTalents[1]?.avatar || defaultAvatar"
+                alt="avatar"
                 class="w-9 h-9 rounded-full object-cover"
               />
               <div>
@@ -132,8 +132,8 @@
               style="animation-delay: 0.8s"
             >
               <img
-                :src="featuredTalents[2]?.avatar"
-                alt=""
+                :src="featuredTalents[2]?.avatar || defaultAvatar"
+                alt="avatar"
                 class="w-9 h-9 rounded-full object-cover"
               />
               <div>
@@ -147,8 +147,8 @@
               style="animation-delay: 1.4s"
             >
               <img
-                :src="featuredTalents[3]?.avatar"
-                alt=""
+                :src="featuredTalents[3]?.avatar || defaultAvatar"
+                alt="avatar"
                 class="w-9 h-9 rounded-full object-cover"
               />
               <div>
@@ -162,8 +162,8 @@
               style="animation-delay: 2s"
             >
               <img
-                :src="featuredTalents[4]?.avatar"
-                alt=""
+                :src="featuredTalents[4]?.avatar || defaultAvatar"
+                alt="avatar"
                 class="w-9 h-9 rounded-full object-cover"
               />
               <div>
@@ -215,6 +215,7 @@
             </svg>
             <!-- Badge "vues" décoratif -->
             <div
+              v-if="featuredTalents[4]"
               class="absolute top-36 right-0 bg-secondary/20 backdrop-blur-sm border border-secondary/30 rounded-xl px-3 py-2 text-center"
             >
               <p class="font-mono text-lg font-bold text-secondary">
@@ -224,6 +225,7 @@
             </div>
             <!-- Badge "note" décoratif -->
             <div
+              v-if="featuredTalents.length !== 0"
               class="absolute bottom-36 left-0 bg-yellow-500/10 backdrop-blur-sm border border-yellow-500/20 rounded-xl px-3 py-2 text-center"
             >
               <p class="font-mono text-lg font-bold text-yellow-400">⭐{{ averageRating }}</p>
@@ -301,7 +303,7 @@
                 <component :is="cat.emoji" class="text-primary" />
               </span>
               <p class="font-semibold text-sm text-white">{{ cat.label }}</p>
-              <p class="text-[11px] text-white/40 mt-1">{{ cat.count }} talents</p>
+              <p class="text-[11px] text-white/40 mt-1">{{ cat.count }} talent{{cat.count > 1 ? 's' : ''}}</p>
             </div>
           </div>
         </div>
@@ -631,6 +633,9 @@ const recruiterModalOpen = ref(false);
 const exploreBlockedModalOpen = ref(false);
 const createProfileBlockedModalOpen = ref(false);
 const createProfileBlockedMessage = ref('');
+
+const defaultAvatar =
+  'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg';
 
 const bigStats = computed(() => [
   {
