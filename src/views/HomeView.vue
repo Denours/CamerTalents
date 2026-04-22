@@ -215,7 +215,7 @@
             </svg>
             <!-- Badge "vues" décoratif -->
             <div
-              v-if="featuredTalents[4]"
+              v-if="featuredTalents[4]?.vues >= 200"
               class="absolute top-36 right-0 bg-secondary/20 backdrop-blur-sm border border-secondary/30 rounded-xl px-3 py-2 text-center"
             >
               <p class="font-mono text-lg font-bold text-secondary">
@@ -303,7 +303,9 @@
                 <component :is="cat.emoji" class="text-primary" />
               </span>
               <p class="font-semibold text-sm text-white">{{ cat.label }}</p>
-              <p class="text-[11px] text-white/40 mt-1">{{ cat.count }} talent{{cat.count > 1 ? 's' : ''}}</p>
+              <p class="text-[11px] text-white/40 mt-1">
+                {{ cat.count }} talent{{ cat.count > 1 ? 's' : '' }}
+              </p>
             </div>
           </div>
         </div>
@@ -326,8 +328,8 @@
               </p>
               <h2 class="font-title text-4xl sm:text-5xl font-bold">Talents du moment</h2>
             </div>
-            <RouterLink
-              to="/explore"
+            <button
+              @click="handleExploreClick"
               class="hidden sm:flex items-center gap-2 text-white/50 hover:text-white text-sm transition-colors duration-200"
             >
               Voir tous
@@ -342,7 +344,7 @@
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <polyline points="12 5 19 12 12 19" />
               </svg>
-            </RouterLink>
+            </button>
           </div>
           <!-- Grille de TalentCards -->
           <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -361,7 +363,7 @@
           </div>
           <!-- CTA centré -->
           <div class="text-center mt-12">
-            <RouterLink to="/explore" class="btn-primary-outline">
+            <button @click="handleExploreClick" class="btn-primary-outline">
               Voir tous les talents
               <svg
                 width="16"
@@ -374,7 +376,7 @@
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <polyline points="12 5 19 12 12 19" />
               </svg>
-            </RouterLink>
+            </button>
           </div>
         </div>
       </section>
@@ -660,6 +662,11 @@ const bigStats = computed(() => [
 let observer = null;
 
 function goToCategory(categoryLabel) {
+  // Vérifie si l'utilisateur est un talent
+  if (authStore.isTalent) {
+    exploreBlockedModalOpen.value = true;
+    return;
+  }
   // 1. Réinitialise tous les filtres proprement
   filterStore.resetFilters();
   // 2. Applique la catégorie cliquée

@@ -173,7 +173,7 @@
                   class="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]"
                 >
                   <img
-                    :src="talent.avatar"
+                    :src="talent.avatar || defaultAvatar"
                     :alt="talent.nom"
                     class="w-9 h-9 rounded-xl object-cover flex-shrink-0"
                   />
@@ -266,7 +266,7 @@
                     <td class="px-6 py-4">
                       <div class="flex items-center gap-3">
                         <img
-                          :src="talent.avatar"
+                          :src="talent.avatar || defaultAvatar"
                           :alt="talent.nom"
                           class="w-9 h-9 rounded-xl object-cover flex-shrink-0"
                         />
@@ -515,14 +515,14 @@
       <Transition name="tab-fade" mode="out-in">
         <div v-if="activeTab === 'settings'" key="settings" class="space-y-6">
           <!-- Danger zone -->
-          <div class="admin-card border-red-500/20">
+          <!-- <div class="admin-card border-red-500/20">
             <h2 class="admin-card__title text-red-400 mb-2">⚠️ Zone dangereuse</h2>
             <p class="text-sm text-white/40 mb-6">
               Ces actions sont irréversibles. Procède avec prudence.
             </p>
-            <div class="space-y-4">
+            <div class="space-y-4"> -->
               <!-- Supprimer tous les talents ajoutés -->
-              <div
+              <!-- <div
                 class="flex items-center justify-between p-4 rounded-xl bg-red-500/5 border border-red-500/10"
               >
                 <div>
@@ -538,10 +538,10 @@
                 >
                   Supprimer
                 </button>
-              </div>
+              </div> -->
 
               <!-- Supprimer tous les comptes inscrits -->
-              <div
+              <!-- <div
                 class="flex items-center justify-between p-4 rounded-xl bg-red-500/5 border border-red-500/10"
               >
                 <div>
@@ -557,10 +557,10 @@
                 >
                   Supprimer
                 </button>
-              </div>
+              </div> -->
 
               <!-- Reset complet -->
-              <div
+              <!-- <div
                 class="flex items-center justify-between p-4 rounded-xl bg-red-500/8 border border-red-500/15"
               >
                 <div>
@@ -578,7 +578,7 @@
                 </button>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <!-- Infos de la plateforme -->
           <div class="admin-card">
@@ -683,6 +683,8 @@ const comptesData = ref([]); // comptes depuis /api/admin/comptes
 const talentsData = ref([]); // talents depuis /api/talents
 const isLoadingData = ref(true);
 
+const defaultAvatar =
+  'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg';
 onMounted(async () => {
   await chargerDonnees();
 });
@@ -841,27 +843,27 @@ async function supprimerCompte(compte) {
 }
 
 // ── Paramètres — Actions dangereuses ─────────────────────────
-async function supprimerTousLesTalents() {
-  if (!confirm('Supprimer tous les profils ?')) return;
-  await chargerDonnees();
-}
+// async function supprimerTousLesTalents() {
+//   if (!confirm('Supprimer tous les profils ?')) return;
+//   await chargerDonnees();
+// }
 
-async function supprimerTousLesComptes() {
-  if (!confirm('Supprimer tous les comptes inscrits ?')) return;
-  await chargerDonnees();
-}
+// async function supprimerTousLesComptes() {
+//   if (!confirm('Supprimer tous les comptes inscrits ?')) return;
+//   await chargerDonnees();
+// }
 
-async function resetComplet() {
-  if (!confirm('Reset complet ? Cette action est irréversible !')) return;
-  try {
-    await adminAPI.reset();
-    await chargerDonnees();
-    authStore.logout();
-    router.push('/');
-  } catch (error) {
-    alert(`Erreur reset : ${error.message}`);
-  }
-}
+// async function resetComplet() {
+//   if (!confirm('Reset complet ? Cette action est irréversible !')) return;
+//   try {
+//     await adminAPI.reset();
+//     await chargerDonnees();
+//     authStore.logout();
+//     router.push('/');
+//   } catch (error) {
+//     alert(`Erreur reset : ${error.message}`);
+//   }
+// }
 
 // ── Helpers ──────────────────────────────────────────────────
 function formatDate(dateStr) {

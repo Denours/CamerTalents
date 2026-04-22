@@ -103,7 +103,7 @@
         >
           <div class="chart-card__header">
             <h2 class="chart-card__title">Croissance mensuelle</h2>
-            <span class="chart-badge">2024</span>
+            <span class="chart-badge">{{ currentYear }}</span>
           </div>
           <div class="h-64">
             <Line v-if="growthChartData" :data="growthChartData" :options="lineOptions" />
@@ -391,6 +391,8 @@ const today = new Date().toLocaleDateString('fr-FR', {
   month: 'long',
   year: 'numeric',
 });
+
+const currentYear = new Date().getFullYear();
 
 // ── KPI Cards ────────────────────────────────────────────────
 const totalTalents = computed(() => talents.value.length);

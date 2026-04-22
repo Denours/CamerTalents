@@ -32,7 +32,7 @@
         :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 100 } }"
       >
         <!-- Comptes démo (aide visuelle) -->
-        <div class="mb-7 p-4 rounded-xl bg-primary/8 border border-primary/20">
+        <!-- <div class="mb-7 p-4 rounded-xl bg-primary/8 border border-primary/20">
           <p class="text-xs font-semibold text-primary-100 uppercase tracking-widest mb-3">
             Comptes de démonstration
           </p>
@@ -64,14 +64,14 @@
           <p class="text-[10px] text-white/25 mt-2 text-center">
             Mot de passe démo : <span class="font-mono text-white/40">Admin@2024!</span>
           </p>
-        </div>
+        </div> -->
 
         <!-- Séparateur -->
-        <div class="flex items-center gap-3 mb-7">
+        <!-- <div class="flex items-center gap-3 mb-7">
           <div class="flex-1 h-px bg-white/[0.08]" />
           <span class="text-xs text-white/25">ou connecte-toi avec ton compte</span>
           <div class="flex-1 h-px bg-white/[0.08]" />
-        </div>
+        </div> -->
 
         <!-- Formulaire -->
         <form @submit.prevent="submitLogin" class="space-y-5">
@@ -377,13 +377,13 @@ const demoAccounts = [
   // Pour les comptes démo recruteur/talent, ils doivent
   // être créés via l'API (register) — plus de simulation
 ];
-const demoPassword = ref('Admin@2024!');
+// const demoPassword = ref('Admin@2024!');
 // Remplit le formulaire avec les credentials du compte démo
-function fillDemo(demo) {
-  form.value.email = demo.email;
-  form.value.password = demoPassword;
-  authStore.clearError();
-}
+// function fillDemo(demo) {
+//   form.value.email = demo.email;
+//   form.value.password = demoPassword;
+//   authStore.clearError();
+// }
 
 // ── Validation ───────────────────────────────────────────────
 const validators = {

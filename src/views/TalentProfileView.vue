@@ -15,12 +15,12 @@
       <div class="text-6xl">😕</div>
       <h2 class="font-title text-2xl font-bold">Profil introuvable</h2>
       <p class="text-white/40">Ce talent n'existe pas ou a été supprimé.</p>
-      <RouterLink
-        to="/explore"
+      <button
+        @click="goBackToExplore"
         class="px-6 py-3 rounded-xl bg-primary text-white font-medium hover:bg-primary-600 transition-colors"
       >
         Retour à l'annuaire
-      </RouterLink>
+      </button>
     </div>
 
     <!-- Profil complet -->
@@ -992,6 +992,35 @@
     </Teleport>
 
     <!-- ════════════════════════════════════════════
+     MODAL EXPLORER BLOQUÉ POUR TALENTS
+════════════════════════════════════════════ -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div
+          v-if="exploreBlockedModalOpen"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          @click.self="exploreBlockedModalOpen = false"
+        >
+          <div class="bg-[#1A1230] rounded-2xl p-6 max-w-md w-full border border-white/10">
+            <div class="text-center">
+              <div class="text-4xl mb-4">🚫</div>
+              <h3 class="text-xl font-bold text-white mb-2">Accès refusé</h3>
+              <p class="text-white/70 mb-6">
+                En tant que Talent vous ne pouvez pas explorer d'autres talents.
+              </p>
+              <button
+                @click="exploreBlockedModalOpen = false"
+                class="px-6 py-2 bg-primary rounded-lg text-white font-medium hover:bg-primary-600 transition-colors"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
+    <!-- ════════════════════════════════════════════
      MODAL LAISSER UN AVIS
 ════════════════════════════════════════════ -->
     <Teleport to="body">
@@ -1100,13 +1129,14 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { talentsAPI } from '../services/api';
 import { useAuthStore } from '../stores/authStore';
 import TalentCard from '../components/talent/TalentCard.vue';
 
 // ── Route & navigation ───────────────────────────────────────
 const route = useRoute();
+const router = useRouter();
 
 // Vrai uniquement si on vient du dashboard talent
 const vientDuDashboard = computed(() => route.query.from === 'dashboard');
@@ -1136,6 +1166,7 @@ async function chargerTalent(id) {
 
 const cvUploadError = ref('');
 const cvViewerOpen = ref(false);
+const exploreBlockedModalOpen = ref(false);
 
 // ── Avis/Notation ────────────────────────────────────────────
 const avisList = ref([]);
@@ -1145,6 +1176,14 @@ const noteForm = ref(0);
 const commentaireForm = ref('');
 const submitAvisLoading = ref(false);
 const avisError = ref('');
+
+function goBackToExplore() {
+  if (authStore.isTalent) {
+    exploreBlockedModalOpen.value = true;
+  } else {
+    router.push('/explore');
+  }
+}
 
 async function chargerAvis(id) {
   if (!id) return;

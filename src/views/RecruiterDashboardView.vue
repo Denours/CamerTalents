@@ -260,7 +260,7 @@
                 class="flex items-start gap-3 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-secondary/20 transition-all duration-200 group"
               >
                 <img
-                  :src="talent.avatar"
+                  :src="talent.avatar || defaultAvatar"
                   :alt="talent.nom"
                   class="w-11 h-11 rounded-xl object-cover flex-shrink-0"
                 />
