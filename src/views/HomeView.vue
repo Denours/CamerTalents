@@ -215,7 +215,7 @@
             </svg>
             <!-- Badge "vues" décoratif -->
             <div
-              v-if="featuredTalents[4]?.vues >= 200"
+              v-if="featuredTalents[4]?.vues >= 30"
               class="absolute top-36 right-0 bg-secondary/20 backdrop-blur-sm border border-secondary/30 rounded-xl px-3 py-2 text-center"
             >
               <p class="font-mono text-lg font-bold text-secondary">

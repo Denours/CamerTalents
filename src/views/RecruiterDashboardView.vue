@@ -394,18 +394,18 @@
               Recherche rapide
             </h3>
             <div class="space-y-1">
-              <RouterLink
+              <div
                 v-for="cat in categoriesRapides"
                 :key="cat.label"
-                :to="`/explore?category=${encodeURIComponent(cat.label)}`"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/[0.05] transition-all duration-200"
+                @click="goToCategory(cat.label)"
+                class="flex items-center cursor-pointer gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/[0.05] transition-all duration-200"
               >
                 <span class="text-base">{{ cat.emoji }}</span>
                 <span class="flex-1">{{ cat.label }}</span>
                 <span class="font-mono text-xs text-white/25">
                   {{ cat.count }}
                 </span>
-              </RouterLink>
+              </div>
             </div>
           </div>
 
@@ -475,10 +475,14 @@ import { useAuthStore } from '../stores/authStore';
 import { useStats } from '../composables/useStats';
 import { CATEGORIES } from '../data/constants';
 import { useTalents } from '../composables/useTalents';
+import { useFilterStore } from '../stores/filterStore';
+
 import { recruteurAPI, talentsAPI } from '../services/api';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const filterStore = useFilterStore();
+
 const { talentsByCategory } = useStats();
 const { talents } = useTalents();
 
@@ -487,7 +491,21 @@ const talentsRecommandesData = ref([]);
 
 const defaultAvatar =
   'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg';
+const exploreBlockedModalOpen = ref(false);
 
+function goToCategory(categoryLabel) {
+  // Vérifie si l'utilisateur est un talent
+  if (authStore.isTalent) {
+    exploreBlockedModalOpen.value = true;
+    return;
+  }
+  // 1. Réinitialise tous les filtres proprement
+  filterStore.resetFilters();
+  // 2. Applique la catégorie cliquée
+  filterStore.selectedCategory = categoryLabel;
+  // 3. Navigue vers l'annuaire (les filtres sont déjà en place)
+  router.push('/explore');
+}
 onMounted(async () => {
   const [favorisRes, talentsRes] = await Promise.all([
     recruteurAPI.getFavoris(),

@@ -36,7 +36,7 @@
         <!-- ── Actions desktop ───────────────────────── -->
         <div class="hidden md:flex items-center gap-3">
           <!-- Dark mode toggle -->
-          <button
+          <!-- <button
             @click="$emit('toggle-theme')"
             class="w-9 h-9 rounded-lg flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all duration-200"
             :title="isDark ? 'Mode clair' : 'Mode sombre'"
@@ -75,7 +75,7 @@
             >
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
-          </button>
+          </button> -->
 
           <!-- ════════════════════════════════════════
                ÉTAT : NON CONNECTÉ
