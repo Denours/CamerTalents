@@ -288,19 +288,6 @@ const legend = [
   { label: sortedCities.value[9]?.count, color: '#EAC777' },
 ];
 
-function getMarkerColor(count) {
-  if (count === legend[0].label) return '#EAB308';
-  else if (count === legend[1].label) return '#6C3CE1';
-  else if (count === legend[2].label) return '#F97316';
-  else if (count === legend[3].label) return '#22C55E';
-  else if (count === legend[4].label) return '#06B6D4';
-  else if (count === legend[5].label) return '#EC4899';
-  else if (count === legend[6].label) return '#8B5CF6';
-  else if (count === legend[7].label) return '#14B8A6';
-  else if (count === legend[8].label) return '#F41B3A';
-  else if (count === legend[9].label) return '#EAC777';
-  else return null;
-}
 // ── Initialisation Leaflet ───────────────────────────────────
 async function initMap() {
   // Import dynamique de Leaflet (évite les erreurs SSR)
@@ -338,7 +325,10 @@ function renderMarkers(L) {
     const count = talentsByCity.value[ville] || 0;
     if (count === 0) return;
 
-    const color = getMarkerColor(count);
+    // Trouver l'index dans sortedCities pour obtenir la couleur basée sur le rang
+    const sortedIndex = sortedCities.value.findIndex((city) => city.ville === ville);
+    if (sortedIndex === -1) return;
+    const color = getCityBarColor(sortedIndex);
     const radius = Math.max(8, Math.min(28, 8 + count * 1.8));
 
     // Marqueur cercle personnalisé
