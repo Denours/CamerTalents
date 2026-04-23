@@ -127,7 +127,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
   kpi: {
@@ -143,6 +143,8 @@ const props = defineProps({
 // ── Compteur animé ───────────────────────────────────────────
 // Anime la valeur de 0 jusqu'à kpi.value au montage
 const displayValue = ref(0);
+let mountTimeout = null;
+let animationInterval = null;
 
 function animateCount(target) {
   const numericTarget = Number.parseFloat(target);
@@ -158,7 +160,7 @@ function animateCount(target) {
   let current = 0;
   let step = 0;
 
-  const timer = setInterval(() => {
+  animationInterval = setInterval(() => {
     step++;
     current = Math.min(current + increment, numericTarget);
 
@@ -170,7 +172,8 @@ function animateCount(target) {
     }
 
     if (step >= steps) {
-      clearInterval(timer);
+      clearInterval(animationInterval);
+      animationInterval = null;
       // Valeur finale exacte
       displayValue.value = Number.isInteger(numericTarget)
         ? numericTarget
@@ -181,12 +184,23 @@ function animateCount(target) {
 
 onMounted(() => {
   // Délai pour que l'animation soit visible après l'entrée de la card
-  setTimeout(
+  mountTimeout = setTimeout(
     () => {
       animateCount(props.kpi.value);
     },
     props.index * 80 + 400,
   );
+});
+
+onUnmounted(() => {
+  if (mountTimeout) {
+    clearTimeout(mountTimeout);
+    mountTimeout = null;
+  }
+  if (animationInterval) {
+    clearInterval(animationInterval);
+    animationInterval = null;
+  }
 });
 
 // Si la valeur change (ex: données chargées), relancer l'animation

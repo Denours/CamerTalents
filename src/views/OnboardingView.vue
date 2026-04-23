@@ -866,7 +866,7 @@
               Cameroun.
             </p>
 
-            <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-3 font-bold">
               <RouterLink
                 to="/talent/dashboard"
                 @click="showSuccess = false"
@@ -874,8 +874,6 @@
               >
                 Accéder à mon espace →
               </RouterLink>
-            
-            
             </div>
           </div>
         </div>

@@ -369,17 +369,6 @@ function renderMarkers(L) {
         <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin: 0 0 8px;">
           ${count} talent${count > 1 ? 's' : ''} inscrit${count > 1 ? 's' : ''}
         </p>
-        <div style="
-          background: ${color}22;
-          border: 1px solid ${color}44;
-          border-radius: 8px;
-          padding: 4px 10px;
-          font-size: 12px;
-          color: ${color};
-          display: inline-block;
-        ">
-          Voir les profils →
-        </div>
       </div>
     `,
       {

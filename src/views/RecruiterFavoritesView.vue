@@ -434,7 +434,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '../stores/authStore';
 import { recruteurAPI } from '../services/api';
 
@@ -477,6 +477,10 @@ const talentsFavoris2 = ref([]);
 onMounted(async () => {
   const data = await recruteurAPI.getFavoris();
   if (data.success) talentsFavoris2.value = data.favoris;
+});
+
+onUnmounted(() => {
+  talentsFavoris2.value = [];
 });
 
 // ── Favoris filtrés + triés + recherchés ─────────────────────

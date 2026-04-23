@@ -469,7 +469,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/authStore';
 import { useStats } from '../composables/useStats';
@@ -495,6 +495,11 @@ onMounted(async () => {
   ]);
   if (favorisRes.success) talentsFavoris.value = favorisRes.favoris;
   if (talentsRes.success) talentsRecommandesData.value = talentsRes.talents;
+});
+
+onUnmounted(() => {
+  talentsFavoris.value = [];
+  talentsRecommandesData.value = [];
 });
 
 // Talents recommandés = top notés, pas encore en favoris

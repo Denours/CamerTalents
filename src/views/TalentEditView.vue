@@ -671,7 +671,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { talentsAPI } from '../services/api';
 import { useAuthStore } from '../stores/authStore';
@@ -702,6 +702,43 @@ onMounted(async () => {
   } catch {
     router.push('/onboarding');
   }
+});
+
+onUnmounted(() => {
+  // Cleanup timers
+  if (avatarTimer) {
+    clearTimeout(avatarTimer);
+    avatarTimer = null;
+  }
+  // Clear tous les portfolio timers
+  Object.keys(portfolioTimers).forEach((key) => {
+    if (portfolioTimers[key]) {
+      clearTimeout(portfolioTimers[key]);
+      delete portfolioTimers[key];
+    }
+  });
+  // Réinitialiser le profil et le formulaire
+  monProfil.value = null;
+  editForm.value = {
+    nom: '',
+    metier: '',
+    categorie: '',
+    ville: '',
+    quartier: '',
+    bio: '',
+    telephone: '',
+    email: '',
+    tarifJour: null,
+    disponibilite: 'disponible',
+    avatar: '',
+    competences: [],
+    portfolio: [],
+    cvBase64: '',
+    cvNom: '',
+  };
+  originalForm.value = '';
+  portfolioPreviews.value = [];
+  avatarPreview.value = '';
 });
 
 // ── Formulaire d'édition ─────────────────────────────────────

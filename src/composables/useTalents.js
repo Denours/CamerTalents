@@ -1,7 +1,7 @@
 // src/composables/useTalents.js — VERSION BACKEND
 import { useTalentStore } from '../stores/talentStore';
 import { storeToRefs } from 'pinia';
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 
 export function useTalents() {
   const store = useTalentStore();
@@ -12,6 +12,11 @@ export function useTalents() {
     if (talents.value.length === 0) {
       await store.fetchTalents();
     }
+  });
+
+  onUnmounted(() => {
+    // Pas de nettoyage spécifique nécessaire
+    // Les talents restent en cache dans le store
   });
 
   return {

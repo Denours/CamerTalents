@@ -521,8 +521,8 @@
               Ces actions sont irréversibles. Procède avec prudence.
             </p>
             <div class="space-y-4"> -->
-              <!-- Supprimer tous les talents ajoutés -->
-              <!-- <div
+          <!-- Supprimer tous les talents ajoutés -->
+          <!-- <div
                 class="flex items-center justify-between p-4 rounded-xl bg-red-500/5 border border-red-500/10"
               >
                 <div>
@@ -540,8 +540,8 @@
                 </button>
               </div> -->
 
-              <!-- Supprimer tous les comptes inscrits -->
-              <!-- <div
+          <!-- Supprimer tous les comptes inscrits -->
+          <!-- <div
                 class="flex items-center justify-between p-4 rounded-xl bg-red-500/5 border border-red-500/10"
               >
                 <div>
@@ -559,8 +559,8 @@
                 </button>
               </div> -->
 
-              <!-- Reset complet -->
-              <!-- <div
+          <!-- Reset complet -->
+          <!-- <div
                 class="flex items-center justify-between p-4 rounded-xl bg-red-500/8 border border-red-500/15"
               >
                 <div>
@@ -670,7 +670,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { talentsAPI, adminAPI } from '../services/api';
@@ -687,6 +687,12 @@ const defaultAvatar =
   'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg';
 onMounted(async () => {
   await chargerDonnees();
+});
+
+onUnmounted(() => {
+  statsData.value = null;
+  comptesData.value = [];
+  talentsData.value = [];
 });
 
 async function chargerDonnees() {

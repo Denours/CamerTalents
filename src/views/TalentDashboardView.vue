@@ -449,7 +449,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/authStore';
 import { talentsAPI } from '../services/api';
@@ -470,6 +470,10 @@ onMounted(async () => {
       console.error(`Erreur :  ${error.message}`);
     }
   }
+});
+
+onUnmounted(() => {
+  monProfil.value = null;
 });
 
 // ── Date d'inscription ───────────────────────────────────────
