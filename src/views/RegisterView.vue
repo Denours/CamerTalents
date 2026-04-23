@@ -45,9 +45,9 @@
               :class="selectedRole === 'talent' ? 'role-card--active' : ''"
             >
               <div
-                class="role-card__icon bg-primary/15 border-primary/20 group-hover:bg-primary/25"
+                class="role-card__icon bg-primary/15 text-secondary border-primary/20 group-hover:bg-primary/25"
               >
-                🎨
+                <Palette />
               </div>
               <h3 class="font-title font-bold text-lg mt-4 mb-2">Je suis un Talent</h3>
               <p class="text-sm text-white/50 leading-relaxed">
@@ -73,9 +73,9 @@
               :class="selectedRole === 'recruteur' ? 'role-card--active' : ''"
             >
               <div
-                class="role-card__icon bg-secondary/15 border-secondary/20 group-hover:bg-secondary/25"
+                class="role-card__icon bg-secondary/15 text-primary-500 border-secondary/20 group-hover:bg-secondary/25"
               >
-                🏢
+                <Building2 />
               </div>
               <h3 class="font-title font-bold text-lg mt-4 mb-2">Je recrute</h3>
               <p class="text-sm text-white/50 leading-relaxed">
@@ -401,7 +401,7 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/authStore';
-import { Check } from 'lucide-vue-next';
+import { Check, Palette, Building2 } from 'lucide-vue-next';
 
 const router = useRouter();
 const authStore = useAuthStore();

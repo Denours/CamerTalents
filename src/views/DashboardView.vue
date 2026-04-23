@@ -32,7 +32,7 @@
               <circle cx="12" cy="12" r="10" />
               <polyline points="12 6 12 12 16 14" />
             </svg>
-            Mis à jour le {{ today }}
+            Mis à jour le {{ todayFormatted }}
           </div>
         </div>
       </div>
@@ -362,7 +362,6 @@ import { Doughnut, Bar, Line } from 'vue-chartjs';
 
 import { useTalents } from '../composables/useTalents';
 import { useStats } from '../composables/useStats';
-import { GROWTH_DATA } from '../data/constants';
 import StatCard from '../components/dashboard/StatCard.vue';
 
 // ── Enregistrement des modules Chart.js ─────────────────────
@@ -385,17 +384,109 @@ const { availabilityRate, averageRating, topSkills, talentsByCategory, talentsBy
 // ── Palette de couleurs des graphiques ───────────────────────
 const chartColors = ['#6C3CE1', '#F97316', '#EC4899', '#06B6D4', '#22C55E', '#EAB308'];
 
-// ── Date du jour ─────────────────────────────────────────────
-const today = new Date().toLocaleDateString('fr-FR', {
+
+// ── KPI Cards — Croissance jour par jour ─────────────────
+const totalTalents = computed(() => talents.value.length);
+
+// Fonction utilitaire pour obtenir la date au format YYYY-MM-DD
+function formatDateToDay(date) {
+  const d = new Date(date);
+  return d.toISOString().split('T')[0];
+}
+
+// Aujourd'hui et hier
+const todayDate = new Date();
+todayDate.setHours(0, 0, 0, 0);
+const todayString = formatDateToDay(todayDate);
+const todayFormatted = todayDate.toLocaleDateString('fr-FR', {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
 });
 
+const yesterday = new Date(todayDate);
+yesterday.setDate(yesterday.getDate() - 1);
+const yesterdayString = formatDateToDay(yesterday);
+
 const currentYear = new Date().getFullYear();
 
-// ── KPI Cards ────────────────────────────────────────────────
-const totalTalents = computed(() => talents.value.length);
+// ── Données d'aujourd'hui vs hier ────────────────────────
+const talentsAujourdhui = computed(() =>
+  talents.value.filter((t) => formatDateToDay(t.dateInscription) === todayString).length,
+);
+
+const talentsHier = computed(() =>
+  talents.value.filter((t) => formatDateToDay(t.dateInscription) === yesterdayString).length,
+);
+
+const villesAujourdhui = computed(() => {
+  const villesSet = new Set(
+    talents.value
+      .filter((t) => formatDateToDay(t.dateInscription) === todayString)
+      .map((t) => t.ville),
+  );
+  return villesSet.size;
+});
+
+const villesHier = computed(() => {
+  const villesSet = new Set(
+    talents.value
+      .filter((t) => formatDateToDay(t.dateInscription) === yesterdayString)
+      .map((t) => t.ville),
+  );
+  return villesSet.size;
+});
+
+const tauxDispoAujourdhui = computed(() => {
+  const talentsAuj = talents.value.filter((t) => formatDateToDay(t.dateInscription) === todayString);
+  if (talentsAuj.length === 0) return 0;
+  const dispoCount = talentsAuj.filter((t) => t.disponibilite === 'disponible').length;
+  return Math.round((dispoCount / talentsAuj.length) * 100);
+});
+
+const tauxDispoHier = computed(() => {
+  const talentsHier_ = talents.value.filter((t) => formatDateToDay(t.dateInscription) === yesterdayString);
+  if (talentsHier_.length === 0) return 0;
+  const dispoCount = talentsHier_.filter((t) => t.disponibilite === 'disponible').length;
+  return Math.round((dispoCount / talentsHier_.length) * 100);
+});
+
+const noteAujourdhui = computed(() => {
+  const talentsAuj = talents.value.filter((t) => formatDateToDay(t.dateInscription) === todayString);
+  if (talentsAuj.length === 0) return 0;
+  const sum = talentsAuj.reduce((acc, t) => acc + (t.note || 0), 0);
+  return Math.round((sum / talentsAuj.length) * 10) / 10;
+});
+
+const noteHier = computed(() => {
+  const talentsHier_ = talents.value.filter((t) => formatDateToDay(t.dateInscription) === yesterdayString);
+  if (talentsHier_.length === 0) return 0;
+  const sum = talentsHier_.reduce((acc, t) => acc + (t.note || 0), 0);
+  return Math.round((sum / talentsHier_.length) * 10) / 10;
+});
+
+// ── Calcul des pourcentages de croissance ────────────────
+const croissanceTalents = computed(() => {
+  if (talentsHier.value === 0) return talentsAujourdhui.value > 0 ? 100 : 0;
+  return Math.round(((talentsAujourdhui.value - talentsHier.value) / talentsHier.value) * 100);
+});
+
+const croissanceVilles = computed(() => {
+  if (villesHier.value === 0) return villesAujourdhui.value > 0 ? 100 : 0;
+  return Math.round(((villesAujourdhui.value - villesHier.value) / villesHier.value) * 100);
+});
+
+const croissanceDispo = computed(() => {
+  if (tauxDispoHier.value === 0) return tauxDispoAujourdhui.value > 0 ? 100 : 0;
+  return tauxDispoAujourdhui.value - tauxDispoHier.value; // Différence en points
+});
+
+const croissanceNote = computed(() => {
+  if (noteHier.value === 0) return noteAujourdhui.value > 0 ? 100 : 0;
+  return Math.round(((noteAujourdhui.value - noteHier.value) / noteHier.value) * 100);
+});
+
+const nombreVilles = computed(() => Object.keys(talentsByCity.value).length);
 
 const kpis = computed(() => [
   {
@@ -403,17 +494,19 @@ const kpis = computed(() => [
     value: totalTalents.value,
     suffix: '',
     icon: 'users',
-    trend: '+12%',
-    up: true,
+    trend: `${croissanceTalents.value >= 0 ? '+' : ''}${croissanceTalents.value}%`,
+    trendLabel: 'vs hier',
+    up: croissanceTalents.value >= 0,
     color: '#6C3CE1',
   },
   {
     label: 'Villes couvertes',
-    value: Object.keys(talentsByCity.value).length,
+    value: nombreVilles.value,
     suffix: '',
     icon: 'map',
-    trend: '+2',
-    up: true,
+    trend: `${croissanceVilles.value >= 0 ? '+' : ''}${croissanceVilles.value}%`,
+    trendLabel: 'vs hier',
+    up: croissanceVilles.value >= 0,
     color: '#F97316',
   },
   {
@@ -421,8 +514,9 @@ const kpis = computed(() => [
     value: availabilityRate.value,
     suffix: '%',
     icon: 'check',
-    trend: '+5%',
-    up: true,
+    trend: `${croissanceDispo.value >= 0 ? '+' : ''}${croissanceDispo.value}%`,
+    trendLabel: 'vs hier',
+    up: croissanceDispo.value >= 0,
     color: '#22C55E',
   },
   {
@@ -430,8 +524,9 @@ const kpis = computed(() => [
     value: averageRating.value,
     suffix: '★',
     icon: 'star',
-    trend: 'stable',
-    up: null,
+    trend: `${croissanceNote.value >= 0 ? '+' : ''}${croissanceNote.value}%`,
+    trendLabel: 'vs hier',
+    up: croissanceNote.value >= 0,
     color: '#FBBF24',
   },
 ]);
@@ -460,25 +555,55 @@ const categoryLegend = computed(() =>
   })),
 );
 
-// ── Graphique : Croissance (Line) ────────────────────────────
-const growthChartData = computed(() => ({
-  labels: GROWTH_DATA.map((d) => d.month),
-  datasets: [
-    {
-      label: 'Inscriptions',
-      data: GROWTH_DATA.map((d) => d.inscriptions),
-      borderColor: '#6C3CE1',
-      backgroundColor: 'rgba(108, 60, 225, 0.12)',
-      borderWidth: 2.5,
-      pointBackgroundColor: '#6C3CE1',
-      pointBorderColor: 'transparent',
-      pointRadius: 4,
-      pointHoverRadius: 6,
-      fill: true,
-      tension: 0.4,
-    },
-  ],
-}));
+// ── Graphique : Croissance (Line) — données dynamiques ────
+const growthChartData = computed(() => {
+  // Grouper les talents par mois-année
+  const monthlyData = {};
+  
+  talents.value.forEach((talent) => {
+    const date = new Date(talent.dateInscription);
+    const monthYear = date.toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' });
+    const monthNum = date.getMonth();
+    const yearNum = date.getFullYear();
+    const key = `${yearNum}-${monthNum}`;
+    
+    if (!monthlyData[key]) {
+      monthlyData[key] = { label: monthYear, count: 0, date };
+    }
+    monthlyData[key].count += 1;
+  });
+
+  // Trier par date et créer les données
+  const sorted = Object.values(monthlyData)
+    .sort((a, b) => a.date - b.date)
+    .slice(-12); // Derniers 12 mois
+
+  // Calculer les totaux cumulés (croissance)
+  let cumulative = 0;
+  const cumulativeData = sorted.map((item) => {
+    cumulative += item.count;
+    return cumulative;
+  });
+
+  return {
+    labels: sorted.map((item) => item.label),
+    datasets: [
+      {
+        label: 'Inscriptions cumulées',
+        data: cumulativeData,
+        borderColor: '#6C3CE1',
+        backgroundColor: 'rgba(108, 60, 225, 0.12)',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#6C3CE1',
+        pointBorderColor: 'transparent',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        fill: true,
+        tension: 0.4,
+      },
+    ],
+  };
+});
 
 // ── Graphique : Villes (Bar horizontal) ──────────────────────
 const cityChartData = computed(() => {

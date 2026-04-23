@@ -121,7 +121,7 @@
       <span v-else class="text-xs text-white/25 px-2 py-0.5 rounded-md bg-white/[0.04]">
         {{ kpi.trend }}
       </span>
-      <span class="text-xs text-white/25">ce mois</span>
+      <span class="text-xs text-white/25">{{ kpi.trendLabel || 'ce mois' }}</span>
     </div>
   </div>
 </template>
