@@ -36,7 +36,7 @@ const app = express();
 // Sans ça, le navigateur bloquerait les requêtes cross-origin
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://camer-talents.vercel.app'],
+    origin: '*',
     credentials: true, // autorise l'envoi de cookies si besoin
   }),
 );
