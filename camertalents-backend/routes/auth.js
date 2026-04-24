@@ -9,9 +9,9 @@
 // ============================================================
 
 const express = require('express');
-const jwt     = require('jsonwebtoken');
-const User    = require('../models/User');
-const Talent  = require('../models/Talent');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+const Talent = require('../models/Talent');
 const { proteger } = require('../middleware/auth');
 
 const router = express.Router();
@@ -33,15 +33,15 @@ function envoyerToken(user, statusCode, res) {
     success: true,
     token,
     user: {
-      id:           user._id,
-      nom:          user.nom,
-      email:        user.email,
-      role:         user.role,
-      avatar:       user.avatar,
-      talentId:     user.talentId,
-      entreprise:   user.entreprise,
-      poste:        user.poste,
-      favoris:      user.favoris,
+      id: user._id,
+      nom: user.nom,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+      talentId: user.talentId,
+      entreprise: user.entreprise,
+      poste: user.poste,
+      favoris: user.favoris,
       dateCreation: user.createdAt,
     },
   });
@@ -55,10 +55,22 @@ function envoyerToken(user, statusCode, res) {
 router.post('/register/talent', async (req, res) => {
   try {
     const {
-      nom, email, password,
-      metier, categorie, ville, quartier, bio,
-      telephone, tarifJour, disponibilite,
-      competences, portfolio, cvBase64, cvNom, avatar,
+      nom,
+      email,
+      password,
+      metier,
+      categorie,
+      ville,
+      quartier,
+      bio,
+      telephone,
+      tarifJour,
+      disponibilite,
+      competences,
+      portfolio,
+      cvBase64,
+      cvNom,
+      avatar,
     } = req.body;
 
     // Vérifie si l'email est déjà utilisé
@@ -75,28 +87,28 @@ router.post('/register/talent', async (req, res) => {
       nom,
       email,
       password, // sera hashé automatiquement par le middleware pre('save')
-      role:      'talent',
-      avatar:    avatar || '',
+      role: 'talent',
+      avatar: avatar || '',
     });
 
     // 2. Crée le profil public du talent lié au User
     const talent = await Talent.create({
-      userId:       user._id,
+      userId: user._id,
       nom,
       metier,
       categorie,
       ville,
-      quartier:     quartier    || '',
-      bio:          bio         || '',
-      telephone:    telephone   || '',
-      email:        email,
-      tarifJour:    tarifJour   || null,
+      quartier: quartier || '',
+      bio: bio || '',
+      telephone: telephone || '',
+      email: email,
+      tarifJour: tarifJour || null,
       disponibilite: disponibilite || 'disponible',
-      competences:  competences || [],
-      portfolio:    portfolio   || [],
-      cvBase64:     cvBase64    || '',
-      cvNom:        cvNom       || '',
-      avatar:       avatar      || '',
+      competences: competences || [],
+      portfolio: portfolio || [],
+      cvBase64: cvBase64 || '',
+      cvNom: cvNom || '',
+      avatar: avatar || '',
     });
 
     // 3. Met à jour le User avec l'id du profil talent créé
@@ -120,6 +132,7 @@ router.post('/register/talent', async (req, res) => {
     console.error('Erreur register talent:', error);
     res.status(500).json({ success: false, message: 'Erreur serveur' });
   }
+  console.log('BODY:', req.body);
 });
 
 // ════════════════════════════════════════════════════════════
@@ -142,9 +155,9 @@ router.post('/register/recruteur', async (req, res) => {
       nom,
       email,
       password,
-      role:       'recruteur',
+      role: 'recruteur',
       entreprise: entreprise || '',
-      poste:      poste      || '',
+      poste: poste || '',
     });
 
     envoyerToken(user, 201, res);
@@ -231,15 +244,15 @@ router.get('/me', proteger, async (req, res) => {
     res.status(200).json({
       success: true,
       user: {
-        id:           user._id,
-        nom:          user.nom,
-        email:        user.email,
-        role:         user.role,
-        avatar:       user.avatar,
-        talentId:     user.talentId,
-        entreprise:   user.entreprise,
-        poste:        user.poste,
-        favoris:      user.favoris,
+        id: user._id,
+        nom: user.nom,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar,
+        talentId: user.talentId,
+        entreprise: user.entreprise,
+        poste: user.poste,
+        favoris: user.favoris,
         dateCreation: user.createdAt,
       },
     });
