@@ -132,7 +132,6 @@ router.post('/register/talent', async (req, res) => {
     console.error('Erreur register talent:', error);
     res.status(500).json({ success: false, message: 'Erreur serveur' });
   }
-  console.log('BODY:', req.body);
 });
 
 // ════════════════════════════════════════════════════════════
