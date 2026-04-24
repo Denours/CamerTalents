@@ -80,7 +80,7 @@ app.get('/api', (req, res) => {
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
-    message: '✅ Serveur CamerTalents opérationnel',
+    message: 'Serveur CamerTalents opérationnel',
     version: '1.0.0',
     env: process.env.NODE_ENV,
   });
@@ -112,7 +112,7 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log('');
-  console.log('🚀 ════════════════════════════════════════');
+  console.log(' ════════════════════════════════════════');
   console.log(`   CamerTalents Backend`);
   console.log(`   Serveur démarré sur le port ${PORT}`);
   console.log(`   Environnement : ${process.env.NODE_ENV}`);
