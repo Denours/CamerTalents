@@ -1,0 +1,14 @@
+[build]
+# Indique à Railway où se trouve le projet
+builder = "NIXPACKS"
+buildCommand = "npm install"
+
+[deploy]
+# Indique la commande de démarrage
+startCommand = "npm start"
+# Indique le dossier de travail
+workingDirectory = "/app"
+
+[env]
+# Railway détecte automatiquement le PORT
+NODE_ENV = "production"
