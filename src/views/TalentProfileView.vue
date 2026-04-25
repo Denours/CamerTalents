@@ -728,10 +728,10 @@
           <aside class="space-y-6">
             <!-- Carte tarif -->
             <div class="info-card">
-              <p class="text-xs text-white/30 uppercase tracking-widest mb-1">Tarif journalier</p>
+              <p class="text-xs text-white/30 uppercase tracking-widest mb-1">Tarif horaire</p>
               <p class="font-mono text-2xl font-bold text-white">
                 {{ talent.tarifJour.toLocaleString('fr-FR') }}
-                <span class="text-sm font-normal text-white/40">FCFA/jour</span>
+                <span class="text-sm font-normal text-white/40">FCFA/heure</span>
               </p>
             </div>
 

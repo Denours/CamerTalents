@@ -272,10 +272,10 @@
             <p v-if="errors.email" class="form-error">{{ errors.email }}</p>
           </div>
 
-          <!-- Tarif journalier -->
+          <!-- Tarif horaire -->
           <div class="form-group">
             <div class="form-label">
-              Tarif journalier
+              Tarif horaire
               <span class="text-white/30 text-xs font-normal ml-1"> optionnel </span>
             </div>
             <div class="relative">

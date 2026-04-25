@@ -477,10 +477,10 @@
                 </p>
               </div>
 
-              <!-- Tarif journalier -->
+              <!-- Tarif horaire -->
               <div class="form-group">
                 <label for="tarif" class="form-label">
-                  Tarif journalier (FCFA)
+                  Tarif horaire (FCFA)
                   <span class="text-white/30 text-xs font-normal ml-1"> optionnel </span>
                 </label>
                 <div class="relative">
