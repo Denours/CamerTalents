@@ -420,7 +420,7 @@ const WhatsAppIcon = {
 const socials = [
   {
     label: 'Facebook',
-    href: 'https://web.facebook.com/profile.php?id=61579742660484',
+    href: 'https://facebook.com',
     icon: FacebookIcon,
   },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/d-keufack/', icon: LinkedInIcon },
