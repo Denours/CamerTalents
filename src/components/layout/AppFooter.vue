@@ -425,8 +425,8 @@ const socials = [
   },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/d-keufack/', icon: LinkedInIcon },
   { label: 'Instagram', href: 'https://instagram.com', icon: InstagramIcon },
-  { label: 'X (Twitter)', href: 'https://x.com/camertalents', icon: TwitterIcon },
-  { label: 'WhatsApp', href: 'https://wa.me/237699000000', icon: WhatsAppIcon },
+  { label: 'X (Twitter)', href: 'https://x.com', icon: TwitterIcon },
+  { label: 'WhatsApp', href: 'https://wa.me/237683802425', icon: WhatsAppIcon },
 ];
 
 // ── Modals légales ────────────────────────────────────────────
