@@ -418,9 +418,13 @@ const WhatsAppIcon = {
 };
 
 const socials = [
-  { label: 'Facebook', href: 'https://facebook.com/camertalents', icon: FacebookIcon },
-  { label: 'LinkedIn', href: 'https://linkedin.com/company/camertalents', icon: LinkedInIcon },
-  { label: 'Instagram', href: 'https://instagram.com/camertalents', icon: InstagramIcon },
+  {
+    label: 'Facebook',
+    href: 'https://web.facebook.com/profile.php?id=61579742660484',
+    icon: FacebookIcon,
+  },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/d-keufack/', icon: LinkedInIcon },
+  { label: 'Instagram', href: 'https://instagram.com', icon: InstagramIcon },
   { label: 'X (Twitter)', href: 'https://x.com/camertalents', icon: TwitterIcon },
   { label: 'WhatsApp', href: 'https://wa.me/237699000000', icon: WhatsAppIcon },
 ];
