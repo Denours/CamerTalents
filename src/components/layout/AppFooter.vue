@@ -440,11 +440,11 @@ const modalContents = {
   mentions: {
     title: 'Mentions légales',
     paragraphs: [
-      'CamerTalents est une plateforme numérique éditée par CamerTalents SAS, société par actions simplifiée au capital de 1 000 000 FCFA, immatriculée au Registre du Commerce et du Crédit Mobilier de Douala sous le numéro RC/DLA/2024/B/1234.',
-      'Siège social : Bonaberi, CEBEC, Douala, Cameroun.',
+      'CamerTalents est une plateforme numérique éditée par CamerTalents SAS, société par actions simplifiée immatriculée au Registre du Commerce et du Crédit Mobilier de Douala sous le numéro RC/DLA/2024/B/1234.',
+      'Siège social : Douala, Cameroun.',
       'Directeur de la publication : Le représentant légal de CamerTalents SAS.',
-      "Hébergement : Le site est hébergé par un prestataire certifié disposant de serveurs situés en Europe et en Afrique de l'Ouest.",
-      "Pour toute question relative aux présentes mentions légales, vous pouvez nous contacter à l'adresse : legal@camertalents.cm",
+      "Hébergement : CamerTalents est hébergée sur une plateforme cloud 'serverless' d'applications côté frontend et sur une plateforme moderne de type PaaS (Platform as a Service), conçue pour simplifier le déploiement, la gestion d'infrastructure et le scaling automatique, agissant comme une alternative moderne à Heroku côté backend.",
+      "Pour toute question relative aux présentes mentions légales, vous pouvez nous contacter à l'adresse : keufackdenis08@camertalents.cm",
     ],
   },
   cgv: {
