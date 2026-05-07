@@ -221,7 +221,7 @@
                     v-model="skill.nom"
                     type="text"
                     placeholder="Ex : Vue.js si vous êtes développeur"
-                    class="form-input flex-1 min-w-0"
+                    class="form-input skill-text flex-1 min-w-0"
                   />
 
                   <!-- Niveau (slider) -->
@@ -859,7 +859,9 @@
               </svg>
             </div>
 
-            <h2 class="font-title text-3xl font-bold mb-3 text-white">Bienvenue sur CamerTalents ! 🎉</h2>
+            <h2 class="font-title text-3xl font-bold mb-3 text-white">
+              Bienvenue sur CamerTalents ! 🎉
+            </h2>
             <p class="text-white/50 mb-8 leading-relaxed">
               Ton profil <strong class="text-white">{{ form.nom }}</strong>
               a été créé avec succès. Tu es maintenant visible par des milliers de personnes au
@@ -1298,7 +1300,9 @@ async function submitForm() {
   @apply flex items-center gap-3 p-3 rounded-xl
          bg-white/[0.03] border border-white/[0.06];
 }
-
+.skill-text {
+  @apply w-full cursor-pointer;
+}
 /* ── Slider de compétence ─────────────────────────────────── */
 .skill-slider {
   @apply h-1 appearance-none rounded-full
