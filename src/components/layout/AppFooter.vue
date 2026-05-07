@@ -9,7 +9,7 @@
           <div>
             <h3 class="font-title text-xl font-bold mb-1">Restez informé des nouveaux talents</h3>
             <p class="text-white/40 text-sm">
-              Recevez chaque semaine les meilleurs profils directement dans votre boîte mail.
+              Recevez chaque semaine les meilleurs profils directement dans votre boîte mail (test).
             </p>
           </div>
           <form @submit.prevent="subscribeNewsletter" class="flex gap-3 w-full md:w-auto">
