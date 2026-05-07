@@ -1301,7 +1301,7 @@ async function submitForm() {
 
 /* ── Slider de compétence ─────────────────────────────────── */
 .skill-slider {
-  @apply w-full h-1 appearance-none rounded-full
+  @apply h-1 appearance-none rounded-full
          bg-white/[0.10] cursor-pointer;
 }
 .skill-slider::-webkit-slider-thumb {
