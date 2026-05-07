@@ -6,90 +6,89 @@
     <section class="relative py-12 border-b border-white/[0.06] overflow-hidden">
       <div
         class="absolute top-0 right-0 w-96 h-96 bg-secondary/10 blur-[100px] pointer-events-none"
-      >
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div
-            class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6"
-            v-motion
-            :initial="{ opacity: 0, y: 20 }"
-            :enter="{ opacity: 1, y: 0, transition: { duration: 500 } }"
-          >
-            <!-- Infos recruteur -->
-            <div class="flex items-center gap-5">
-              <div class="relative flex-shrink-0">
-                <div
-                  class="w-16 h-16 rounded-2xl bg-secondary/20 border border-secondary/30 flex items-center justify-center"
-                >
-                  <span class="font-title font-bold text-2xl text-secondary">
-                    {{ initiales }}
-                  </span>
-                </div>
-                <span
-                  class="absolute -bottom-2 -right-2 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-secondary text-white border-2 border-[#0F0A1E]"
-                >
-                  REC.
+      />
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6"
+          v-motion
+          :initial="{ opacity: 0, y: 20 }"
+          :enter="{ opacity: 1, y: 0, transition: { duration: 500 } }"
+        >
+          <!-- Infos recruteur -->
+          <div class="flex items-center gap-5">
+            <div class="relative flex-shrink-0">
+              <div
+                class="w-16 h-16 rounded-2xl bg-secondary/20 border border-secondary/30 flex items-center justify-center"
+              >
+                <span class="font-title font-bold text-2xl text-secondary">
+                  {{ initiales }}
                 </span>
               </div>
-              <div>
-                <p class="text-white/40 text-sm mb-0.5">Espace recruteur</p>
-                <h1 class="font-title text-2xl sm:text-3xl font-bold">
-                  {{ authStore.displayName }} 👋
-                </h1>
-                <p class="text-white/50 text-sm mt-0.5">
-                  {{ authStore.user?.entreprise || 'Recruteur indépendant' }}
-                  <span v-if="authStore.user?.poste" class="text-white/30">
-                    · {{ authStore.user.poste }}
-                  </span>
-                </p>
-              </div>
+              <span
+                class="absolute -bottom-2 -right-2 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-secondary text-white border-2 border-[#0F0A1E]"
+              >
+                REC.
+              </span>
             </div>
+            <div>
+              <p class="text-white/40 text-sm mb-0.5">Espace recruteur</p>
+              <h1 class="font-title text-2xl sm:text-3xl font-bold">
+                {{ authStore.displayName }} 👋
+              </h1>
+              <p class="text-white/50 text-sm mt-0.5">
+                {{ authStore.user?.entreprise || 'Recruteur indépendant' }}
+                <span v-if="authStore.user?.poste" class="text-white/30">
+                  · {{ authStore.user.poste }}
+                </span>
+              </p>
+            </div>
+          </div>
 
-            <!-- Actions rapides -->
-            <div class="flex flex-wrap gap-3">
-              <RouterLink
-                to="/explore"
-                class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/20 text-white/60 text-sm font-medium hover:border-white/40 hover:text-white transition-all duration-200"
+          <!-- Actions rapides -->
+          <div class="flex flex-wrap gap-3">
+            <RouterLink
+              to="/explore"
+              class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/20 text-white/60 text-sm font-medium hover:border-white/40 hover:text-white transition-all duration-200"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
               >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-                Explorer les talents
-              </RouterLink>
-              <RouterLink
-                to="/recruteur/favoris"
-                class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-white text-sm font-medium hover:bg-secondary/80 transition-colors duration-200"
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              Explorer les talents
+            </RouterLink>
+            <RouterLink
+              to="/recruteur/favoris"
+              class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-white text-sm font-medium hover:bg-secondary/80 transition-colors duration-200"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
               >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06
                          a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23
                          l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                  />
-                </svg>
-                Mes favoris
-                <span
-                  v-if="authStore.favoris.length > 0"
-                  class="w-5 h-5 rounded-full bg-white/20 text-white text-[10px] font-bold flex items-center justify-center"
-                >
-                  {{ authStore.favoris.length }}
-                </span>
-              </RouterLink>
-            </div>
+                />
+              </svg>
+              Mes favoris
+              <span
+                v-if="authStore.favoris.length > 0"
+                class="w-5 h-5 rounded-full bg-white/20 text-white text-[10px] font-bold flex items-center justify-center"
+              >
+                {{ authStore.favoris.length }}
+              </span>
+            </RouterLink>
           </div>
         </div>
       </div>
@@ -444,27 +443,6 @@
             </div>
           </div>
 
-          <div
-            class="section-card"
-            v-motion
-            :initial="{ opacity: 0, x: 20 }"
-            :visible="{ opacity: 1, x: 0, transition: { duration: 500, delay: 250 } }"
-          >
-            <h3 class="text-sm font-semibold text-white/50 uppercase tracking-widest mb-4">
-              Sécurité du compte
-            </h3>
-            <p class="text-sm text-white/40 mb-4">
-              Supprime définitivement ton compte. Cette action est irréversible.
-            </p>
-            <button
-              type="button"
-              @click="openDeleteAccountModal"
-              class="w-full py-3 rounded-xl border border-red-500/20 text-red-400/80 text-sm font-medium hover:bg-red-500/10 hover:text-red-300 transition-all duration-200"
-            >
-              Supprimer mon compte
-            </button>
-          </div>
-
           <!-- Déconnexion -->
           <button
             @click="handleLogout"
@@ -488,68 +466,6 @@
       </div>
     </div>
   </main>
-
-  <div
-    v-if="deleteAccountModalOpen"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-  >
-    <div
-      class="w-full max-w-lg rounded-[2rem] bg-[#09030f] border border-white/[0.08] p-6 shadow-2xl"
-    >
-      <div class="flex items-start justify-between gap-4 mb-6">
-        <div>
-          <p class="text-xs uppercase tracking-[0.35em] text-white/30 mb-2">Confirmation</p>
-          <h2 class="text-2xl font-semibold text-white">Suppression définitive</h2>
-        </div>
-        <button
-          type="button"
-          @click="closeDeleteAccountModal"
-          class="text-white/40 hover:text-white"
-          aria-label="Fermer"
-        >
-          ✕
-        </button>
-      </div>
-
-      <p class="text-sm text-white/50 mb-5">
-        Pour supprimer définitivement ton compte recruteur, saisis ton mot de passe puis confirme en
-        tapant <span class="font-semibold text-white">SUPPRIMER</span>.
-      </p>
-
-      <div class="space-y-4">
-        <div>
-          <label class="block text-sm text-white/40 mb-2">Mot de passe actuel</label>
-          <input
-            v-model="deletePassword"
-            type="password"
-            class="form-input w-full"
-            placeholder="Mot de passe"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm text-white/40 mb-2">Phrase de confirmation</label>
-          <input
-            v-model="deleteConfirmPhrase"
-            type="text"
-            class="form-input w-full"
-            placeholder="Tape SUPPRIMER pour confirmer"
-          />
-        </div>
-
-        <p class="text-sm text-red-400 min-h-[1.25rem]">{{ deleteError }}</p>
-
-        <button
-          type="button"
-          @click="handleDeleteAccount"
-          :disabled="!canDeleteAccount || isDeletingAccount"
-          class="w-full py-3 rounded-xl bg-red-500 text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {{ isDeletingAccount ? 'Suppression en cours...' : 'Supprimer mon compte' }}
-        </button>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup>
@@ -566,48 +482,6 @@ import { recruteurAPI, talentsAPI } from '../services/api';
 const router = useRouter();
 const authStore = useAuthStore();
 const filterStore = useFilterStore();
-
-const deleteAccountModalOpen = ref(false);
-const deletePassword = ref('');
-const deleteConfirmPhrase = ref('');
-const deleteError = ref('');
-const isDeletingAccount = ref(false);
-
-const canDeleteAccount = computed(
-  () =>
-    deletePassword.value.length >= 6 &&
-    deleteConfirmPhrase.value.trim().toUpperCase() === 'SUPPRIMER',
-);
-
-function openDeleteAccountModal() {
-  deleteAccountModalOpen.value = true;
-  deletePassword.value = '';
-  deleteConfirmPhrase.value = '';
-  deleteError.value = '';
-}
-
-function closeDeleteAccountModal() {
-  deleteAccountModalOpen.value = false;
-  deletePassword.value = '';
-  deleteConfirmPhrase.value = '';
-  deleteError.value = '';
-}
-
-async function handleDeleteAccount() {
-  if (!canDeleteAccount.value) return;
-
-  isDeletingAccount.value = true;
-  deleteError.value = '';
-
-  const result = await authStore.deleteAccount(deletePassword.value);
-  isDeletingAccount.value = false;
-
-  if (result.success) {
-    router.push('/login');
-  } else {
-    deleteError.value = result.error || 'Impossible de supprimer le compte.';
-  }
-}
 
 const { talentsByCategory } = useStats();
 const { talents } = useTalents();
