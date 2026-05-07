@@ -62,7 +62,7 @@
             </button>
           </div>
           <p class="text-[10px] text-white/25 mt-2 text-center">
-            Mot de passe démo : <span class="font-mono text-white/40">Admin@2024!</span>
+            Mot de passe démo : <span class="font-mono text-white/40">Admin2026</span>
           </p>
         </div> -->
 
@@ -372,12 +372,12 @@ const demoAccounts = [
     label: 'Administrateur',
     email: 'admin@camertalents.cm',
     emoji: '🛡️',
-    // mot de passe défini dans seed.js : Admin@2024!
+    // mot de passe défini dans seed.js : Admin2026
   },
   // Pour les comptes démo recruteur/talent, ils doivent
   // être créés via l'API (register) — plus de simulation
 ];
-// const demoPassword = ref('Admin@2024!');
+// const demoPassword = ref('Admin2026');
 // Remplit le formulaire avec les credentials du compte démo
 // function fillDemo(demo) {
 //   form.value.email = demo.email;
