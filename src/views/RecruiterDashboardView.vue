@@ -757,4 +757,13 @@ function handleLogout() {
   @apply font-title text-base font-bold text-white
          flex items-center;
 }
+
+.form-input {
+  @apply w-full px-4 py-3 rounded-xl
+         bg-white/[0.06] border border-white/[0.10]
+         text-white placeholder-white/25 text-sm
+         focus:outline-none focus:border-primary/50
+         focus:bg-white/[0.08]
+         transition-all duration-200;
+}
 </style>
