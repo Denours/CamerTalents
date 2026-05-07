@@ -442,6 +442,26 @@
               </RouterLink>
             </div>
           </div>
+          <div
+            class="section-card"
+            v-motion
+            :initial="{ opacity: 0, x: 20 }"
+            :visible="{ opacity: 1, x: 0, transition: { duration: 500, delay: 150 } }"
+          >
+            <h3 class="text-sm font-semibold text-white/50 uppercase tracking-widest mb-4">
+              Sécurité du compte
+            </h3>
+            <p class="text-sm text-white/40 mb-4">
+              Supprime définitivement ton compte. Cette action est irréversible.
+            </p>
+            <button
+              type="button"
+              @click="openDeleteAccountModal"
+              class="w-full py-3 rounded-xl border border-red-500/20 text-red-400/80 text-sm font-medium hover:bg-red-500/10 hover:text-red-300 transition-all duration-200"
+            >
+              Supprimer mon compte
+            </button>
+          </div>
 
           <!-- Déconnexion -->
           <button
@@ -465,6 +485,68 @@
         </div>
       </div>
     </div>
+
+    <div
+      v-if="deleteAccountModalOpen"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+    >
+      <div
+        class="w-full max-w-lg rounded-[2rem] bg-[#09030f] border border-white/[0.08] p-6 shadow-2xl"
+      >
+        <div class="flex items-start justify-between gap-4 mb-6">
+          <div>
+            <p class="text-xs uppercase tracking-[0.35em] text-white/30 mb-2">Confirmation</p>
+            <h2 class="text-2xl font-semibold text-white">Suppression définitive</h2>
+          </div>
+          <button
+            type="button"
+            @click="closeDeleteAccountModal"
+            class="text-white/40 hover:text-white"
+            aria-label="Fermer"
+          >
+            ✕
+          </button>
+        </div>
+
+        <p class="text-sm text-white/50 mb-5">
+          Pour supprimer définitivement ton compte, saisis ton mot de passe puis confirme en tapant
+          <span class="font-semibold text-white">SUPPRIMER</span>.
+        </p>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm text-white/40 mb-2">Mot de passe actuel</label>
+            <input
+              v-model="deletePassword"
+              type="password"
+              class="form-input w-full"
+              placeholder="Mot de passe"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm text-white/40 mb-2">Phrase de confirmation</label>
+            <input
+              v-model="deleteConfirmPhrase"
+              type="text"
+              class="form-input w-full"
+              placeholder="Tape SUPPRIMER pour confirmer"
+            />
+          </div>
+
+          <p class="text-sm text-red-400 min-h-[1.25rem]">{{ deleteError }}</p>
+
+          <button
+            type="button"
+            @click="handleDeleteAccount"
+            :disabled="!canDeleteAccount || isDeletingAccount"
+            class="w-full py-3 rounded-xl bg-red-500 text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {{ isDeletingAccount ? 'Suppression en cours...' : 'Supprimer mon compte' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
@@ -482,6 +564,48 @@ import { recruteurAPI, talentsAPI } from '../services/api';
 const router = useRouter();
 const authStore = useAuthStore();
 const filterStore = useFilterStore();
+
+const deleteAccountModalOpen = ref(false);
+const deletePassword = ref('');
+const deleteConfirmPhrase = ref('');
+const deleteError = ref('');
+const isDeletingAccount = ref(false);
+
+const canDeleteAccount = computed(
+  () =>
+    deletePassword.value.length >= 6 &&
+    deleteConfirmPhrase.value.trim().toUpperCase() === 'SUPPRIMER',
+);
+
+function openDeleteAccountModal() {
+  deleteAccountModalOpen.value = true;
+  deletePassword.value = '';
+  deleteConfirmPhrase.value = '';
+  deleteError.value = '';
+}
+
+function closeDeleteAccountModal() {
+  deleteAccountModalOpen.value = false;
+  deletePassword.value = '';
+  deleteConfirmPhrase.value = '';
+  deleteError.value = '';
+}
+
+async function handleDeleteAccount() {
+  if (!canDeleteAccount.value) return;
+
+  isDeletingAccount.value = true;
+  deleteError.value = '';
+
+  const result = await authStore.deleteAccount(deletePassword.value);
+  isDeletingAccount.value = false;
+
+  if (result.success) {
+    router.push('/login');
+  } else {
+    deleteError.value = result.error || 'Impossible de supprimer le compte.';
+  }
+}
 
 const { talentsByCategory } = useStats();
 const { talents } = useTalents();
