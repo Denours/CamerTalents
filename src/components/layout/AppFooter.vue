@@ -25,7 +25,7 @@
               type="submit"
               class="px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold whitespace-nowrap hover:bg-primary-600 active:scale-95 transition-all duration-200"
             >
-              {{ subscribed ? '✅ Inscrit !' : "S'inscrire" }}
+              {{ subscribed ? 'Inscrit !' : "S'inscrire" }}
             </button>
           </form>
         </div>
@@ -111,7 +111,7 @@
         <div class="space-y-2">
           <p class="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">Contact</p>
           <a
-            href="mailto:contact@camertalents.cm"
+            href="mailto:keufackdenis08@gmail.com"
             class="flex items-center gap-2 text-sm text-white/40 hover:text-white transition-colors duration-200"
           >
             <svg
@@ -128,7 +128,7 @@
               />
               <polyline points="22,6 12,13 2,6" />
             </svg>
-            contact@camertalents.cm
+            keufackdenis08@gmail.com
           </a>
           <a
             href="tel:+237693792808"
@@ -444,7 +444,7 @@ const modalContents = {
       'Siège social : Douala, Cameroun.',
       'Directeur de la publication : Le représentant légal de CamerTalents SAS.',
       "Hébergement : CamerTalents est hébergée sur une plateforme cloud 'serverless' d'applications côté frontend et sur une plateforme moderne de type PaaS (Platform as a Service), conçue pour simplifier le déploiement, la gestion d'infrastructure et le scaling automatique, agissant comme une alternative moderne à Heroku côté backend.",
-      "Pour toute question relative aux présentes mentions légales, vous pouvez nous contacter à l'adresse : keufackdenis08@camertalents.cm",
+      "Pour toute question relative aux présentes mentions légales, vous pouvez nous contacter à l'adresse : keufackdenis08@gmail.com",
     ],
   },
   cgv: {
@@ -462,7 +462,7 @@ const modalContents = {
       'CamerTalents collecte uniquement les données personnelles nécessaires au fonctionnement du service : nom, email, numéro de téléphone, ville, métier et compétences.',
       "Ces données sont utilisées exclusivement pour la création et l'affichage des profils publics sur la plateforme, et ne sont jamais vendues à des tiers.",
       "Conformément à la loi camerounaise n°2010/012 du 21 décembre 2010 relative à la cybersécurité et à la cybercriminalité, vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles.",
-      'Pour exercer ces droits, contactez-nous à : privacy@camertalents.cm',
+      'Pour exercer ces droits, contactez-nous à : keufackdenis08@gmail.com',
       "Les données sont conservées pendant la durée d'activité du compte, puis supprimées dans un délai de 30 jours après la demande de suppression.",
     ],
   },
@@ -500,7 +500,7 @@ const modalContents = {
       'CamerTalents est un projet en croissance et nous sommes toujours à la recherche de personnes talentueuses et motivées pour rejoindre notre aventure.',
       'Postes ouverts : Développeur(se) Full-Stack (Vue.js / Node.js), Designer UI/UX, Chargé(e) de communication et partenariats, Business Developer.',
       "Nous valorisons la passion, l'autonomie et l'impact. Si vous croyez en la mission de CamerTalents et souhaitez contribuer au développement du numérique camerounais, nous voulons vous rencontrer.",
-      'Envoyez votre candidature (CV + courte lettre de motivation) à : careers@camertalents.cm',
+      'Envoyez votre candidature (CV + courte lettre de motivation) à : keufackdenis08@gmail.com',
     ],
   },
 };
