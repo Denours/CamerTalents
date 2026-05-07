@@ -1301,7 +1301,7 @@ async function submitForm() {
          bg-white/[0.03] border border-white/[0.06];
 }
 .skill-text {
-  @apply w-full cursor-pointer;
+  wid
 }
 /* ── Slider de compétence ─────────────────────────────────── */
 .skill-slider {
