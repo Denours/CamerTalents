@@ -221,11 +221,11 @@
                     v-model="skill.nom"
                     type="text"
                     placeholder="Ex : Vue.js si vous êtes développeur"
-                    class="form-input flex-1 min-w-0"
+                    class="form-input flex-1 min-w-0 w-full"
                   />
 
                   <!-- Niveau (slider) -->
-                  <div class="flex flex-col gap-1 w-36 flex-shrink-0">
+                  <div class="flex flex-col gap-1 w-full sm:w-36 flex-shrink-0">
                     <div class="flex justify-between text-xs text-white/40">
                       <span>Niveau</span>
                       <span class="font-mono font-bold text-white"> {{ skill.niveau }}% </span>
@@ -859,7 +859,9 @@
               </svg>
             </div>
 
-            <h2 class="font-title text-3xl font-bold mb-3 text-white">Bienvenue sur CamerTalents ! 🎉</h2>
+            <h2 class="font-title text-3xl font-bold mb-3 text-white">
+              Bienvenue sur CamerTalents ! 🎉
+            </h2>
             <p class="text-white/50 mb-8 leading-relaxed">
               Ton profil <strong class="text-white">{{ form.nom }}</strong>
               a été créé avec succès. Tu es maintenant visible par des milliers de personnes au
@@ -1295,7 +1297,7 @@ async function submitForm() {
 
 /* ── Ligne de compétence ──────────────────────────────────── */
 .skill-row {
-  @apply flex items-center gap-3 p-3 rounded-xl
+  @apply flex flex-col sm:flex-row items-center gap-3 p-3 rounded-xl
          bg-white/[0.03] border border-white/[0.06];
 }
 
