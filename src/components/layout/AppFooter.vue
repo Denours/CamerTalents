@@ -9,7 +9,7 @@
           <div>
             <h3 class="font-title text-xl font-bold mb-1">Restez informé des nouveaux talents</h3>
             <p class="text-white/40 text-sm">
-              Recevez chaque semaine les meilleurs profils directement dans votre boîte mail (test-test).
+              Recevez chaque semaine les meilleurs profils directement dans votre boîte mail.
             </p>
           </div>
           <form @submit.prevent="subscribeNewsletter" class="flex gap-3 w-full md:w-auto">
@@ -42,11 +42,11 @@
           <!-- Logo -->
           <RouterLink to="/" class="inline-flex items-center gap-2.5 group">
             <div
-              class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
+              class="w-9 h-9 rounded-xl bg-[#034435] flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
             >
               <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
-                <circle cx="6" cy="6" r="4" stroke="white" stroke-width="1.5" />
-                <circle cx="11" cy="11" r="3" stroke="#F97316" stroke-width="1.5" />
+                <circle cx="6" cy="6" r="4" stroke="#CE1126" stroke-width="1.5" />
+                <circle cx="11" cy="11" r="3" stroke="#FCD116" stroke-width="1.5" />
               </svg>
             </div>
             <span class="font-title font-bold text-lg text-white tracking-tight">

@@ -5,6 +5,7 @@
 //  POST /api/auth/register/recruteur ← inscription recruteur
 //  POST /api/auth/login              ← connexion
 //  POST /api/auth/logout             ← déconnexion
+//  DELETE /api/auth/me               ← suppression du compte connecté
 //  GET  /api/auth/me                 ← profil utilisateur connecté
 // ============================================================
 
@@ -231,10 +232,53 @@ router.post('/logout', (req, res) => {
 });
 
 // ════════════════════════════════════════════════════════════
-//  GET /api/auth/me
-//  Retourne le profil de l'utilisateur connecté
-//  Route protégée → nécessite un token valide
+//  DELETE /api/auth/me
+//  Supprime le compte de l'utilisateur connecté
+//  Vérifie le mot de passe avant suppression définitive
 // ════════════════════════════════════════════════════════════
+router.delete('/me', proteger, async (req, res) => {
+  try {
+    const { password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Le mot de passe est requis pour supprimer le compte.',
+      });
+    }
+
+    const user = await User.findById(req.user._id).select('+password');
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur introuvable.',
+      });
+    }
+
+    const isPasswordValid = await user.verifierMotDePasse(password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Mot de passe incorrect.',
+      });
+    }
+
+    if (user.role === 'talent' && user.talentId) {
+      await Talent.findByIdAndDelete(user.talentId);
+    }
+
+    await User.findByIdAndDelete(user._id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Compte supprimé avec succès.',
+    });
+  } catch (error) {
+    console.error('Erreur suppression compte:', error);
+    res.status(500).json({ success: false, message: 'Erreur serveur' });
+  }
+});
+
 router.get('/me', proteger, async (req, res) => {
   try {
     // req.user est attaché par le middleware proteger()

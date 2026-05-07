@@ -169,6 +169,30 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // ══════════════════════════════════════════════════════════
+  // ══════════════════════════════════════════════════════════════════════════
+  //  SUPPRESSION DE COMPTE
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async function deleteAccount(password) {
+    isLoading.value = true;
+    authError.value = '';
+
+    try {
+      await authAPI.deleteAccount(password);
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(ROLE_KEY);
+      localStorage.removeItem(TALENT_ID_KEY);
+      user.value = null;
+      return { success: true };
+    } catch (error) {
+      authError.value = error.message || 'Impossible de supprimer le compte.';
+      return { success: false, error: authError.value };
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
   //  FAVORIS RECRUTEUR
   // ══════════════════════════════════════════════════════════
 
@@ -228,6 +252,7 @@ export const useAuthStore = defineStore('auth', () => {
     registerRecruteur,
     login,
     logout,
+    deleteAccount,
     toggleFavori,
     updateUserLocalement,
     clearError,

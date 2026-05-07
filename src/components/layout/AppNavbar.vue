@@ -8,11 +8,11 @@
         <!-- ── Logo ─────────────────────────────────── -->
         <RouterLink to="/" class="flex items-center gap-2 group" @click="closeMobileMenu">
           <div
-            class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
+            class="w-8 h-8 rounded-lg bg-[#034435] flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="6" cy="6" r="4" stroke="white" stroke-width="1.5" />
-              <circle cx="11" cy="11" r="3" stroke="#F97316" stroke-width="1.5" />
+              <circle cx="6" cy="6" r="4" stroke="#CE1126" stroke-width="1.5" />
+              <circle cx="11" cy="11" r="3" stroke="#FCD116" stroke-width="1.5" />
             </svg>
           </div>
           <span class="font-title font-semibold text-[20px] text-white tracking-tight">

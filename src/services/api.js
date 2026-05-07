@@ -37,8 +37,8 @@ async function request(method, endpoint, data = null) {
     headers,
   };
 
-  // Pour POST et PUT, on convertit les données en JSON
-  if (data && (method === 'POST' || method === 'PUT')) {
+  // Pour POST, PUT, DELETE et PATCH, on convertit les données en JSON
+  if (data && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
     config.body = JSON.stringify(data);
   }
 
@@ -59,7 +59,7 @@ const api = {
   get: (endpoint) => request('GET', endpoint),
   post: (endpoint, data) => request('POST', endpoint, data),
   put: (endpoint, data) => request('PUT', endpoint, data),
-  delete: (endpoint) => request('DELETE', endpoint),
+  delete: (endpoint, data = null) => request('DELETE', endpoint, data),
 };
 
 // ══════════════════════════════════════════════════════════
@@ -77,6 +77,9 @@ export const authAPI = {
 
   // Déconnexion
   logout: () => api.post('/auth/logout'),
+
+  // Supprimer le compte connecté (self-service)
+  deleteAccount: (password) => api.delete('/auth/me', { password }),
 
   // Récupère le profil de l'utilisateur connecté
   me: () => api.get('/auth/me'),
