@@ -41,7 +41,7 @@
               class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary-100 text-sm font-medium mb-8"
             >
               <span class="w-2 h-2 rounded-full bg-secondary animate-pulse" />
-              Plateforme #1 des talents camerounais
+              Plateforme #1 des talents camerounais (test)
             </div>
             <!-- Titre principal -->
             <h1
