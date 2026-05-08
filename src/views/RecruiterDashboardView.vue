@@ -1,21 +1,21 @@
 <template>
-  <main class="min-h-screen bg-[#0F0A1E] text-white pb-24">
+  <main class="min-h-screen bg-[#0F0A1E] text-white pb-24 overflow-x-hidden">
     <!-- ════════════════════════════════════════════
     HEADER
     ════════════════════════════════════════════ -->
-    <section class="relative py-12 border-b border-white/[0.06] overflow-hidden">
+    <section class="relative py-10 lg:py-12 border-b border-white/[0.06] overflow-hidden">
       <div
         class="absolute top-0 right-0 w-96 h-96 bg-secondary/10 blur-[100px] pointer-events-none"
       />
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div
-          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6"
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 lg:gap-6"
           v-motion
           :initial="{ opacity: 0, y: 20 }"
           :enter="{ opacity: 1, y: 0, transition: { duration: 500 } }"
         >
           <!-- Infos recruteur -->
-          <div class="flex items-center gap-5">
+          <div class="flex items-center gap-3 lg:gap-5 min-w-0">
             <div class="relative flex-shrink-0">
               <div
                 class="w-16 h-16 rounded-2xl bg-secondary/20 border border-secondary/30 flex items-center justify-center"
@@ -30,14 +30,14 @@
                 REC.
               </span>
             </div>
-            <div>
-              <p class="text-white/40 text-sm mb-0.5">Espace recruteur</p>
-              <h1 class="font-title text-2xl sm:text-3xl font-bold">
+            <div class="min-w-0">
+              <p class="text-white/40 text-xs sm:text-sm mb-0.5">Espace recruteur</p>
+              <h1 class="font-title text-xl sm:text-2xl lg:text-3xl font-bold truncate">
                 {{ authStore.displayName }} 👋
               </h1>
-              <p class="text-white/50 text-sm mt-0.5">
+              <p class="text-white/50 text-xs sm:text-sm mt-0.5 truncate">
                 {{ authStore.user?.entreprise || 'Recruteur indépendant' }}
-                <span v-if="authStore.user?.poste" class="text-white/30">
+                <span v-if="authStore.user?.poste" class="text-white/30 hidden sm:inline">
                   · {{ authStore.user.poste }}
                 </span>
               </p>
@@ -119,7 +119,7 @@
         </div>
       </div>
 
-      <div class="grid lg:grid-cols-3 gap-8">
+      <div class="grid lg:grid-cols-3 gap-4 lg:gap-8">
         <!-- ════════════════════════════════════════
              COLONNE PRINCIPALE (2/3)
         ════════════════════════════════════════ -->
@@ -156,7 +156,7 @@
                 v-for="talent in talentsFavoris.slice(0, 4)"
                 :key="talent._id"
                 :to="`/talent/${talent._id}`"
-                class="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-200 group"
+                class="flex items-center gap-3 lg:gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-200 group min-w-0"
               >
                 <img
                   :src="talent.avatar || defaultAvatar"
@@ -171,10 +171,10 @@
                   </p>
                   <p class="text-xs text-white/40 mt-0.5 truncate">
                     {{ talent.metier }}
-                    <span class="text-white/25"> · {{ talent.ville }}</span>
+                    <span class="text-white/25 hidden sm:inline"> · {{ talent.ville }}</span>
                   </p>
                 </div>
-                <div class="flex items-center gap-3 flex-shrink-0">
+                <div class="flex items-center gap-2 lg:gap-3 flex-shrink-0">
                   <!-- Disponibilité -->
                   <span
                     class="text-xs px-2.5 py-1 rounded-lg font-medium"
@@ -252,12 +252,12 @@
               </span>
             </div>
 
-            <div class="grid sm:grid-cols-2 gap-4">
+            <div class="grid sm:grid-cols-2 gap-3 lg:gap-4">
               <RouterLink
                 v-for="talent in talentsRecommandes"
                 :key="talent._id"
                 :to="`/talent/${talent._id}`"
-                class="flex items-start gap-3 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-secondary/20 transition-all duration-200 group"
+                class="flex items-start gap-3 p-3 lg:p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-secondary/20 transition-all duration-200 group min-w-0"
               >
                 <img
                   :src="talent.avatar || defaultAvatar"
@@ -273,11 +273,11 @@
                   <p class="text-xs text-white/40 truncate">
                     {{ talent.metier }}
                   </p>
-                  <div class="flex items-center gap-2 mt-2 flex-wrap">
+                  <div class="flex items-center gap-1 lg:gap-2 mt-2 flex-wrap">
                     <span
                       v-for="skill in talent.competences.slice(0, 2)"
                       :key="skill.nom"
-                      class="text-[10px] px-2 py-0.5 rounded-md bg-white/[0.06] text-white/50 border border-white/[0.08]"
+                      class="text-[9px] lg:text-[10px] px-1.5 lg:px-2 py-0.5 rounded-md bg-white/[0.06] text-white/50 border border-white/[0.08] truncate"
                     >
                       {{ skill.nom }}
                     </span>
@@ -338,7 +338,7 @@
         <!-- ════════════════════════════════════════
              SIDEBAR (1/3)
         ════════════════════════════════════════ -->
-        <div class="space-y-5">
+        <div class="space-y-4 lg:space-y-5">
           <!-- Infos du compte -->
           <div
             class="section-card"
@@ -488,10 +488,10 @@
 
     <div
       v-if="deleteAccountModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 overflow-x-hidden"
     >
       <div
-        class="w-full max-w-lg rounded-[2rem] bg-[#09030f] border border-white/[0.08] p-6 shadow-2xl"
+        class="w-full max-w-lg rounded-[2rem] bg-[#09030f] border border-white/[0.08] p-5 lg:p-6 shadow-2xl"
       >
         <div class="flex items-start justify-between gap-4 mb-6">
           <div>
