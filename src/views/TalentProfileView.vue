@@ -1154,8 +1154,11 @@ async function chargerTalent(id) {
     const data = await talentsAPI.getById(id);
     if (data.success) {
       talent.value = data.talent;
-      // Incrémente le compteur de vues (feu et oublie)
-      talentsAPI.incrementerVues(id).catch(() => {});
+      // Incrémente les vues uniquement si l'utilisateur n'est PAS un talent
+      // (évite l'erreur 403 quand un talent visite son propre profil)
+      if (authStore.isRecruteur) {
+        talentsAPI.incrementerVues(id).catch(() => {});
+      }
     }
   } catch {
     talent.value = null;

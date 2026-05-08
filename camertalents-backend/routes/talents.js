@@ -237,35 +237,52 @@ router.delete('/:id', proteger, autoriser('admin'), async (req, res) => {
 //  Incrémente le compteur de vues d'un profil
 //  Route PUBLIQUE — appelée quand on visite un profil
 // ════════════════════════════════════════════════════════════
-router.post('/:id/vue', proteger, async (req, res) => {
+router.post('/:id/vue', async (req, res) => {
   try {
     const talentId = req.params.id;
-    const userId = req.user.id; // req.user ajouté par le middleware proteger
-    const user = req.user;
 
-    // Vérifier si l'utilisateur est un recruteur
-    if (user.role !== 'recruteur') {
-      return res
-        .status(403)
-        .json({ success: false, message: 'Seuls les recruteurs peuvent incrémenter les vues.' });
+    // Récupérer le token si présent (route optionnellement authentifiée)
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      // Visiteur non connecté → on incrémente quand même les vues
+      await Talent.findByIdAndUpdate(talentId, { $inc: { vues: 1 } });
+      return res.status(200).json({ success: true });
     }
 
-    // Vérifier si ce recruteur a déjà vu ce talent
-    if (user?.vuesTalents.includes(talentId)) {
+    // Décoder le token manuellement pour identifier l'utilisateur
+    const jwt = require('jsonwebtoken');
+    let decoded;
+    try {
+      decoded = jwt.verify(authHeader.split(' ')[1], process.env.JWT_SECRET);
+    } catch {
+      // Token invalide → on incrémente quand même sans tracer l'utilisateur
+      await Talent.findByIdAndUpdate(talentId, { $inc: { vues: 1 } });
+      return res.status(200).json({ success: true });
+    }
+
+    // Si c'est un talent qui visite un profil → on ne compte pas la vue
+    // (un talent qui visite son propre profil ou celui d'un autre ne génère pas de vue)
+    if (decoded.role === 'talent') {
+      return res.status(200).json({ success: true, message: 'Vue non comptée pour les talents.' });
+    }
+
+    // Pour les recruteurs et admins → vérifier si déjà vu
+    const user = await User.findById(decoded.id).select('vuesTalents role');
+    if (!user) {
+      return res.status(200).json({ success: true });
+    }
+
+    if (user.vuesTalents.includes(talentId)) {
       return res.status(200).json({ success: true, message: 'Vue déjà comptée.' });
     }
 
-    // Incrémenter les vues du talent
+    // Incrémenter les vues du talent et tracer le recruteur
     await Talent.findByIdAndUpdate(talentId, { $inc: { vues: 1 } });
-
-    // Ajouter le talentId aux vues du recruteur
-    await User.findByIdAndUpdate(userId, { $push: { vuesTalents: talentId } });
+    await User.findByIdAndUpdate(decoded.id, { $push: { vuesTalents: talentId } });
 
     res.status(200).json({ success: true });
   } catch (error) {
-    console.error('\n', error.message);
-
-    // On ne retourne pas d'erreur visible — ce n'est pas critique
+    console.error('Erreur POST /talents/:id/vue:', error.message);
     res.status(200).json({ success: true });
   }
 });
