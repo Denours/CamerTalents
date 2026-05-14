@@ -1,5 +1,5 @@
 <template>
-  <main class="min-h-screen bg-[#0F0A1E] text-white">
+  <main class="min-h-screen bg-[#0F0A1E] text-white overflow-x-hidden">
     <!-- État : chargement -->
     <div v-if="isLoading" class="flex items-center justify-center min-h-screen">
       <div class="flex flex-col items-center gap-4">
@@ -28,7 +28,7 @@
       <!-- ════════════════════════════════════════════
         HERO — Bannière du profil
       ════════════════════════════════════════════ -->
-      <section class="relative">
+      <section class="relative overflow-hidden">
         <!-- Bannière dégradée -->
         <div class="h-52 sm:h-64 relative overflow-hidden">
           <div
@@ -49,7 +49,7 @@
           </svg>
           <!-- Glow centré -->
           <div
-            class="absolute top-1/2 left-1/3 -translate-y-1/2 w-96 h-96 rounded-full blur-[80px] opacity-30"
+            class="absolute top-1/2 left-1/2 sm:left-1/3 -translate-x-1/2 sm:translate-x-0 -translate-y-1/2 w-96 h-96 rounded-full blur-[80px] opacity-30"
             :style="`background: ${categoryColor}`"
           />
         </div>
@@ -75,7 +75,7 @@
                   />
                   <!-- Badge disponibilité -->
                   <span
-                    class="absolute -bottom-5 -left-8 px-3 py-1 rounded-full text-xs font-bold border-2 border-[#0F0A1E]"
+                    class="absolute -bottom-5 left-0 sm:-left-8 px-3 py-1 rounded-full text-xs font-bold border-2 border-[#0F0A1E]"
                     :class="availabilityClass"
                   >
                     {{ availabilityLabel }}
@@ -255,7 +255,7 @@
         <RouterLink
           v-if="vientDuDashboard"
           to="/talent/dashboard"
-          class="inline-flex items-center gap-2 px-4 py-2 mx-40 mb-4 rounded-xl bg-white/[0.06] border border-white/[0.08] text-white/50 text-sm font-medium hover:bg-white/[0.10] hover:text-white transition-all duration-200"
+          class="inline-flex items-center gap-2 px-4 py-2 mx-auto sm:mx-0 mb-4 rounded-xl bg-white/[0.06] border border-white/[0.08] text-white/50 text-sm font-medium hover:bg-white/[0.10] hover:text-white transition-all duration-200"
         >
           <svg
             width="14"

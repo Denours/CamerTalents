@@ -337,18 +337,67 @@
             <p class="step-subtitle">Derniers détails avant publication</p>
 
             <div class="space-y-5 mt-8">
-              <!-- Avatar URL -->
+              <!-- Avatar — Import de fichier image -->
               <div class="form-group">
-                <label for="avatar" class="form-label">Photo de profil</label>
-                <div class="flex items-center gap-4">
-                  <!-- Preview -->
+                <label for="avatar" class="form-label">
+                  Photo de profil
+                  <span class="text-white/30 text-xs font-normal ml-1">
+                    JPG, PNG, WebP · max 2 Mo
+                  </span>
+                </label>
+
+                <!-- Si aucun avatar importé : zone de dépôt -->
+                <div v-if="!form.avatar">
+                  <label
+                    class="flex flex-col items-center justify-center gap-3 w-full py-8 rounded-xl border-2 border-dashed border-white/15 cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-all duration-200 group"
+                  >
+                    <div
+                      class="w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center group-hover:bg-primary/10 group-hover:border-primary/20 transition-all duration-200"
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="rgba(255,255,255,0.4)"
+                        stroke-width="1.5"
+                      >
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 7v5M9.5 14.5h5" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                      </svg>
+                    </div>
+                    <div class="text-center">
+                      <p
+                        class="text-sm text-white/50 group-hover:text-white/70 transition-colors duration-200"
+                      >
+                        Clique pour importer ta photo de profil
+                      </p>
+                      <p class="text-xs text-white/25 mt-1">JPG, PNG ou WebP — max 2 Mo</p>
+                    </div>
+                    <input
+                      type="file"
+                      name="avatar"
+                      accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+                      class="hidden"
+                      @change="handleAvatarUpload"
+                    />
+                  </label>
+                  <p v-if="avatarError" class="form-error mt-2">{{ avatarError }}</p>
+                </div>
+
+                <!-- Si avatar importé : aperçu avec option de suppression -->
+                <div
+                  v-else
+                  class="flex items-center gap-4 p-4 rounded-xl bg-green-500/10 border border-green-500/20"
+                >
                   <div
-                    class="w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0 bg-white/[0.06] border border-white/[0.10] flex items-center justify-center"
+                    class="w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden bg-white/[0.06] border border-white/[0.08] flex items-center justify-center"
                   >
                     <img
                       v-if="avatarPreview"
                       :src="avatarPreview"
-                      alt="avatar"
+                      alt="avatar preview"
                       class="w-full h-full object-cover"
                       @error="avatarPreview = ''"
                     />
@@ -368,17 +417,29 @@
                       <circle cx="12" cy="7" r="4" />
                     </svg>
                   </div>
-                  <div class="flex-1">
-                    <input
-                      v-model="form.avatar"
-                      name="avatar"
-                      type="url"
-                      placeholder="https://... (URL de ta photo)"
-                      class="form-input"
-                      @input="debouncedAvatarPreview"
-                    />
-                    <p class="text-xs text-white/25 mt-1.5">Colle l'URL de ta photo</p>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">
+                      {{ form.avatarNom }}
+                    </p>
+                    <p class="text-xs text-green-400 mt-0.5">Photo importée avec succès ✓</p>
                   </div>
+                  <button
+                    type="button"
+                    @click="removeAvatar"
+                    class="text-white/30 hover:text-red-400 transition-colors duration-200 flex-shrink-0"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
                 </div>
               </div>
 
@@ -722,6 +783,10 @@
                 <p class="text-xs font-semibold text-white/30 uppercase tracking-widest mb-4">
                   Récapitulatif
                 </p>
+                <RecapRow
+                  label="Photo de profil"
+                  :value="form.avatarNom || (form.avatar ? 'Importée ✓' : 'Non sélectionnée')"
+                />
                 <RecapRow label="Nom" :value="form.nom || '—'" />
                 <RecapRow label="Métier" :value="form.metier || '—'" />
                 <RecapRow label="Catégorie" :value="form.categorie || '—'" />
@@ -915,7 +980,8 @@ const form = ref({
   bio: '',
   competences: [],
   disponibilite: 'disponible',
-  avatar: '',
+  avatar: '', // contenu de l'avatar encodé en base64
+  avatarNom: '', // nom du fichier de l'avatar
   telephone: '',
   email: '',
   tarifJour: null,
@@ -957,7 +1023,7 @@ const disponibiliteOptions = [
 
 // ── Preview avatar ───────────────────────────────────────────
 const avatarPreview = ref('');
-let avatarTimer = null;
+const avatarError = ref('');
 
 // ── Gestion du CV ─────────────────────────────────────────────
 const cvError = ref('');
@@ -999,11 +1065,42 @@ function removeCv() {
   form.value.cvNom = '';
   cvError.value = '';
 }
-function debouncedAvatarPreview() {
-  clearTimeout(avatarTimer);
-  avatarTimer = setTimeout(() => {
-    avatarPreview.value = form.value.avatar;
-  }, 600);
+
+// -- Gestion de l'avatar (import de fichier image) -----
+function handleAvatarUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Vérifie le type (images uniquement)
+  const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+  if (!allowed.includes(file.type)) {
+    avatarError.value = 'Format non supporté. Acceptés : JPG, PNG, WebP';
+    return;
+  }
+
+  // Vérifie la taille (max 2 Mo pour un avatar)
+  if (file.size > 2 * 1024 * 1024) {
+    avatarError.value = 'Fichier trop lourd. Maximum 2 Mo.';
+    return;
+  }
+
+  avatarError.value = '';
+  form.value.avatarNom = file.name;
+
+  // Convertit en base64 pour le stockage
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    form.value.avatar = e.target.result; // "data:image/jpeg;base64,..."
+    avatarPreview.value = form.value.avatar; // Affiche le preview immédiatement
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeAvatar() {
+  form.value.avatar = '';
+  form.value.avatarNom = '';
+  avatarPreview.value = '';
+  avatarError.value = '';
 }
 
 // ── Portfolio ────────────────────────────────────────────────

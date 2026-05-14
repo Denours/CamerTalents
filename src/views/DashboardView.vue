@@ -384,7 +384,6 @@ const { availabilityRate, averageRating, topSkills, talentsByCategory, talentsBy
 // ── Palette de couleurs des graphiques ───────────────────────
 const chartColors = ['#6C3CE1', '#F97316', '#EC4899', '#06B6D4', '#22C55E', '#EAB308'];
 
-
 // ── KPI Cards — Croissance jour par jour ─────────────────
 const totalTalents = computed(() => talents.value.length);
 
@@ -411,12 +410,12 @@ const yesterdayString = formatDateToDay(yesterday);
 const currentYear = new Date().getFullYear();
 
 // ── Données d'aujourd'hui vs hier ────────────────────────
-const talentsAujourdhui = computed(() =>
-  talents.value.filter((t) => formatDateToDay(t.dateInscription) === todayString).length,
+const talentsAujourdhui = computed(
+  () => talents.value.filter((t) => formatDateToDay(t.dateInscription) === todayString).length,
 );
 
-const talentsHier = computed(() =>
-  talents.value.filter((t) => formatDateToDay(t.dateInscription) === yesterdayString).length,
+const talentsHier = computed(
+  () => talents.value.filter((t) => formatDateToDay(t.dateInscription) === yesterdayString).length,
 );
 
 const villesAujourdhui = computed(() => {
@@ -438,28 +437,36 @@ const villesHier = computed(() => {
 });
 
 const tauxDispoAujourdhui = computed(() => {
-  const talentsAuj = talents.value.filter((t) => formatDateToDay(t.dateInscription) === todayString);
+  const talentsAuj = talents.value.filter(
+    (t) => formatDateToDay(t.dateInscription) === todayString,
+  );
   if (talentsAuj.length === 0) return 0;
   const dispoCount = talentsAuj.filter((t) => t.disponibilite === 'disponible').length;
   return Math.round((dispoCount / talentsAuj.length) * 100);
 });
 
 const tauxDispoHier = computed(() => {
-  const talentsHier_ = talents.value.filter((t) => formatDateToDay(t.dateInscription) === yesterdayString);
+  const talentsHier_ = talents.value.filter(
+    (t) => formatDateToDay(t.dateInscription) === yesterdayString,
+  );
   if (talentsHier_.length === 0) return 0;
   const dispoCount = talentsHier_.filter((t) => t.disponibilite === 'disponible').length;
   return Math.round((dispoCount / talentsHier_.length) * 100);
 });
 
 const noteAujourdhui = computed(() => {
-  const talentsAuj = talents.value.filter((t) => formatDateToDay(t.dateInscription) === todayString);
+  const talentsAuj = talents.value.filter(
+    (t) => formatDateToDay(t.dateInscription) === todayString,
+  );
   if (talentsAuj.length === 0) return 0;
   const sum = talentsAuj.reduce((acc, t) => acc + (t.note || 0), 0);
   return Math.round((sum / talentsAuj.length) * 10) / 10;
 });
 
 const noteHier = computed(() => {
-  const talentsHier_ = talents.value.filter((t) => formatDateToDay(t.dateInscription) === yesterdayString);
+  const talentsHier_ = talents.value.filter(
+    (t) => formatDateToDay(t.dateInscription) === yesterdayString,
+  );
   if (talentsHier_.length === 0) return 0;
   const sum = talentsHier_.reduce((acc, t) => acc + (t.note || 0), 0);
   return Math.round((sum / talentsHier_.length) * 10) / 10;
@@ -559,14 +566,14 @@ const categoryLegend = computed(() =>
 const growthChartData = computed(() => {
   // Grouper les talents par mois-année
   const monthlyData = {};
-  
+
   talents.value.forEach((talent) => {
     const date = new Date(talent.dateInscription);
     const monthYear = date.toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' });
     const monthNum = date.getMonth();
     const yearNum = date.getFullYear();
     const key = `${yearNum}-${monthNum}`;
-    
+
     if (!monthlyData[key]) {
       monthlyData[key] = { label: monthYear, count: 0, date };
     }
@@ -802,7 +809,7 @@ const barHorizontalOptions = {
 }
 
 .chart-card__header {
-  @apply flex items-center justify-between mb-5;
+  @apply flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5;
 }
 
 .chart-card__title {

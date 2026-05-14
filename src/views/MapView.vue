@@ -419,7 +419,7 @@ watch(
 }
 
 .city-rank-card {
-  @apply flex items-center gap-4 p-4 rounded-2xl
+  @apply min-w-0 flex items-center gap-4 p-4 rounded-2xl
          bg-white/[0.04] border border-white/[0.08]
          hover:bg-white/[0.07] hover:border-primary/20
          transition-all duration-200;

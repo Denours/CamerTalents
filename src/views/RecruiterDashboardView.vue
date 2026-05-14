@@ -750,7 +750,7 @@ function handleLogout() {
 }
 
 .section-card__header {
-  @apply flex items-center justify-between mb-5;
+  @apply flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5;
 }
 
 .section-card__title {
