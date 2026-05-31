@@ -105,20 +105,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ════════════════════════════════════════════════════════════
-//  DÉMARRAGE DU SERVEUR
-// ════════════════════════════════════════════════════════════
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log('');
-  console.log(' ════════════════════════════════════════');
-  console.log(`   CamerTalents Backend`);
-  console.log(`   Serveur démarré sur le port ${PORT}`);
-  console.log(`   Environnement : ${process.env.NODE_ENV}`);
-  console.log(`   API : http://localhost:${PORT}/api`);
-  console.log('   ════════════════════════════════════════');
-  console.log('');
-});
+// Démarrage du serveur uniquement hors Vercel (local ou Railway)
+if (process.env.NODE_ENV !== 'production' || process.env.START_SERVER) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`CamerTalents Backend démarré sur le port ${PORT}`);
+  });
+}
 
 module.exports = app;
