@@ -106,7 +106,9 @@ app.use((err, req, res, next) => {
 });
 
 // Démarrage du serveur uniquement hors Vercel (local ou Railway)
-if (process.env.NODE_ENV !== 'production' || process.env.START_SERVER) {
+// Sur Vercel, on n'appelle jamais app.listen()
+// Vercel importe directement module.exports = app
+if (process.env.VERCEL !== '1') {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`CamerTalents Backend démarré sur le port ${PORT}`);
