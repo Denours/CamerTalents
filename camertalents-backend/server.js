@@ -37,7 +37,7 @@ const app = express();
 app.use(
   cors({
     origin: '*',
-    credentials: true, // autorise l'envoi de cookies si besoin
+    credentials: false, // autorise l'envoi de cookies si besoin
   }),
 );
 
